@@ -17,5 +17,5 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: 'WePrint/bin/Release/netcoreapp3.0/publish'
-    ArtifactName: 'WePrint.$(Build.BuildNumber).zip'
+    ArtifactName: 'WePrint.$(Build.BuildNumber)'
     publishLocation: 'Container'
