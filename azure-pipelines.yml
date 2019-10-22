@@ -1,3 +1,5 @@
+name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
+
 trigger:
 - master
 
