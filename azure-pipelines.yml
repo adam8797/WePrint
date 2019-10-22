@@ -8,11 +8,12 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet publish --configuration $(buildConfiguration)
-  displayName: 'dotnet publish $(buildConfiguration)'
+
+- script: dotnet publish --configuration $(buildConfiguration) /p:Version=$(Build.BuildNumber)
+  displayName: 'Build and Publish'
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: 'WePrint/bin/Release/netcoreapp3.0/publish'
-    ArtifactName: 'WePrint.zip'
+    ArtifactName: 'WePrint.$(Build.BuildNumber).zip'
     publishLocation: 'Container'
