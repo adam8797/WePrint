@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <UserSecretsId>aspnet-WePrint-EC78FD08-6D93-4F84-9ADD-15D527B0CBA5</UserSecretsId>
+    <UserSecretsId>aspnet-WePrint-E2C56791-411C-4737-9B62-5736E410E478</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
 
@@ -12,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
   </ItemGroup>
 
 </Project>
