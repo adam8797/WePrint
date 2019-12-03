@@ -1,0 +1,22 @@
+name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Debug'
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Docker Hub'
+    repository: 'adam8797/weprint'
+    command: 'buildAndPush'
+    Dockerfile: './src/WePrint/Dockerfile'
+    buildContext: './src/'
+    tags: |
+      $(Build.BuildNumber)
+      debug
