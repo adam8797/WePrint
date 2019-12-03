@@ -15,5 +15,5 @@ steps:
     Dockerfile: './src/WePrint/Dockerfile'
     buildContext: './src/'
     tags: |
-    $(Build.BuildNumber)
-    latest
+      $(Build.BuildNumber)
+      latest
