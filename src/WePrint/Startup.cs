@@ -12,6 +12,7 @@ using WePrint.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace WePrint
 {
@@ -21,6 +22,8 @@ namespace WePrint
         {
             Configuration = configuration;
         }
+
+        public static string AppVersion => Assembly.GetAssembly(typeof(Startup)).GetName().Version.ToString(4);
 
         public IConfiguration Configuration { get; }
 
