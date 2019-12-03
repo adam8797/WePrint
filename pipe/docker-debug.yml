@@ -1,7 +1,7 @@
 name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
 
 trigger:
-- master
+- develop
 
 pool:
   vmImage: 'ubuntu-latest'
