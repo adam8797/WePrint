@@ -1,5 +1,8 @@
 name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
 
+trigger:
+  - master
+
 pool:
   vmImage: 'ubuntu-latest'
 
