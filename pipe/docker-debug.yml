@@ -21,7 +21,7 @@ steps:
     buildContext: './src/'
     tags: |
       $(Build.BuildNumber)
-      debug
+      develop
     arguments: '--build-arg app_version=$(Build.BuildNumber)'
 
 - task: Docker@2
@@ -32,4 +32,4 @@ steps:
     command: 'push'
     tags: |
       $(Build.BuildNumber)
-      debug
+      develop
