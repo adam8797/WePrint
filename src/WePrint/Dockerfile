@@ -1,3 +1,5 @@
+
+
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
@@ -9,10 +11,12 @@ COPY ["WePrint/WePrint.csproj", "WePrint/"]
 RUN dotnet restore "WePrint/WePrint.csproj"
 COPY . .
 WORKDIR "/src/WePrint"
-RUN dotnet build "WePrint.csproj" -c Release -o /app/build
+ARG app_version=0.0.0.1
+RUN dotnet build "WePrint.csproj" -c Release -o /app/build -p:Version=$app_version
 
 FROM build AS publish
-RUN dotnet publish "WePrint.csproj" -c Release -o /app/publish
+ARG app_version=0.0.0.1
+RUN dotnet publish "WePrint.csproj" -c Release -o /app/publish -p:Version=$app_version
 
 FROM base AS final
 WORKDIR /app
