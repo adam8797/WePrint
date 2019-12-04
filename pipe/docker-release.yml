@@ -9,14 +9,25 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-steps:
 - task: Docker@2
+  displayName: Build Docker Image
   inputs:
     containerRegistry: 'Docker Hub'
     repository: 'adam8797/weprint'
-    command: 'buildAndPush'
+    command: 'build'
     Dockerfile: './src/WePrint/Dockerfile'
     buildContext: './src/'
+    tags: |
+      $(Build.BuildNumber)
+      latest
+    arguments: '--build-arg app_version=$(Build.BuildNumber)'
+
+- task: Docker@2
+  displayName: Push Image to DockerHub
+  inputs:
+    containerRegistry: 'Docker Hub'
+    repository: 'adam8797/weprint'
+    command: 'push'
     tags: |
       $(Build.BuildNumber)
       latest
