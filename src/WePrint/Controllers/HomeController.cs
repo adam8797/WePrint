@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,9 +25,17 @@ namespace WePrint.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> ListRaven()
         {
-            return View();
+            try
+            {
+                var results = await Dns.GetHostEntryAsync("tasks.ravendb");
+                return View(results.AddressList.Select(x => x.ToString()).ToList());
+            }
+            catch (SocketException ex)
+            {
+                return View(new List<string>());
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
