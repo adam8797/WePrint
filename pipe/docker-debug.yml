@@ -1,4 +1,4 @@
-name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
+name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)-dev
 
 trigger:
 - develop
