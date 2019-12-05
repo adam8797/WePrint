@@ -1,0 +1,72 @@
+version: '3.3'
+services:
+  production:
+    image: adam8797/weprint:latest
+    networks:
+     - traefik-public
+    depends_on:
+     - ravendb
+    deploy:
+      replicas: 4
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+        
+        # HTTPS
+        - "traefik.http.routers.weprint-prod-https.rule=Host(`weprint.local`)"
+        - "traefik.http.routers.weprint-prod-https.entrypoints=websecure"
+        - "traefik.http.routers.weprint-prod-https.tls.certresolver=letsencryptresolver"
+        
+        # HTTP
+        - "traefik.http.routers.weprint-prod-http.rule=Host(`weprint.local`)"
+        - "traefik.http.routers.weprint-prod-http.entrypoints=web"
+        - "traefik.http.routers.weprint-prod-http.middlewares=tohttps"
+        
+        # Load Balancer Config
+        - "traefik.http.services.weprint-prod.loadbalancer.server.port=80"
+        
+        # Redirect to HTTPS (Only needed once)
+        - "traefik.http.middlewares.tohttps.redirectscheme.scheme=https"
+        
+  testing:
+    image: adam8797/weprint:develop
+    networks:
+     - traefik-public
+    depends_on:
+     - ravendb
+    deploy:
+      replicas: 2
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+        
+        # HTTPS
+        - "traefik.http.routers.weprint-test-https.rule=Host(`test.weprint.local`)"
+        - "traefik.http.routers.weprint-test-https.entrypoints=websecure"
+        - "traefik.http.routers.weprint-test-https.tls.certresolver=letsencryptresolver"
+        
+        # HTTP
+        - "traefik.http.routers.weprint-test-http.rule=Host(`test.weprint.local`)"
+        - "traefik.http.routers.weprint-test-http.entrypoints=web"
+        - "traefik.http.routers.weprint-test-http.middlewares=tohttps"
+        
+        # Load Balancer Config
+        - "traefik.http.services.weprint-test.loadbalancer.server.port=80"
+
+  ravendb:
+    image: ravendb/ravendb:latest
+    deploy:
+      replicas: 2
+    networks:
+      - traefik-public
+    volumes:
+      - raven-data:/raven-data
+
+volumes:
+  raven-data:
+      
+
+networks:
+  traefik-public:
+    external: true
+    
