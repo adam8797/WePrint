@@ -21,7 +21,7 @@ steps:
     tags: |
       $(Build.BuildNumber)
       latest
-    arguments: '--build-arg app_version=$(Build.BuildNumber)'
+    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
 
 - task: Docker@2
   displayName: Push Image to DockerHub

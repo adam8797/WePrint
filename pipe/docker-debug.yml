@@ -10,7 +10,6 @@ variables:
   buildConfiguration: 'Debug'
 
 steps:
-
 - task: Docker@2
   displayName: Build Docker Image
   inputs:
@@ -22,7 +21,7 @@ steps:
     tags: |
       $(Build.BuildNumber)
       develop
-    arguments: '--build-arg app_version=$(Build.BuildNumber)'
+    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
 
 - task: Docker@2
   displayName: Push Image to DockerHub
