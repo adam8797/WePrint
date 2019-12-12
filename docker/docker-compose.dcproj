@@ -13,18 +13,15 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.dev.yml">
-      <Link>docker-compose.dev.yml</Link>
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml">
       <Link>docker-compose.yml</Link>
     </None>
-    <None Include="docker-compose.test.yml">
-      <Link>docker-compose.test.yml</Link>
+    <None Include="docker-compose.prod.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
-    <None Include="docker-compose.prod.yml">
-      <Link>docker-compose.prod.yml</Link>
+    <None Include="docker-compose.test.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="traefik_stack.yml">
