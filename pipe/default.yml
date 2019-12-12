@@ -1,6 +1,7 @@
 name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)-dev
 
 trigger:
+- master
 - develop
 
 pool:
@@ -9,7 +10,7 @@ pool:
 variables:
   buildConfiguration: 'Debug'
   primaryCompose: './docker/docker-compose.yml'
-  altCompose: 'docker-compose.test.yml'
+  altCompose: 'docker-compose.prod.yml'
 
 steps:
 - task: DockerCompose@0
