@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   weprint:
-    image: ${DOCKER_REGISTRY-}weprint
+    image: ${DOCKER_REGISTRY-}weprint/weprint
     build:
       context: ../src
       dockerfile: WePrint/Dockerfile
