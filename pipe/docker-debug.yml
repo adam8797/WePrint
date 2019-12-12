@@ -9,7 +9,7 @@ pool:
 variables:
   buildConfiguration: 'Debug'
   primaryCompose: './docker/docker-compose.yml'
-  altCompose: './docker/docker-compose.test.yml'
+  altCompose: 'docker-compose.test.yml'
 
 steps:
 - task: DockerCompose@0
