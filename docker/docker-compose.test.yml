@@ -1,0 +1,39 @@
+version: '3.4'
+services:
+  weprint:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+    networks:
+     - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+        
+        # HTTPS
+        - "traefik.http.routers.weprint-test-https.rule=Host(`weprint.local`)"
+        - "traefik.http.routers.weprint-test-https.entrypoints=websecure"
+        - "traefik.http.routers.weprint-test-https.tls.certresolver=letsencryptresolver"
+        
+        # HTTP
+        - "traefik.http.routers.weprint-test-http.rule=Host(`weprint.local`)"
+        - "traefik.http.routers.weprint-test-http.entrypoints=web"
+        - "traefik.http.routers.weprint-test-http.middlewares=tohttps"
+        
+        # Load Balancer Config
+        - "traefik.http.services.weprint-test.loadbalancer.server.port=80"
+        
+        # Redirect to HTTPS (Only needed once)
+        - "traefik.http.middlewares.tohttps.redirectscheme.scheme=https"
+
+  ravendb:
+    deploy:
+      replicas: 1
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
+    
