@@ -36,7 +36,6 @@ services:
       - default
 
 networks:
-  default
   traefik-public:
     external: true
     
