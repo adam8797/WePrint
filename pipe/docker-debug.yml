@@ -41,5 +41,11 @@ steps:
     additionalDockerComposeFiles: $(altCompose)
     qualifyImageNames: false
     action: 'Combine configuration'
-    outputDockerComposeFile: '$(Build.StagingDirectory)/docker-compose.yml'
+    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/docker-compose.yml'
     requireAdditionalDockerComposeFiles: true
+    
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
