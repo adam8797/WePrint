@@ -1,16 +1,12 @@
 version: '3.4'
 services:
   weprint:
-    image: ${DOCKER_REGISTRY-}weprint/weprint
+    image: ${DOCKER_REGISTRY-}weprint/weprint:${BUILD_BUILDNUMBER:-latest}
     build:
       context: ../src
       dockerfile: WePrint/Dockerfile
     depends_on:
       - ravendb
-
-    version-tag:
-      extends: build
-      image: ${DOCKER_REGISTRY-}weprint/weprint:${BUILD_BUILDNUMBER}
   
   ravendb:
     image: ravendb/ravendb
