@@ -14,8 +14,8 @@ steps:
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: 'docker-compose.yml'
-    additionalDockerComposeFiles: 'docker-compose.test.yml'
+    dockerComposeFile: './docker/docker-compose.yml'
+    additionalDockerComposeFiles: './docker/docker-compose.test.yml'
     qualifyImageNames: false
     action: 'Build services'
     arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
@@ -26,8 +26,8 @@ steps:
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: 'docker-compose.yml'
-    additionalDockerComposeFiles: 'docker-compose.test.yml'
+    dockerComposeFile: './docker/docker-compose.yml'
+    additionalDockerComposeFiles: './docker/docker-compose.test.yml'
     qualifyImageNames: false
     action: 'Push services'
     arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
@@ -38,8 +38,8 @@ steps:
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: 'docker-compose.yml'
-    additionalDockerComposeFiles: 'docker-compose.test.yml'
+    dockerComposeFile: './docker/docker-compose.yml'
+    additionalDockerComposeFiles: './docker/docker-compose.test.yml'
     qualifyImageNames: false
     action: 'Combine configuration'
     outputDockerComposeFile: '$(Build.StagingDirectory)/docker-compose.yml'
