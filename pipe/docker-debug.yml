@@ -31,7 +31,6 @@ steps:
     additionalDockerComposeFiles: $(altCompose)
     qualifyImageNames: false
     action: 'Push services'
-    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
     requireAdditionalDockerComposeFiles: true
 
 - task: DockerCompose@0
