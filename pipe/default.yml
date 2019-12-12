@@ -11,6 +11,9 @@ variables:
   primaryCompose: './docker/docker-compose.yml'
 
 steps:
+- task: CmdLine@2
+  inputs:
+    script: 'env'
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Container Registry'
