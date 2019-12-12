@@ -8,9 +8,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Debug'
+  buildConfiguration: 'Release'
   primaryCompose: './docker/docker-compose.yml'
-  altCompose: 'docker-compose.prod.yml'
 
 steps:
 - task: DockerCompose@0
@@ -18,32 +17,37 @@ steps:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
     dockerComposeFile: $(primaryCompose)
-    additionalDockerComposeFiles: $(altCompose)
     qualifyImageNames: false
     action: 'Build services'
     arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
-    requireAdditionalDockerComposeFiles: true
 
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
     dockerComposeFile: $(primaryCompose)
-    additionalDockerComposeFiles: $(altCompose)
     qualifyImageNames: false
     action: 'Push services'
-    requireAdditionalDockerComposeFiles: true
 
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: $(primaryCompose)
-    additionalDockerComposeFiles: $(altCompose)
+    dockerComposeFile: '$(primaryCompose)'
+    additionalDockerComposeFiles: 'docker-compose.test.yml'
     qualifyImageNames: false
     action: 'Combine configuration'
-    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/docker-compose.yml'
-    requireAdditionalDockerComposeFiles: true
+    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/weprint.test.yml'
+
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: '$(primaryCompose)'
+    additionalDockerComposeFiles: 'docker-compose.prod.yml'
+    qualifyImageNames: false
+    action: 'Combine configuration'
+    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/weprint.prod.yml'
     
 - task: PublishBuildArtifacts@1
   inputs:
