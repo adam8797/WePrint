@@ -8,6 +8,10 @@ services:
     depends_on:
       - ravendb
 
+    version-tag:
+      extends: build
+      image: ${DOCKER_REGISTRY-}weprint/weprint:${BUILD_BUILDNUMBER}
+  
   ravendb:
     image: ravendb/ravendb
     volumes:
