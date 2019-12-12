@@ -18,7 +18,7 @@ steps:
     dockerComposeFile: $(primaryCompose)
     qualifyImageNames: false
     action: 'Build services'
-    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
+    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(Build.Configuration)'
 
 - task: DockerCompose@0
   inputs:
