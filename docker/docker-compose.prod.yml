@@ -5,6 +5,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     networks:
      - traefik-public
+     - default
     deploy:
       replicas: 4
       labels:
@@ -32,8 +33,10 @@ services:
       replicas: 2
     networks:
       - traefik-public
+      - default
 
 networks:
+  default
   traefik-public:
     external: true
     

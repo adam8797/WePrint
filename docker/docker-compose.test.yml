@@ -5,6 +5,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Testing
     networks:
      - traefik-public
+     - default
     deploy:
       replicas: 1
       labels:
@@ -32,6 +33,7 @@ services:
       replicas: 1
     networks:
       - traefik-public
+      - default
 
 networks:
   traefik-public:
