@@ -1,4 +1,4 @@
-name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)-dev
+name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
 
 trigger:
 - master
