@@ -8,7 +8,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
   primaryCompose: './docker/docker-compose.yml'
 
 steps:
