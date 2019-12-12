@@ -9,6 +9,7 @@ pool:
 variables:
   buildConfiguration: 'Debug'
 
+steps:
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Container Registry'
