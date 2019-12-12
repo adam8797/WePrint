@@ -1,5 +1,11 @@
 version: '3.4'
 services:
   weprint:
+    image: ${DOCKER_REGISTRY-}weprint:dev
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 8080:80
+
+  ravendb:
+    container_name: ravendb

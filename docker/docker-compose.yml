@@ -7,18 +7,16 @@ services:
       dockerfile: WePrint/Dockerfile
     depends_on:
       - ravendb
-    ports:
-      - 80:80
 
   ravendb:
     image: ravendb/ravendb
     volumes:
       - raven-data:/raven-data
 
-  rabbitmq:
-    image: rabbitmq/rabbitmq:management
-    ports:
-      - 15672:15672
+#  rabbitmq:
+#    image: rabbitmq/rabbitmq:management
+#    ports:
+#      - 15672:15672
 
 volumes:
   raven-data:

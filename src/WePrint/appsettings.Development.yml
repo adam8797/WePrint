@@ -1,0 +1,12 @@
+﻿Logging:
+  LogLevel:
+    Default: Debug
+    Microsoft: Information
+    System: Information
+
+Services:
+  RavenDB:
+    DiscoveryName: ravendb
+
+  RabbitMQ:
+    DiscoveryName: rabbitmq

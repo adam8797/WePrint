@@ -1,0 +1,6 @@
+﻿Services:
+  RavenDB:
+    DiscoveryName: tasks.ravendb
+
+  RabbitMQ:
+    DiscoveryName: tasks.rabbitmq

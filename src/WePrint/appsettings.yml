@@ -1,0 +1,17 @@
+﻿Logging:
+  LogLevel:
+    Default: Information
+    Microsoft: Warning
+    Microsoft.Hosting.Lifetime: Information
+
+Services:
+  RavenDB:
+    DatabaseName: WePrint
+    CertFilePath: ""
+    CertPassword: ""
+
+  RabbitMQ:
+    Queue: AFineQueue
+
+
+AllowedHosts: "*"

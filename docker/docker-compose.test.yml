@@ -2,7 +2,7 @@ version: '3.4'
 services:
   weprint:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Testing
     networks:
      - traefik-public
     deploy:
