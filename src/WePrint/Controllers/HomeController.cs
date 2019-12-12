@@ -35,6 +35,23 @@ namespace WePrint.Controllers
             return View(config.Hosts);
         }
 
+        public async Task<IActionResult> DnsLookup(string id)
+        {
+            try
+            {
+                var results = await Dns.GetHostEntryAsync(id).ConfigureAwait(false);
+                return View("ListRaven", results.AddressList.Select(x => x.ToString()).ToList());
+            }
+            catch (SocketException ex)
+            {
+                Debug.WriteLine(ex);
+            }
+
+            return View("ListRaven", new List<string>());
+        }
+
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
