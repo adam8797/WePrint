@@ -1,21 +1,51 @@
-name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
+name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)-dev
 
 trigger:
-- master
+- develop
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
+  primaryCompose: './docker/docker-compose.yml'
+  altCompose: 'docker-compose.test.yml'
 
 steps:
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: $(primaryCompose)
+    additionalDockerComposeFiles: $(altCompose)
+    qualifyImageNames: false
+    action: 'Build services'
+    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
+    requireAdditionalDockerComposeFiles: true
 
-- script: dotnet publish --configuration $(buildConfiguration) /p:Version=$(Build.BuildNumber)
-  displayName: 'Build and Publish'
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: $(primaryCompose)
+    additionalDockerComposeFiles: $(altCompose)
+    qualifyImageNames: false
+    action: 'Push services'
+    requireAdditionalDockerComposeFiles: true
 
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: $(primaryCompose)
+    additionalDockerComposeFiles: $(altCompose)
+    qualifyImageNames: false
+    action: 'Combine configuration'
+    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/docker-compose.yml'
+    requireAdditionalDockerComposeFiles: true
+    
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'WePrint/bin/Release/netcoreapp3.0/publish'
-    ArtifactName: 'WePrint.$(Build.BuildNumber)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
     publishLocation: 'Container'
