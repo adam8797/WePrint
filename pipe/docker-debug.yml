@@ -9,26 +9,38 @@ pool:
 variables:
   buildConfiguration: 'Debug'
 
-steps:
-- task: Docker@2
-  displayName: Build Docker Image
+- task: DockerCompose@0
   inputs:
-    containerRegistry: 'Docker Hub'
-    repository: 'adam8797/weprint'
-    command: 'build'
-    Dockerfile: './src/WePrint/Dockerfile'
-    buildContext: './src/'
-    tags: |
-      $(Build.BuildNumber)
-      develop
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: 'docker-compose.yml'
+    additionalDockerComposeFiles: 'docker-compose.test.yml'
+    qualifyImageNames: false
+    action: 'Build services'
     arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
+    requireAdditionalDockerComposeFiles: true
+    currentWorkingDirectory: './docker'
 
-- task: Docker@2
-  displayName: Push Image to DockerHub
+- task: DockerCompose@0
   inputs:
-    containerRegistry: 'Docker Hub'
-    repository: 'adam8797/weprint'
-    command: 'push'
-    tags: |
-      $(Build.BuildNumber)
-      develop
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: 'docker-compose.yml'
+    additionalDockerComposeFiles: 'docker-compose.test.yml'
+    qualifyImageNames: false
+    action: 'Push services'
+    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(buildConfiguration)'
+    requireAdditionalDockerComposeFiles: true
+    currentWorkingDirectory: './docker'
+
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'Docker Hub'
+    dockerComposeFile: 'docker-compose.yml'
+    additionalDockerComposeFiles: 'docker-compose.test.yml'
+    qualifyImageNames: false
+    action: 'Combine configuration'
+    outputDockerComposeFile: '$(Build.StagingDirectory)/docker-compose.yml'
+    requireAdditionalDockerComposeFiles: true
+    currentWorkingDirectory: './docker'
