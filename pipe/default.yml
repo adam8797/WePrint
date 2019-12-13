@@ -3,6 +3,8 @@ name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
 trigger:
 - master
 - develop
+- feature/*
+- arch/*
 
 pool:
   vmImage: 'ubuntu-latest'
