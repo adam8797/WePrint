@@ -1,11 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Raven DB Instances";
 }
-@model List<string>
+@model IList<string>
 
 <h1>Raven DB Instances Resolved from DNS</h1>
 
-@if (Model.Any())
+@if (Model != null && Model.Any())
 {
     <ul>
         @foreach (var entry in Model)

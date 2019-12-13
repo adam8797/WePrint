@@ -16,11 +16,17 @@ namespace WePrint
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.ConfigureAppConfiguration((context, builder) =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    builder.AddYamlFile("appsettings.yml", optional: false);
+                    builder.AddYamlFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.yml", false);
                 });
+                webBuilder.UseStartup<Startup>();
+            });
+        }
     }
 }

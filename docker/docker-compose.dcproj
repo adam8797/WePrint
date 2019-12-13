@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk" DefaultTargets="Build">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <ProjectGuid>c47a9e9a-60c6-4989-b8ac-0314b97cc33a</ProjectGuid>
+    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+    <DockerServiceName>weprint</DockerServiceName>
+    <DockerLaunchBrowser>true</DockerLaunchBrowser>
+    <DockerComposeBaseFilePath>docker-compose</DockerComposeBaseFilePath>
+    <AdditionalComposeFilePaths>docker-compose.dev.yml</AdditionalComposeFilePaths>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="docker-compose.dev.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.yml">
+      <Link>docker-compose.yml</Link>
+    </None>
+    <None Include="docker-compose.prod.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.test.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="traefik_stack.yml">
+      <Link>traefik_stack.yml</Link>
+    </None>
+  </ItemGroup>
+</Project>

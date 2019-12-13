@@ -1,0 +1,20 @@
+﻿ConnectionStrings:
+  DefaultConnection: "Server=(localdb)\\mssqllocaldb;Database=aspnet-WePrint-E2C56791-411C-4737-9B62-5736E410E478;Trusted_Connection=True;MultipleActiveResultSets=true" 
+
+Logging:
+  LogLevel:
+    Default: Information
+    Microsoft: Warning
+    Microsoft.Hosting.Lifetime: Information
+
+Services:
+  RavenDB:
+    DatabaseName: WePrint
+    CertFilePath: ""
+    CertPassword: ""
+
+  RabbitMQ:
+    Queue: AFineQueue
+
+
+AllowedHosts: "*"

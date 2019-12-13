@@ -1,0 +1,22 @@
+version: '3.4'
+services:
+  weprint:
+    image: ${DOCKER_REGISTRY-}weprint/weprint:${BUILD_BUILDNUMBER:-latest}
+    build:
+      context: ../src
+      dockerfile: WePrint/Dockerfile
+    depends_on:
+      - ravendb
+  
+  ravendb:
+    image: ravendb/ravendb
+    volumes:
+      - raven-data:/raven-data
+
+#  rabbitmq:
+#    image: rabbitmq/rabbitmq:management
+#    ports:
+#      - 15672:15672
+
+volumes:
+  raven-data:

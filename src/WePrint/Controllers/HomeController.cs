@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WePrint.Common.ServiceDiscovery;
+using WePrint.Common.ServiceDiscovery.Services;
 using WePrint.Models;
 
 namespace WePrint.Controllers
@@ -14,10 +16,12 @@ namespace WePrint.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IServiceDiscovery _discovery;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IServiceDiscovery discovery)
         {
             _logger = logger;
+            _discovery = discovery;
         }
 
         public IActionResult Index()
@@ -27,16 +31,26 @@ namespace WePrint.Controllers
 
         public async Task<IActionResult> ListRaven()
         {
+            var config = await _discovery.DiscoverAsync<RavenDBDiscoveredService>();
+            return View(config.Hosts);
+        }
+
+        public async Task<IActionResult> DnsLookup(string id)
+        {
             try
             {
-                var results = await Dns.GetHostEntryAsync("tasks.ravendb");
-                return View(results.AddressList.Select(x => x.ToString()).ToList());
+                var results = await Dns.GetHostEntryAsync(id).ConfigureAwait(false);
+                return View("ListRaven", results.AddressList.Select(x => x.ToString()).ToList());
             }
             catch (SocketException ex)
             {
-                return View(new List<string>());
+                Debug.WriteLine(ex);
             }
+
+            return View("ListRaven", new List<string>());
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
