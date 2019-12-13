@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Raven.Client.Documents.Session;
 using WePrint.Common.ServiceDiscovery;
 using WePrint.Common.ServiceDiscovery.Services;
 using WePrint.Models;
@@ -18,7 +19,7 @@ namespace WePrint.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IServiceDiscovery _discovery;
 
-        public HomeController(ILogger<HomeController> logger, IServiceDiscovery discovery)
+        public HomeController(ILogger<HomeController> logger, IServiceDiscovery discovery, IAsyncDocumentSession session)
         {
             _logger = logger;
             _discovery = discovery;

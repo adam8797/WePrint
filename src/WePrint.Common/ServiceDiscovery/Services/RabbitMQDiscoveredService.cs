@@ -8,7 +8,7 @@ namespace WePrint.Common.ServiceDiscovery.Services
     {
         public string ConfigSection => "RabbitMQ";
 
-        public IList<string> Hosts { get; set; }
+        public string[] Hosts { get; set; }
 
         public string Queue { get; set; }
     }

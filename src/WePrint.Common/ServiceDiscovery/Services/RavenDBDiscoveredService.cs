@@ -14,6 +14,6 @@ namespace WePrint.Common.ServiceDiscovery.Services
 
         public string CertPassword { get; set; }
 
-        public IList<string> Hosts { get; set; }
+        public string[] Hosts { get; set; }
     }
 }

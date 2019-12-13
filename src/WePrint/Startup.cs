@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,7 +13,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Raven.DependencyInjection;
+using Raven.Identity;
 using WePrint.Common.ServiceDiscovery;
+using WePrint.Common.ServiceDiscovery.Services;
+using IdentityRole = Raven.Identity.IdentityRole;
 
 namespace WePrint
 {
@@ -33,11 +39,24 @@ namespace WePrint
         {
             services.AddScoped<IServiceDiscovery>(x => new DNSServiceDiscovery(Configuration));
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddRavenDbDocStore(x =>
+                {
+                    var discovery = new DNSServiceDiscovery(Configuration);
+                    discovery.DiscoverToAsync(x, "RavenDB",
+                            (x, urls) => x.Settings.Urls = urls.Select(x => "http://" + x + ":8080").ToArray(),
+                            (x, config) => config.Bind(x.Settings))
+                        .Wait();
+                    Debug.Print("Raven Configured");
+                })
+                .AddRavenDbAsyncSession();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services
+                .AddIdentity<WePrintUser, IdentityRole>()
+                .AddRavenDbIdentityStores<WePrintUser>()
+                .AddDefaultUI();
+
             services.AddControllersWithViews();
+
             services.AddRazorPages();
         }
 
