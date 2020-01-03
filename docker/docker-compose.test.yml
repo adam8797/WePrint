@@ -13,12 +13,12 @@ services:
         - "traefik.enable=true"
         
         # HTTPS
-        - "traefik.http.routers.weprint-test-https.rule=Host(`test.weprint.local`)"
+        - "traefik.http.routers.weprint-test-https.rule=Host(`test.weprint.schiavone.io`)"
         - "traefik.http.routers.weprint-test-https.entrypoints=websecure"
         - "traefik.http.routers.weprint-test-https.tls.certresolver=letsencryptresolver"
         
         # HTTP
-        - "traefik.http.routers.weprint-test-http.rule=Host(`test.weprint.local`)"
+        - "traefik.http.routers.weprint-test-http.rule=Host(`test.weprint.schiavone.io`)"
         - "traefik.http.routers.weprint-test-http.entrypoints=web"
         - "traefik.http.routers.weprint-test-http.middlewares=tohttps"
         
