@@ -32,7 +32,7 @@ services:
   ravendb:
     deploy:
       replicas: 1
-    endpoint_mode: dnsrr
+      endpoint_mode: dnsrr
     networks:
       - traefik-public
       - default
