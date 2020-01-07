@@ -3,12 +3,12 @@ services:
   weprint:
     environment:
       ASPNETCORE_ENVIRONMENT: Testing
-    endpoint_mode: dnsrr
     networks:
      - traefik-public
      - default
     deploy:
       replicas: 1
+      endpoint_mode: dnsrr
       labels:
         # Enable Traefik
         - "traefik.enable=true"

@@ -6,9 +6,9 @@ services:
     networks:
      - traefik-public
      - default
-    endpoint_mode: dnsrr
     deploy:
       replicas: 4
+      endpoint_mode: dnsrr
       labels:
         # Enable Traefik
         - "traefik.enable=true"
@@ -31,7 +31,7 @@ services:
 
   ravendb:
     deploy:
-      replicas: 2
+      replicas: 3
       endpoint_mode: dnsrr
     networks:
       - traefik-public
