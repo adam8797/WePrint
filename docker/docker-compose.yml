@@ -11,8 +11,18 @@ services:
   ravendb:
     image: ravendb/ravendb
     ports:
-      - 9090:8080
-      - 38888:38888
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+        
+      - target: 38888
+        published: 38888
+        protocol: tcp
+        mode: host
+    deploy:
+      endpoint_mode: dnsrr
+        
     volumes:
       - raven-data:/opt/RavenDB/Server/RavenData
 
