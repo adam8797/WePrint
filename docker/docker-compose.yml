@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 services:
   weprint:
     image: ${DOCKER_REGISTRY-}weprint/weprint:${BUILD_BUILDNUMBER:-latest}
