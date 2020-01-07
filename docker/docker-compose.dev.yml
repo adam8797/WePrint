@@ -3,9 +3,20 @@ services:
   weprint:
     image: ${DOCKER_REGISTRY-}weprint/weprint:dev
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     ports:
       - 8080:80
+    networks:
+      - default
 
   ravendb:
     container_name: ravendb
+    networks:
+      - default
+    environment:
+      RAVEN_Setup_Mode: None
+      RAVEN_Security_UnsecuredAccessAllowed: PrivateNetwork
+      RAVEN_License_Eula_Accepted: "true"
+      
+networks:
+  default:

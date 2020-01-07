@@ -10,8 +10,11 @@ services:
   
   ravendb:
     image: ravendb/ravendb
+    ports:
+      - 9090:8080
+      - 38888:38888
     volumes:
-      - raven-data:/raven-data
+      - raven-data:/opt/RavenDB/Server/RavenData
 
 #  rabbitmq:
 #    image: rabbitmq/rabbitmq:management
