@@ -1,18 +1,10 @@
 version: '3.7'
-services:
-  weprint:
-    image: ${DOCKER_REGISTRY-}weprint/weprint:dev
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    ports:
-      - 8080:80
-    networks:
-      - default
 
+services:
   ravendb:
     container_name: ravendb
     networks:
-      - default
+      - raven
     environment:
       RAVEN_Setup_Mode: None
       RAVEN_Security_UnsecuredAccessAllowed: PrivateNetwork
@@ -30,8 +22,13 @@ services:
         mode: host
     deploy:
       endpoint_mode: dnsrr
+      replicas: 5
     volumes:
       - raven-data:/opt/RavenDB/Server/RavenData
-      
+
+volumes:
+  raven-data:
+
 networks:
-  default:
+  raven:
+    external: true

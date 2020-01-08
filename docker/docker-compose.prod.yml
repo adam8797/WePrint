@@ -28,13 +28,6 @@ services:
         # Redirect to HTTPS (Only needed once)
         - "traefik.http.middlewares.tohttps.redirectscheme.scheme=https"
 
-  ravendb:
-    deploy:
-      replicas: 3
-    networks:
-      - traefik-public
-      - default
-
 networks:
   traefik-public:
     external: true

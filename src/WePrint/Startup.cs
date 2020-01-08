@@ -43,10 +43,14 @@ namespace WePrint
                 {
                     var discovery = new DNSServiceDiscovery(Configuration);
                     discovery.DiscoverToAsync(x, "RavenDB",
-                            (x, urls) => x.Settings.Urls = urls.Select(x => "http://" + x + ":8080").ToArray(),
-                            (x, config) => config.Bind(x.Settings))
+                            (ravenOptions, urls) => ravenOptions.Settings.Urls = urls.Select(x => "http://" + x + ":8080").ToArray(),
+                            (ravenOptions, config) => config.Bind(ravenOptions.Settings))
                         .Wait();
                     Debug.Print("Raven Configured");
+                    foreach (var settingsUrl in x.Settings.Urls)
+                    {
+                        Debug.Print("  " + settingsUrl);
+                    }
                 })
                 .AddRavenDbAsyncSession();
 
