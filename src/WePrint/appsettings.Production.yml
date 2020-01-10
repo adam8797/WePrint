@@ -1,6 +1,5 @@
-﻿Services:
-  RavenDB:
-    DiscoveryName: tasks.ravendb
-
-  RabbitMQ:
-    DiscoveryName: tasks.rabbitmq
+﻿Logging:
+  LogLevel:
+    Default: Debug
+    Microsoft: Information
+    System: Information

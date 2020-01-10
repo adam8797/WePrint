@@ -5,6 +5,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Testing
     networks:
      - traefik-public
+     - raven
      - default
     deploy:
       replicas: 1
@@ -30,5 +31,7 @@ services:
 
 networks:
   traefik-public:
+    external: true
+  raven:
     external: true
     
