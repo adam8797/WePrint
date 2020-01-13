@@ -3,3 +3,7 @@
     Default: Debug
     Microsoft: Information
     System: Information
+
+Services:
+  RavenDB:
+    DatabaseName: WePrint_Testing
