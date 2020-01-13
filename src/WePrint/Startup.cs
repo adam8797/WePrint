@@ -57,6 +57,7 @@ namespace WePrint
             services
                 .AddIdentity<WePrintUser, IdentityRole>()
                 .AddRavenDbIdentityStores<WePrintUser>()
+                .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
             services.AddControllersWithViews();
