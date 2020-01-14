@@ -5,11 +5,3 @@ services:
     build:
       context: ../src
       dockerfile: WePrint/Dockerfile
-
-#  rabbitmq:
-#    image: rabbitmq/rabbitmq:management
-#    ports:
-#      - 15672:15672
-
-volumes:
-  raven-data:

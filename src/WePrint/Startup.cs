@@ -43,7 +43,7 @@ namespace WePrint
                 {
                     var discovery = new DNSServiceDiscovery(Configuration);
                     discovery.DiscoverToAsync(x, "RavenDB",
-                            (ravenOptions, urls) => ravenOptions.Settings.Urls = urls.Select(x => "http://" + x + ":8080").ToArray(),
+                            (ravenOptions, urls) => ravenOptions.Settings.Urls = urls.Select(url => "http://" + url + ":8080").ToArray(),
                             (ravenOptions, config) => config.Bind(ravenOptions.Settings))
                         .Wait();
                     Debug.Print("Raven Configured");

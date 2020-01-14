@@ -5,7 +5,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     ports:
-      - 8080:80
+      - 8000:80
     networks:
       - default
 
@@ -35,3 +35,6 @@ services:
       
 networks:
   default:
+
+volumes:
+  raven-data:
