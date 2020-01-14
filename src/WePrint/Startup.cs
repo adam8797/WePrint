@@ -20,6 +20,7 @@ using Raven.Identity;
 using WePrint.Common.ServiceDiscovery;
 using WePrint.Common.ServiceDiscovery.Services;
 using IdentityRole = Raven.Identity.IdentityRole;
+using Raven.Client.Documents;
 
 namespace WePrint
 {
@@ -52,7 +53,8 @@ namespace WePrint
                         Debug.Print("  " + settingsUrl);
                     }
                 })
-                .AddRavenDbAsyncSession();
+                .AddRavenDbAsyncSession()
+                .AddRavenDbSession();
 
             services
                 .AddIdentity<WePrintUser, IdentityRole>()
