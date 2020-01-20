@@ -49,8 +49,19 @@ namespace WePrint.Common.ServiceDiscovery
             var serviceSection = _section.GetSection(service);
             var name = serviceSection["DiscoveryName"];
 
-            var urls = await DoDnsRequestAsync(name);
-            setUrls(instance, urls);
+            var hostOverride = serviceSection.GetSection("HostOverride");
+            var hostOverrides = hostOverride.AsEnumerable().Select(x => x.Value).Where(x => x != null).ToArray();
+
+            if (hostOverrides.Any())
+            {
+                setUrls(instance, hostOverrides);
+            }
+            else
+            {
+                var urls = await DoDnsRequestAsync(name);
+                setUrls(instance, urls);
+            }
+            
             setOther(instance, serviceSection);
 
             return instance;
@@ -62,9 +73,20 @@ namespace WePrint.Common.ServiceDiscovery
             serviceSection.Bind(t);
             
             var name = serviceSection["DiscoveryName"];
-            var urls = await DoDnsRequestAsync(name);
 
-            t.Hosts = urls;
+            var hostOverride = serviceSection.GetSection("HostOverride");
+            var hostOverrides = hostOverride.AsEnumerable().Select(x => x.Value).Where(x => x != null).ToArray();
+
+            if (hostOverrides.Any())
+            {
+                t.Hosts = hostOverrides;
+            }
+            else
+            {
+                var urls = await DoDnsRequestAsync(name);
+                t.Hosts = urls;
+            }
+            
             serviceSection.Bind(t);
 
             return t;

@@ -3,3 +3,9 @@
     Default: Debug
     Microsoft: Information
     System: Information
+    
+Services:
+  RavenDB:
+    HostOverride:
+      - localhost
+    DatabaseName: WePrint_Testing

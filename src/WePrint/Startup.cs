@@ -44,7 +44,8 @@ namespace WePrint
                 {
                     var discovery = new DNSServiceDiscovery(Configuration);
                     discovery.DiscoverToAsync(x, "RavenDB",
-                            (ravenOptions, urls) => ravenOptions.Settings.Urls = urls.Select(url => "http://" + url + ":8080").ToArray(),
+                            (ravenOptions, urls) =>
+                                ravenOptions.Settings.Urls = urls.Select(url => "http://" + url + ":8080").ToArray(),
                             (ravenOptions, config) => config.Bind(ravenOptions.Settings))
                         .Wait();
                     Debug.Print("Raven Configured");
@@ -68,12 +69,13 @@ namespace WePrint
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDocumentStore docStore)
         {
-            if (env.IsDevelopment() || env.IsEnvironment("Testing"))
+            if (env.IsDevelopment() || env.IsTesting())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                docStore.EnsureExists();
             }
             else
             {
@@ -95,6 +97,8 @@ namespace WePrint
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+
         }
     }
 }
