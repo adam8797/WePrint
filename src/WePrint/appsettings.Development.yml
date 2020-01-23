@@ -6,6 +6,6 @@
     
 Services:
   RavenDB:
-    HostOverride:
-      - localhost
+    #HostOverride:
+    #  - localhost
     DatabaseName: WePrint_Testing
