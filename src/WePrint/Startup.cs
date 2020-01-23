@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using WePrint.Common.ServiceDiscovery;
@@ -66,6 +67,13 @@ namespace WePrint
             services.AddControllersWithViews();
 
             services.AddRazorPages();
+
+            services.AddMvc();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo() {Title = "WePrint API", Version = "V1"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,18 +91,20 @@ namespace WePrint
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "WePrint API"); });
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
 
