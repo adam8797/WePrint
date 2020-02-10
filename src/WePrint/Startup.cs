@@ -1,27 +1,25 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
-using WePrint.Data;
+using WePrint.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Raven.DependencyInjection;
-using Raven.Identity;
-using WePrint.Common.ServiceDiscovery;
-using WePrint.Common.ServiceDiscovery.Services;
-using IdentityRole = Raven.Identity.IdentityRole;
 using Raven.Client.Documents;
+using Raven.DependencyInjection;
+using WePrint.Common.ServiceDiscovery;
+using Raven.Identity;
+using WePrint.Raven;
+using IdentityRole = Raven.Identity.IdentityRole;
 
 namespace WePrint
 {
@@ -31,8 +29,6 @@ namespace WePrint
         {
             Configuration = configuration;
         }
-
-        public static string AppVersion => Assembly.GetAssembly(typeof(Startup)).GetName().Version.ToString(4);
 
         public IConfiguration Configuration { get; }
 
@@ -58,57 +54,91 @@ namespace WePrint
                 .AddRavenDbAsyncSession()
                 .AddRavenDbSession();
 
-            services
-                .AddIdentity<WePrintUser, IdentityRole>()
-                .AddRavenDbIdentityStores<WePrintUser>()
+            services.AddSingleton<RavenPersistedGrantStore>();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddRavenDbIdentityStores<ApplicationUser>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
+            services.AddIdentityServer()
+                .AddIdentityResources()
+                .AddPersistedGrantStore<RavenPersistedGrantStore>()
+                .AddApiResources()
+                .AddClients()
+                .AddSigningCredentials()
+                .AddAspNetIdentity<ApplicationUser>();
+
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
+
             services.AddControllersWithViews();
-
             services.AddRazorPages();
-
-            services.AddMvc();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo() {Title = "WePrint API", Version = "V1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WePrint", Version = "v1" });
+            });
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDocumentStore docStore)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDocumentStore store)
         {
-            if (env.IsDevelopment() || env.IsTesting())
+            store.SetupApplicationDependencies();
+
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                docStore.EnsureExists();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
-            app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "WePrint API"); });
-
             app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 
+            app.UseSwagger();
 
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
         }
     }
 }

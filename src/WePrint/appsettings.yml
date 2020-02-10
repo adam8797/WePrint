@@ -4,6 +4,13 @@
     Microsoft: Warning
     Microsoft.Hosting.Lifetime: Information
 
+IdentityServer:
+  Clients:
+    WePrint:
+      Profile: IdentityServerSPA
+  Key:
+    Type: Development # THIS IS BAD AND ADAM SHOULD FIX THIS
+
 Services:
   RavenDB:
     DiscoveryName: ravendb

@@ -4,6 +4,10 @@
     Microsoft: Information
     System: Information
     
+IdentityServer:
+  Key:
+    Type: Development
+
 Services:
   RavenDB:
     #HostOverride:

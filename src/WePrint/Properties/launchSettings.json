@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:64485",
-      "sslPort": 44339
+      "applicationUrl": "http://localhost:50101",
+      "sslPort": 44372
     }
   },
   "profiles": {
@@ -27,12 +27,7 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ASPNETCORE_URLS": "https://+:443;http://+:80",
-        "ASPNETCORE_HTTPS_PORT": "44340"
-      },
-      "httpPort": 64486,
-      "sslPort": 44340,
+      "publishAllPorts": true,
       "useSSL": true
     }
   }
