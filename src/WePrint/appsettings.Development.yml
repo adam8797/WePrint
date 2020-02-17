@@ -1,9 +1,9 @@
-﻿Logging:
+Logging:
   LogLevel:
     Default: Debug
     Microsoft: Information
     System: Information
-    
+
 IdentityServer:
   Key:
     Type: Development
