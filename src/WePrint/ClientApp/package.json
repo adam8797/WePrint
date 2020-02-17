@@ -20,11 +20,16 @@
     "ajv": "^6.9.1",
     "cross-env": "^5.2.0",
     "eslint": "^5.12.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-config-react-app": "^4.0.1",
     "eslint-plugin-flowtype": "^2.0.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.18.3",
+    "node-sass": "^4.13.1",
+    "prettier": "1.19.1",
     "typescript": "^3.5.2"
   },
   "eslintConfig": {
@@ -35,7 +40,8 @@
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/"
+    "lint": "eslint ./src/",
+    "pretty": "prettier --no-color --write \"./**/*.{js,jsx,json}\""
   },
   "browserslist": {
     "production": [
