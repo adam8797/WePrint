@@ -1,0 +1,28 @@
+@import '../../assets/styles/colors';
+
+.header {
+  display: grid;
+  grid-template-columns: 150px auto;
+  background: $white;
+
+  &__logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    background: $blue-2;
+    color: $white;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  &__menu-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__search {
+    margin-left: 1em;
+  }
+}
