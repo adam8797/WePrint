@@ -10,7 +10,7 @@ class Job extends Component {
     this.statusStyle = 'open';
     this.bidDeadline = '02/20/2020';
     this.bidDeadlineStyle = 'close';
-    this.daysLeft = 1;
+    this.timeLeft = '1 Day';
     this.printerType = 'SLA';
     this.material = 'Red Resin';
     this.destination = 'Philadelphia';
@@ -138,7 +138,7 @@ class Job extends Component {
               <span class="job__section">Bid Deadline:</span>
               {this.bidDeadline}
               <span class={`job__deadline--${this.bidDeadlineStyle}`}>
-                &nbsp; ({this.daysLeft} day(s) left)
+                &nbsp; ({this.timeLeft} left)
               </span>
             </span>
             <span>
