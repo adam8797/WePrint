@@ -11,6 +11,7 @@ import {
   PageNotFound,
   PostJob,
   Topics,
+  JobDetail
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -38,6 +39,9 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route exact path="/">
             <Home />
+          </Route>
+          <Route path="/job/:jobId">
+            <JobDetail></JobDetail>
           </Route>
           <Route path="*">
             <PageNotFound />

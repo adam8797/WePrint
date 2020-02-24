@@ -1,0 +1,55 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.job__title {
+  font-size: $font-size-heading;
+}
+
+.job__deadline--close {
+  color: $red;
+}
+
+.job__deadline--far {
+  color: $green;
+}
+
+.job__subtitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: -10px;
+}
+
+.job__body {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 20px;
+}
+
+.job__detail {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  width: calc(100% - $image-size-large);
+}
+
+.job__image {
+  width: $image-size-large;
+  height: $image-size-large;
+}
+
+.job__section {
+  margin-bottom: 10px;
+  display: inline-block;
+  width: 125px;
+}
+
+.job__description {
+  font-size: $font-size-small;
+  display: inline-block;
+}
+
+.job__status--open {
+  color: $green;
+}
