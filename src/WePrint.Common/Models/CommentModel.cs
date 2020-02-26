@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Reflection;
 
-namespace WePrint.Models
+namespace WePrint.Common.Models
 {
     public class CommentModel : DbModel
     {

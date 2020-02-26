@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+using WePrint.Common.Slicer.Models;
 
-namespace WePrint.Models
+namespace WePrint.Common.Models
 {
     public class JobModel : DbModel, IIdempotentDbModel
     {
@@ -12,8 +10,8 @@ namespace WePrint.Models
         public string CustomerId { get; set; }
         public string MakerId { get; set; }
         public AddressModel Address { get; set; }
-        public List<BidModel> Bids { get; set; }
-        public List<FileModel> Files { get; set; }
+        public ICollection<BidModel> Bids { get; set; }
+        public ICollection<SliceReport> SliceReports { get; set; } = new List<SliceReport>();
         public JobStatus Status { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -22,7 +20,7 @@ namespace WePrint.Models
         public MaterialColor MaterialColor { get; set; }
         public string Notes { get; set; }
         public DateTime BidClose { get; set; }
-        public List<CommentModel> Comments { get; set; }
+        public ICollection<CommentModel> Comments { get; set; }
         public int IdempotencyKey { get; set; }
 
         public void ApplyChanges(JobUpdateModel update)

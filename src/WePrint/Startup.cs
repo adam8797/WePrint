@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using EasyNetQ;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
@@ -11,7 +13,6 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
-using WePrint.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +21,7 @@ using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using WePrint.Common.ServiceDiscovery;
 using Raven.Identity;
+using WePrint.Common.Models;
 using WePrint.Common.Slicer.Impl;
 using WePrint.Common.Slicer.Interface;
 using WePrint.Raven;
@@ -49,6 +51,11 @@ namespace WePrint
                                 ravenOptions.Settings.Urls = urls.Select(url => "http://" + url + ":8080").ToArray(),
                             (ravenOptions, config) => config.Bind(ravenOptions.Settings))
                         .Wait();
+
+                    x.BeforeInitializeDocStore = store =>
+                    {
+                        store.Conventions.IdentityPartsSeparator = "-";
+                    };
                 })
                 .AddRavenDbAsyncSession()
                 .AddRavenDbSession();
@@ -79,12 +86,19 @@ namespace WePrint
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson();
+
             services.AddRazorPages();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WePrint", Version = "v1" });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             // In production, the React files will be served from this directory

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Raven.Identity;
-using System.Reflection;
 
-namespace WePrint.Models
+namespace WePrint.Common.Models
 {
     public class ApplicationUser : IdentityUser, IDbModel
     {
@@ -19,18 +15,6 @@ namespace WePrint.Models
         public void ApplyChanges(ApplicationUserUpdateModel update)
         {
             ReflectionHelper.CopyPropertiesTo(update, this);
-        }
-
-        public ApplicationUser GetPublicUser()
-        {
-            ApplicationUser publicUser = new ApplicationUser
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                Bio = Bio,
-                ReviewIds = ReviewIds
-            };
-            return publicUser;            
         }
     }
 
