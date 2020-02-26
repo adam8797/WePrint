@@ -20,18 +20,22 @@ steps:
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: $(primaryCompose)
+    dockerComposeFile: '$(primaryCompose)'
+    projectName: 
     qualifyImageNames: false
     action: 'Build services'
+    includeLatestTag: true
     arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(Build.Configuration)'
 
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Container Registry'
     dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: $(primaryCompose)
+    dockerComposeFile: '$(primaryCompose)'
+    projectName: 
     qualifyImageNames: false
     action: 'Push services'
+    includeLatestTag: true
 
 - task: DockerCompose@0
   inputs:

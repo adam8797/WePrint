@@ -19,7 +19,9 @@ Services:
     CertPassword: ""
 
   RabbitMQ:
-    Queue: AFineQueue
     DiscoveryName: rabbitmq
+    Username: user
+    Password: password
+    Queue: Slicer
 
 AllowedHosts: "*"

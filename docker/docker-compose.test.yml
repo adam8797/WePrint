@@ -6,6 +6,7 @@ services:
     networks:
      - traefik-public
      - raven
+     - rabbit
      - default
     deploy:
       replicas: 1
@@ -29,9 +30,17 @@ services:
         # Redirect to HTTPS (Only needed once)
         - "traefik.http.middlewares.tohttps.redirectscheme.scheme=https"
 
+  weprint-slicer:
+    networks:
+      - raven
+      - rabbit
+    command: Config.yml Config.Testing.yml
+
 networks:
   traefik-public:
     external: true
   raven:
+    external: true
+  rabbit:
     external: true
     

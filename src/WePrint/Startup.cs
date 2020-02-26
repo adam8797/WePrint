@@ -1,5 +1,7 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
+using EasyNetQ;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +20,8 @@ using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using WePrint.Common.ServiceDiscovery;
 using Raven.Identity;
+using WePrint.Common.Slicer.Impl;
+using WePrint.Common.Slicer.Interface;
 using WePrint.Raven;
 using IdentityRole = Raven.Identity.IdentityRole;
 
@@ -45,14 +49,17 @@ namespace WePrint
                                 ravenOptions.Settings.Urls = urls.Select(url => "http://" + url + ":8080").ToArray(),
                             (ravenOptions, config) => config.Bind(ravenOptions.Settings))
                         .Wait();
-                    Debug.Print("Raven Configured");
-                    foreach (var settingsUrl in x.Settings.Urls)
-                    {
-                        Debug.Print("  " + settingsUrl);
-                    }
                 })
                 .AddRavenDbAsyncSession()
                 .AddRavenDbSession();
+
+
+            //ToDo: Load this from config
+            services.RegisterEasyNetQ("host=localhost;username=user;password=password");
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                services.AddSingleton<ISlicerService>(x => new RabbitMQSlicerService(x.GetRequiredService<IBus>(), "Slicer", x.GetRequiredService<IDocumentStore>()));
+            else
+                services.AddSingleton<ISlicerService>(x => new RabbitMQSlicerService(x.GetRequiredService<IBus>(), "Slicer_Testing", x.GetRequiredService<IDocumentStore>()));
 
             services.AddSingleton<RavenPersistedGrantStore>();
 

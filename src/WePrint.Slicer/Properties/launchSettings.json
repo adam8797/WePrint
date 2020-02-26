@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "WePrint.Slicer": {
+      "commandName": "Project",
+      "commandLineArgs": "Config.yml Config.Development.yml"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "commandLineArgs": "Config.yml Config.Development.yml"
+    }
+  }
+}
