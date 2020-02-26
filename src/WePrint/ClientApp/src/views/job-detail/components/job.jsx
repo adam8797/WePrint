@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table } from '../../components';
+import { Table } from '../../../components';
 import './job.scss';
 
 class Job extends Component {
@@ -10,7 +10,7 @@ class Job extends Component {
     this.statusStyle = 'open';
     this.bidDeadline = '02/20/2020';
     this.bidDeadlineStyle = 'close';
-    this.timeLeft = '1 Day';
+    this.timeLeft = '1 day';
     this.printerType = 'SLA';
     this.material = 'Red Resin';
     this.destination = 'Philadelphia';
