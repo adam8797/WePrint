@@ -8,6 +8,8 @@ services:
       - 8000:80
     networks:
       - default
+    depends_on:
+      - ravendb
 
   ravendb:
     container_name: ravendb
