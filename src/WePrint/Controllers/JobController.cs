@@ -41,10 +41,15 @@ namespace WePrint.Controllers
         /// Gets all jobs that the current user is a part of
         /// </summary>
         /// <returns></returns>
+        /// 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobModel>>> GetJobs()
         {
             var user = await CurrentUser;
+
+            if (user == null)
+                return Unauthorized();
+
             return await Database.Query<JobModel>().Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id)).ToArrayAsync();
         }
 
@@ -191,6 +196,7 @@ namespace WePrint.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}/files")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> GetFiles(string id)
         {
             var job = await Database.LoadAsync<JobModel>(id);
@@ -215,6 +221,7 @@ namespace WePrint.Controllers
         /// <param name="filename"></param>
         /// <returns></returns>
         [HttpGet("{id}/files/{filename}")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> GetFile(string id, string filename)
         {
             var job = await Database.LoadAsync<JobModel>(id);
@@ -241,6 +248,7 @@ namespace WePrint.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost("{id}/files")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> UploadFile(string id, IFormFile file)
         {
             var job = await Database.LoadAsync<JobModel>(id);
@@ -268,8 +276,8 @@ namespace WePrint.Controllers
             Database.Advanced.Attachments.Store(job, file.FileName, file.OpenReadStream(), file.ContentType);
             await Database.SaveChangesAsync();
 
-            //ToDO: Maybe return something more than OK here.
-            return NoContent();
+            return Created(Url.Action("GetFile", new {id, filename = file.FileName}),
+                new {Name = file.FileName, Size = file.Length});
         }
 
         // DELETE: /api/job/{id}/files/{filename}
@@ -280,6 +288,7 @@ namespace WePrint.Controllers
         /// <param name="filename"></param>
         /// <returns></returns>
         [HttpDelete("{id}/files/{filename}")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> DeleteFile(string id, string filename)
         {
             var job = await Database.LoadAsync<JobModel>(id);
@@ -306,6 +315,7 @@ namespace WePrint.Controllers
         /// <param name="newName"></param>
         /// <returns></returns>
         [HttpPatch("{id}/files/{filename}/rename/{newName}")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> RenameFile(string id, string filename, string newName)
         {
             var job = await Database.LoadAsync<JobModel>(id);
@@ -324,6 +334,174 @@ namespace WePrint.Controllers
         }
 
         #endregion
+
+        #region Comments
+
+
+        // GET: /api/job/{id}/comments
+        /// <summary>
+        /// Get a list of all comments
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/comments")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<ActionResult<List<CommentModel>>> ListComments(string id)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            return job.Comments.ToList();
+        }
+
+        // GET: /api/job/{id}/comments/{commentId}
+        /// <summary>
+        /// Get a particular comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/comments/{commentId}")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<ActionResult<CommentModel>> GetComment(string id, int commentId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            var comment = job.Comments.SingleOrDefault(x => x.Id == commentId);
+
+            if (comment == null)
+                return NotFound();
+
+            return comment;
+        }
+
+        // POST: /api/job/{id}/comments
+        /// <summary>
+        /// Add a new comment to a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="comment"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/comments")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<IActionResult> AddComment(string id, CommentModel comment)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            comment.CommenterId = (await CurrentUser).Id;
+            comment.Timestamp = DateTime.Now;
+            comment.Id = job.Comments.Select(x => x.Id).Prepend(0).Max() + 1;
+            comment.Edited = false;
+
+            job.Comments.Add(comment);
+
+            await Database.SaveChangesAsync();
+
+            return Created(Url.Action("GetComment", new { id, commentId = comment.Id }), comment);
+
+        }
+
+        // PUT: /api/job/{id}/comments/{commentId}
+        /// <summary>
+        /// Add or Update a comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commentId"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        [HttpPut("{id}/comments/{commentId}")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<IActionResult> AddOrUpdateComment(string id, int commentId, CommentModel update)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            if (job == null)
+                return NotFound("Job Not found");
+
+            update.CommenterId = (await CurrentUser).Id;
+            update.Timestamp = DateTime.Now;
+            update.Edited = false;
+
+            var existing = job.Comments.SingleOrDefault(x => x.Id == commentId);
+
+            if (existing != null)
+            {
+                // Update the comment
+                if (existing.CommenterId != (await CurrentUser).Id)
+                    return Forbid();
+
+                existing.Text = update.Text;
+                existing.Edited = true;
+            }
+            else
+            {
+                // Create the comment
+                update.Id = job.Comments.Select(x => x.Id).Prepend(0).Max() + 1;
+                job.Comments.Add(update);
+            }
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: /api/job/{id}/comments/{commentId}
+        /// <summary>
+        /// Delete a comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}/comments/{commentId}")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<ActionResult<CommentModel>> DeleteComment(string id, int commentId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            if (job == null)
+                return NotFound("Job Not found");
+
+            var comment = job.Comments.SingleOrDefault(x => x.Id == commentId);
+
+            if (comment == null)
+                return NotFound();
+
+            if (comment.CommenterId != (await CurrentUser).Id)
+                return Forbid();
+
+            job.Comments.Remove(comment);
+
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        #endregion
+
 
         private async Task<bool> CheckJobAccess(JobModel job)
         {
