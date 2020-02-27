@@ -11,19 +11,5 @@ namespace WePrint.Common.Models
         public string Bio { get; set; }
         public List<string> ReviewIds { get; set; }
         public AddressModel Address { get; set; }
-
-        public void ApplyChanges(ApplicationUserUpdateModel update)
-        {
-            ReflectionHelper.CopyPropertiesTo(update, this);
-        }
-    }
-
-    public class ApplicationUserUpdateModel
-    {
-        public string Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Bio { get; set; }
-        public AddressModel Address { get; set; }
     }
 }
