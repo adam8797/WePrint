@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useTable, Column } from 'react-table';
+import { useTable } from 'react-table';
 import './table.scss';
 
 function Table({ title, columns, data }) {
@@ -41,8 +41,8 @@ function Table({ title, columns, data }) {
 
 Table.propTypes = {
   title: PropTypes.string.isRequired,
-  columns: PropTypes.arrayOf(PropTypes.objectOf(Column)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.any).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 };
 
 export default Table;
