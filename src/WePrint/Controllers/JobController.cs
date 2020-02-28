@@ -436,7 +436,7 @@ namespace WePrint.Controllers
                 return Forbid();
 
             if (job == null)
-                return NotFound("Job Not found");
+                return NotFound("Job not found");
 
             update.CommenterId = (await CurrentUser).Id;
             update.Timestamp = DateTime.Now;
@@ -502,7 +502,192 @@ namespace WePrint.Controllers
 
         #endregion
 
+        #region Bids
 
+        // GET : /api/job/{id}/bids
+        /// <summary>
+        /// Get a list of all bids associated with the job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/bids")] 
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<List<BidModel>>> ListBids(string id)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+
+            var user = await CurrentUser;
+            if (job.CustomerId != user.Id && job.Status < JobStatus.BiddingClosed)
+                return Forbid();
+
+            return job.Bids.ToList();
+        }
+
+        // GET : /api/job/{id}/bids/{bidId}
+        /// <summary>
+        /// Get a particular bid from a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/bids/{bidId}")] 
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<BidModel>> GetBid(string id, int bidId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            var user = await CurrentUser;
+            var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+            if (bid == null)
+                return NotFound();
+
+            if (job.CustomerId != user.Id && bid.BidderId != user.Id && job.Status < JobStatus.BiddingClosed)
+                return Forbid();
+
+            return bid;
+        }
+
+        // POST: /api/job/{id}/bids
+        /// <summary>
+        /// Add a new comment to a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bid"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/bids")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<IActionResult> AddBid(string id, BidModel bid)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+
+            var user = await CurrentUser;
+            if (user.PrinterIds == null || !user.PrinterIds.Any())
+                return Forbid(); // Is this the right return code? Feels good enough
+
+            bid.BidderId = user.Id;
+            bid.Id = job.Bids.Select(x => x.Id).Prepend(0).Max() + 1;
+
+            job.Bids.Add(bid);
+
+            await Database.SaveChangesAsync();
+
+            return Created(Url.Action("GetBid", new { id, bidId = bid.Id }), bid);
+
+        }
+
+        // PUT: /api/job/{id}/bids/{bidId}
+        /// <summary>
+        /// Add or Update a bid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        [HttpPut("{id}/bids/{bidId}")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<IActionResult> AddOrUpdateBid(string id, int bidId, BidModel update)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+            if (job == null)
+                return NotFound("Job not found");
+
+            var user = await CurrentUser;
+            update.BidderId = (await CurrentUser).Id;
+            var oldBid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+
+            if (oldBid == null)
+            {
+                update.Id = job.Bids.Select(x => x.Id).Prepend(0).Max() + 1;
+                job.Bids.Add(update);
+            }
+            else
+            {
+                if (oldBid.BidderId != user.Id)
+                    return Forbid();
+
+                oldBid.ApplyChanges(update);
+            }
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Apply a JSON Patch to a bid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/bids/{bidId")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<BidModel>> PatchBid(string id, int bidId, [FromBody] JsonPatchDocument<BidModel> patchDoc)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+            if (job == null)
+                return NotFound("Job not found");
+
+            var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+            if (bid == null)
+                return NotFound("Bid not found");
+
+            if (bid.BidderId != (await CurrentUser).Id)
+                return Forbid();
+
+            patchDoc.ApplyTo(bid);
+
+            await Database.SaveChangesAsync();
+
+            return bid;
+        }
+
+        // DELETE: /api/job/{id}/bids/{bidId}
+        /// <summary>
+        /// Delete a bid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}/bids/{bidId}")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<BidModel>> DeleteBid(string id, int bidId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound("Job Not found");
+
+            var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+
+            if (bid == null)
+                return NotFound();
+
+            if (bid.BidderId != (await CurrentUser).Id)
+                return Forbid();
+
+            job.Bids.Remove(bid);
+
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+        #endregion
+
+
+        // I think that job access ends up being pretty situational, a lot of stuff gets opened up once bidding is closed
+        // we will probably need to write custom logic at least in some places
         private async Task<bool> CheckJobAccess(JobModel job)
         {
             try
