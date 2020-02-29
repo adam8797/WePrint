@@ -29,20 +29,28 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.3",
+    "lint-staged": "^10.0.8",
     "node-sass": "^4.13.1",
     "prettier": "1.19.1",
     "typescript": "^3.7.5"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/",
-    "pretty": "prettier --no-color --write \"./**/*.{js,jsx,json}\""
+    "lint": "eslint ./src/ --ext .js,.jsx",
+    "lint-staged": "lint-staged",
+    "pretty": "prettier --no-color --write \"./**/*.{js,jsx,json,css,scss}\""
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "*.{css,scss}": [
+      "prettier --write"
+    ]
   },
   "browserslist": {
     "production": [

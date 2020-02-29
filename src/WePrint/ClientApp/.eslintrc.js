@@ -5,5 +5,6 @@ module.exports = {
     'class-methods-use-this': 'off', // may want to revisit but very restrictive
     'no-plusplus': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
 };

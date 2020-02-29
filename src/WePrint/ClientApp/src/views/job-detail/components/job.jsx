@@ -120,55 +120,52 @@ class Job extends Component {
   render() {
     this.fetchJob();
     return (
-      <div class="job">
-        <div class="job__header">
-          <span class="job__title">{this.title}</span>
-          <span class="job__subtitle">
+      <div className="job">
+        <div className="job__header">
+          <span className="job__title">{this.title}</span>
+          <span className="job__subtitle">
             <span>Posted by: {this.poster}</span>
             <h4>
-              Bidding: <span class={`job__status--${this.statusStyle}`}>{this.biddingStatus}</span>
+              Bidding:{' '}
+              <span className={`job__status--${this.statusStyle}`}>{this.biddingStatus}</span>
             </h4>
           </span>
-          <hr></hr>
+          <hr />
         </div>
-        <div class="job__body">
-          <img class="job__image" src={this.image} alt="Job Image"></img>
-          <div class="job__detail">
+        <div className="job__body">
+          <img className="job__image" src={this.image} alt="Job Preview" />
+          <div className="job__detail">
             <span>
-              <span class="job__section">Bid Deadline:</span>
+              <span className="job__section">Bid Deadline:</span>
               {this.bidDeadline}
-              <span class={`job__deadline--${this.bidDeadlineStyle}`}>
+              <span className={`job__deadline--${this.bidDeadlineStyle}`}>
                 &nbsp; ({this.timeLeft} left)
               </span>
             </span>
             <span>
-              <span class="job__section">Printer Type:</span>
+              <span className="job__section">Printer Type:</span>
               {this.printerType}
             </span>
             <span>
-              <span class="job__section">Material:</span>
+              <span className="job__section">Material:</span>
               {this.material}
             </span>
             <span>
-              <span class="job__section">Destination:</span>
+              <span className="job__section">Destination:</span>
               {this.destination}
             </span>
             <span>
-              <span class="job__section">Description:</span>
-              <br></br>
-              <span class="job__description">{this.description}</span>
+              <span className="job__section">Description:</span>
+              <br />
+              <span className="job__description">{this.description}</span>
             </span>
           </div>
         </div>
-        <div class="job__bids">
-          <Table title="Bids" columns={this.bidTable.columns} data={this.bidTable.data}></Table>
+        <div className="job__bids">
+          <Table title="Bids" columns={this.bidTable.columns} data={this.bidTable.data} />
         </div>
-        <div class="job__files">
-          <Table
-            title="Files"
-            columns={this.filesTable.columns}
-            data={this.filesTable.data}
-          ></Table>
+        <div className="job__files">
+          <Table title="Files" columns={this.filesTable.columns} data={this.filesTable.data} />
         </div>
       </div>
     );

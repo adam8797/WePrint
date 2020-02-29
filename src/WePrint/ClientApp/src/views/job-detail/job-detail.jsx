@@ -5,10 +5,10 @@ import { BodyCard } from '../../components';
 import Job from './components/job';
 
 function JobDetail() {
-  let { jobId } = useParams();
+  const { jobId } = useParams();
   return (
     <BodyCard>
-      <Job jobId={jobId}></Job>
+      <Job jobId={jobId} />
     </BodyCard>
   );
 }

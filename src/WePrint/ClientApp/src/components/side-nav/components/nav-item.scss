@@ -3,7 +3,7 @@
 .nav-item {
   position: relative;
   display: grid;
-  grid-template-areas: "icon title";
+  grid-template-areas: 'icon title';
   grid-template-columns: 2rem auto;
   height: 2rem;
 
@@ -48,5 +48,4 @@
     padding-left: 1rem;
     font-weight: bold;
   }
-
 }
