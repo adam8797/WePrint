@@ -37,24 +37,33 @@ namespace WePrint.Controllers
         // If an Id is included as a url parameter, that job will be returned
         // Otherwise, all jobs belonging to the current user will be returned
         [HttpGet]
-        public async Task<IActionResult> GetJobs([FromQuery] string Id)
+        public async Task<IActionResult> GetJobs()
         {   var user = await this.GetCurrentUser(_session);
             if (user == null)
             {
                 return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
             }
 
-            if(Id != null) 
-                return await this.QueryItemById<JobModel>(_session, Id);
-
             var myJobs = await _session.Query<JobModel>().Where(job => job.CustomerId == user.Id || job.Bids.Any(b => b.BidderId == user.Id)).ToArrayAsync();
 
             return Json(myJobs);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetJobs(string id)
+        {
+            var user = await this.GetCurrentUser(_session);
+            if (user == null)
+            {
+                return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
+            }
+
+            return await this.QueryItemById<JobModel>(_session, System.Web.HttpUtility.UrlDecode(id));
+        }
+
         // POST: /api/Job/
         [HttpPost]
-        public async Task<IActionResult> CreateJob()
+        public async Task<IActionResult> CreateJob([FromBody]JobUpdateModel update)
         {
             // TODO: Get current user
             ApplicationUser currentUser = await this.GetCurrentUser(_session);
@@ -81,6 +90,7 @@ namespace WePrint.Controllers
                 PrinterType = PrinterType.SLA,
                 Notes = "",
             };
+            ReflectionHelper.CopyPropertiesTo(update, newJob);
 
             try
             {
