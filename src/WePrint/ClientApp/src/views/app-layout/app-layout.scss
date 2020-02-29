@@ -2,7 +2,6 @@
 @import '../../assets/styles/colors';
 
 .app-layout {
-
   box-sizing: border-box;
   margin: 0;
   width: 100%;
@@ -11,8 +10,8 @@
   &__content-wrap {
     display: grid;
     grid-template-areas:
-      "header header"
-      "nav content";
+      'header header'
+      'nav content';
     // grid-template-columns: 300px auto;
     // grid-template-rows: max-content auto;
     grid-template-columns: 150px 1fr;
@@ -34,5 +33,4 @@
     overflow-y: auto;
     background: $blue-4;
   }
-
 }

@@ -41,10 +41,16 @@
     "eject": "react-scripts eject",
     "lint": "eslint ./src/ --ext .js,.jsx",
     "lint-staged": "lint-staged",
-    "pretty": "prettier --no-color --write \"./**/*.{js,jsx,json}\""
+    "pretty": "prettier --no-color --write \"./**/*.{js,jsx,json,css,scss}\""
   },
   "lint-staged": {
-    "*.{js,jsx}": ["prettier --write", "eslint"]
+    "*.{js,jsx}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "*.{css,scss}": [
+      "prettier --write"
+    ]
   },
   "browserslist": {
     "production": [
