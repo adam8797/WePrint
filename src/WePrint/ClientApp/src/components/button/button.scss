@@ -1,0 +1,18 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.button {
+  padding: ms(-2);
+  border: none;
+  border-radius: 5px;
+
+  &:hover,
+  &:focus {
+    background: $blue-2;
+  }
+
+  &--primary {
+    color: $white;
+    background: $blue-1;
+  }
+}
