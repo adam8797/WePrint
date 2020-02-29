@@ -1,5 +1,27 @@
 @import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
 
 .table__content {
   width: 100%;
+}
+
+.table__header {
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.table__row {
+  border-bottom: 1px solid $grey-4;
+
+  td {
+    border-top: unset;
+  }
+}
+
+.table__content-count {
+  color: $grey-3;
+  padding-top: 20px;
+  text-align: center;
 }
