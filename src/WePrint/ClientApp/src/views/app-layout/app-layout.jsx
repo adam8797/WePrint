@@ -41,7 +41,6 @@ class AppLayout extends Component {
             <main id="app-layout" className="app-layout__content">
               {children}
             </main>
-            <footer className="app-layout__footer" />
           </div>
         </div>
       </div>
