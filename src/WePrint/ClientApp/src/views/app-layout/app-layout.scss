@@ -1,5 +1,5 @@
-@import '../../assets/styles/base';
 @import '../../assets/styles/colors';
+@import '../../assets/styles/effects';
 
 .app-layout {
   box-sizing: border-box;
@@ -30,6 +30,7 @@
     grid-area: content;
     overflow-y: auto;
     background: $blue-4;
+    box-shadow: inset $card-shadow;
   }
   &__content {
     display: grid;
