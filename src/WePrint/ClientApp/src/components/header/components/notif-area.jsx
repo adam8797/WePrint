@@ -1,4 +1,5 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './notif-area.scss';
 
 export default function NotifArea() {
@@ -8,7 +9,9 @@ export default function NotifArea() {
       <div className="notif-area__avatar">
         <img src="http://placekitten.com/100" alt="User Avatar" />
       </div>
-      <div className="notif-area__icon">|||</div>
+      <div className="notif-area__icon">
+        <FontAwesomeIcon icon="bars" />
+      </div>
     </div>
   );
 }

@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { useTable } from 'react-table';
 import './table.scss';
 
-function Table({ title, columns, data }) {
+function Table({ columns, data }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
   });
   return (
     <div className="table">
-      <span className="table__title">{title}</span>
       <table {...getTableProps()} className="table__content">
         <thead>
           {headerGroups.map(headerGroup => (
@@ -39,7 +38,6 @@ function Table({ title, columns, data }) {
 }
 
 Table.propTypes = {
-  title: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
   data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 };
