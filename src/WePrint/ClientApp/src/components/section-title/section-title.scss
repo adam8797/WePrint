@@ -3,6 +3,9 @@
 
 .section-title {
   border-bottom: 1px solid $grey-4;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 
   h2 {
     font-size: ms(2);

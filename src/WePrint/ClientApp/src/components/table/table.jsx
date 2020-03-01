@@ -3,25 +3,14 @@ import PropTypes from 'prop-types';
 import { useTable } from 'react-table';
 import './table.scss';
 
-function Table({ columns, data, actions }) {
+function Table({ columns, data }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
   });
 
-  let actionItems = [];
-  if (actions) {
-    actionItems = actions.map(action => (
-      <button key={action.key} onClick={action.action}>
-        {action.text}
-      </button>
-    ));
-  }
-
   return (
     <div className="table">
-      <div className="table__header">{actionItems}</div>
-
       <table {...getTableProps()} className="table__content">
         <thead>
           {headerGroups.map(headerGroup => (
@@ -55,9 +44,6 @@ function Table({ columns, data, actions }) {
 Table.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
   data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
-  actions: PropTypes.arrayOf(
-    PropTypes.shape({ text: PropTypes.string, key: PropTypes.string, action: PropTypes.func })
-  ),
 };
 
 export default Table;
