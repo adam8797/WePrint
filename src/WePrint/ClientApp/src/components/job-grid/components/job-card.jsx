@@ -49,11 +49,24 @@ function JobCard(props) {
 }
 
 JobCard.propTypes = {
-  image: PropTypes.string.isRequired,
+  // required
+  name: PropTypes.string.isRequired,
+  jobId: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired,
+  source: PropTypes.string.isRequired,
+  parts: PropTypes.string.isRequired,
+  prints: PropTypes.string.isRequired,
+  // optional
+  image: PropTypes.string,
+  externalId: PropTypes.string,
+  printTime: PropTypes.string,
 };
 
 JobCard.defaultProps = {
   image: JobPlaceholder,
+  source: 'Custom',
+  externalId: '',
+  printTime: '-',
 };
 
 export default JobCard;
