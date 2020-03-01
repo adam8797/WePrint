@@ -21,6 +21,7 @@ function Table({ columns, data, actions }) {
   return (
     <div className="table">
       <div className="table__header">{actionItems}</div>
+
       <table {...getTableProps()} className="table__content">
         <thead>
           {headerGroups.map(headerGroup => (
