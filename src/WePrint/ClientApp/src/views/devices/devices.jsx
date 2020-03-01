@@ -1,5 +1,5 @@
 import React from 'react';
-import { BodyCard, Table, SectionTitle } from '../../components';
+import { BodyCard, Table } from '../../components';
 
 function Devices() {
   const columns = [
@@ -45,8 +45,7 @@ function Devices() {
   ];
   return (
     <BodyCard>
-      <SectionTitle title="My Printers" actions={actions} />
-      <Table columns={columns} data={data} />
+      <Table title="My Printers" columns={columns} data={data} actions={actions} />
     </BodyCard>
   );
 }

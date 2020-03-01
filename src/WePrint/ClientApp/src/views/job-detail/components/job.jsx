@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, SectionTitle } from '../../../components';
+import { Table } from '../../../components';
 import './job.scss';
 
 class Job extends Component {
@@ -162,11 +162,9 @@ class Job extends Component {
           </div>
         </div>
         <div className="job__bids">
-          <SectionTitle title="Bids" />
           <Table title="Bids" columns={this.bidTable.columns} data={this.bidTable.data} />
         </div>
         <div className="job__files">
-          <SectionTitle title="Files" />
           <Table title="Files" columns={this.filesTable.columns} data={this.filesTable.data} />
         </div>
       </div>

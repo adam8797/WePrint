@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTable } from 'react-table';
+import { SectionTitle } from '../../components';
 import './table.scss';
 
-function Table({ columns, data }) {
+function Table({ title, columns, data, actions }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -11,6 +12,7 @@ function Table({ columns, data }) {
 
   return (
     <div className="table">
+      <SectionTitle title={title} actions={actions} />
       <table {...getTableProps()} className="table__content">
         <thead>
           {headerGroups.map(headerGroup => (
@@ -42,8 +44,12 @@ function Table({ columns, data }) {
 }
 
 Table.propTypes = {
+  title: PropTypes.string,
   columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
   data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({ text: PropTypes.string, key: PropTypes.string, action: PropTypes.func })
+  ),
 };
 
 export default Table;
