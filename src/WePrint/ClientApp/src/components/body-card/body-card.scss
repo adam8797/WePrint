@@ -8,6 +8,10 @@
   margin: 20px;
   padding: 1em;
 
+  &:only-child {
+    grid-row: span 2;
+  }
+
   &--centered {
     justify-self: center;
     align-self: center;
