@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './button.scss';
 
 export const ButtonType = {
@@ -14,7 +15,7 @@ export const ButtonSize = {
 };
 
 function Button(props) {
-  const { children, className, type, htmlType, size, ...rest } = props;
+  const { children, className, type, htmlType, size, icon, ...rest } = props;
 
   const buttonClass = classNames('button', className, `button--${size}`, `button--${type}`);
 
@@ -22,26 +23,29 @@ function Button(props) {
     // eslint-disable-next-line react/button-has-type
     <button {...rest} className={buttonClass} type={htmlType}>
       <div className="button__inner-container">
-        {/* {iconName && <Icon name={iconName} className="button__icon" />} */}
-        {children}
+        {icon && <FontAwesomeIcon icon={icon} className="button__icon" />}
+        {children && <div className="button__title">{children}</div>}
       </div>
     </button>
   );
 }
 
 Button.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   className: PropTypes.string,
   type: PropTypes.oneOf(Object.values(ButtonType)),
   size: PropTypes.oneOf(Object.values(ButtonSize)),
   htmlType: PropTypes.string,
+  icon: PropTypes.string,
 };
 
 Button.defaultProps = {
+  children: '',
   className: '',
   type: ButtonType.PRIMARY,
   size: ButtonSize.SMALL,
   htmlType: 'button',
+  icon: '',
 };
 
 Button.Type = ButtonType;

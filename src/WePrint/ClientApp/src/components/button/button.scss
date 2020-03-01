@@ -6,6 +6,15 @@
   border: none;
   border-radius: 5px;
 
+  &__inner-container {
+    display: flex;
+    align-items: center;
+  }
+  // this solution feels a little hacky, maybe find something better
+  &__icon:not(:only-child) {
+    margin-right: ms(-2);
+  }
+
   &:hover,
   &:focus {
     background: $blue-2;
