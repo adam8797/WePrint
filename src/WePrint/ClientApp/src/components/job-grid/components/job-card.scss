@@ -1,0 +1,22 @@
+@import '../../../assets/styles/effects';
+@import '../../../assets/styles/sizes';
+
+.job-card {
+  // justify-self: stretch;
+  // align-self: stretch;
+  background: white;
+  width: fit-content;
+  box-shadow: $card-shadow;
+  margin: 20px;
+  border-radius: 5px;
+
+  .job-card__image {
+    width: $image-size-medium;
+    height: $image-size-medium;
+    border-radius: 5px 5px 0px 0px;
+  }
+
+  .job-card__body {
+    height: 20px;
+  }
+}
