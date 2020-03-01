@@ -27,6 +27,26 @@ function JobGrid({ jobs }) {
         prints="4"
         source="Custom"
       />
+      <JobCard
+        name="DnD Minis"
+        jobId="1234"
+        user="Emily"
+        image="http://placekitten.com/500/500"
+        parts="4"
+        printTime="4h"
+        prints="4"
+        source="Custom"
+      />
+      <JobCard
+        name="DnD Minis"
+        jobId="1234"
+        user="Emily"
+        image="http://placekitten.com/900"
+        parts="4"
+        printTime="4h"
+        prints="4"
+        source="Custom"
+      />
     </div>
   );
 }

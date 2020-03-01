@@ -21,7 +21,7 @@ $highlight-bar-width: 0.3em;
   &:hover:before,
   &--active:before {
     content: '';
-    background: $grey-4;
+    background: $grey-5;
     position: absolute;
     left: 0;
     width: $highlight-bar-width;
