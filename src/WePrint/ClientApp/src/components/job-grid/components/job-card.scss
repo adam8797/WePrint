@@ -1,0 +1,50 @@
+@import '../../../assets/styles/effects';
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.job-card {
+  background: white;
+  width: fit-content;
+  box-shadow: $card-shadow;
+  margin: 5px;
+  border-radius: 5px;
+
+  .job-card__image {
+    width: $image-size-medium;
+    height: $image-size-medium;
+    border-radius: 5px 5px 0px 0px;
+  }
+
+  .job-card__detail,
+  .job-card__print {
+    display: flex;
+    justify-content: space-between;
+
+    div {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.job-card__print {
+  text-align: center;
+}
+
+.job-card__text {
+  &--small {
+    font-size: $font-size-small;
+    color: $grey-4;
+  }
+  &--medium {
+    font-size: $font-size-medium;
+  }
+  &--right {
+    text-align: right;
+  }
+}
+
+.job-card__body {
+  padding: 10px;
+  padding-top: 5px;
+}

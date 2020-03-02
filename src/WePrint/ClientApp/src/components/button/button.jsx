@@ -49,5 +49,6 @@ Button.defaultProps = {
 };
 
 Button.Type = ButtonType;
+Button.Size = ButtonSize;
 
 export default Button;
