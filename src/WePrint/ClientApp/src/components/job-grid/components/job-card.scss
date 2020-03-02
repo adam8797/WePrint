@@ -30,6 +30,10 @@
 
 .job-card__print {
   text-align: center;
+
+  div {
+    min-width: 4.5em;
+  }
 }
 
 .job-card__text {
