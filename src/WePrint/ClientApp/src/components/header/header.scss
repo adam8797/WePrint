@@ -24,5 +24,10 @@
 
   &__search {
     margin-left: 1em;
+    border-radius: 100px;
+    border: 1px solid $grey-3;
+    width: 40em;
+    font-size: 0.8em;
+    padding: 4px 10px;
   }
 }
