@@ -21,7 +21,3 @@ ReactDOM.render(<AppRouter basename={baseUrl} />, rootElement);
 // disabled by default when Identity is being used.
 //
 // registerServiceWorker();
-
-window.bidapi = BidApi;
-window.arrDeepEq = ArrayDeepEquals;
-window.bm = BidModel;
