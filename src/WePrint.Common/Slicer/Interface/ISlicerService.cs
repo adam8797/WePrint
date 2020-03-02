@@ -8,7 +8,7 @@ namespace WePrint.Common.Slicer.Interface
 {
     public interface ISlicerService
     {
-        Task<SlicerJob> SliceAsync(Job job, CancellationToken cancellationToken);
-        Task<SlicerJob> SliceAsync(Job job, IEnumerable<string> files, CancellationToken cancellationToken);
+        Task<SlicerJob> SliceAsync(JobModel job, CancellationToken cancellationToken);
+        Task<SlicerJob> SliceAsync(JobModel job, IEnumerable<string> files, CancellationToken cancellationToken);
     }
 }

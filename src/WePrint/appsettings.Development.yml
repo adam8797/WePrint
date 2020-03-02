@@ -10,6 +10,11 @@ IdentityServer:
 
 Services:
   RavenDB:
-    #HostOverride:
-    #  - localhost
+    HostOverride:
+      - localhost
     DatabaseName: WePrint_Testing
+
+  RabbitMQ:
+    HostOverride: 
+      - localhost
+    Queue: Slicer_Testing

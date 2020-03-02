@@ -18,6 +18,7 @@ using WePrint.Slicer.Impl;
 using WePrint.Slicer.Interface;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using JobStatus = WePrint.Common.JobStatus;
 
 namespace WePrint.Slicer
 {
@@ -97,7 +98,7 @@ namespace WePrint.Slicer
 
                 try
                 {
-                    var job = session.Load<Job>(slicejob.Job) ??
+                    var job = session.Load<JobModel>(slicejob.Job) ??
                               throw new Exception("Unable to load job " + slicejob.Job);
                     Console.WriteLine("Loaded Job from Database");
 
