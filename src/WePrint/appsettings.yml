@@ -25,3 +25,9 @@ Services:
     Queue: Slicer
 
 AllowedHosts: "*"
+
+FileUploads:
+  MaxSizeInMegabytes: 100
+  AllowedExtensions:
+   - .stl
+   - .3mf

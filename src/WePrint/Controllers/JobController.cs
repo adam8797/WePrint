@@ -2,111 +2,93 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using WePrint.Common.Models;
 using WePrint.Common.ServiceDiscovery;
-using WePrint.Models;
 
 namespace WePrint.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("api/job")]
-    public class JobController : Controller
+    public class JobController : WePrintController
     {
-        private readonly ILogger<JobController> _logger;
-        private readonly IServiceDiscovery _discovery;
-        private readonly IAsyncDocumentSession _session;
+        private readonly IConfiguration _configuration;
 
-        public JobController(ILogger<JobController> logger, IServiceDiscovery discovery, IAsyncDocumentSession session)
+        public JobController(ILogger<JobController> logger, IAsyncDocumentSession database, IConfiguration configuration) : base(logger, database)
         {
-            _logger = logger;
-            _session = session;
-            _discovery = discovery;
+            _configuration = configuration;
         }
 
+        #region Base Job Methods
 
-        // Get /api/Job
-        // If an Id is included as a url parameter, that job will be returned
-        // Otherwise, all jobs belonging to the current user will be returned
+        // Get /api/job
+        /// <summary>
+        /// Gets all jobs that the current user is a part of
+        /// </summary>
+        /// <returns></returns>
+        /// 
         [HttpGet]
-        public async Task<IActionResult> GetJobs()
-        {   var user = await this.GetCurrentUser(_session);
-            if (user == null)
-            {
-                return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
-            }
+        public async Task<ActionResult<IEnumerable<JobModel>>> GetJobs()
+        {
+            var user = await CurrentUser;
 
-            var myJobs = await _session.Query<JobModel>().Where(job => job.CustomerId == user.Id || job.Bids.Any(b => b.BidderId == user.Id)).ToArrayAsync();
-            
-            return Json(myJobs);
+            if (user == null)
+                return Unauthorized();
+
+            return await Database.Query<JobModel>().Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id)).ToArrayAsync();
         }
 
+        // GET: /api/job/{id}
+        /// <summary>
+        /// Get a particular job by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetJob(string id)
+        public async Task<ActionResult<JobModel>> GetJob(string id)
         {
-            var user = await this.GetCurrentUser(_session);
-            if (user == null)
-            {
-                return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
-            }
+            var job = await Database.LoadAsync<JobModel>(id);
 
-            return await this.QueryItemById<JobModel>(_session, HttpUtility.UrlDecode(id));
+            if (await CheckJobAccess(job))
+                return job;
+
+            return Forbid();
         }
 
-        [HttpGet("{id}/bid")]
-        public async Task<IActionResult> GetBidsForJob([FromRoute] string id)
-        {
-            var user = await this.GetCurrentUser(_session);
-            if (user == null)
-            {
-                return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
-            }
-            var jobs = await _session.Query<JobModel>().Where(j => j.Id == id).ToArrayAsync();
-
-            if (jobs.Length == 0)
-                return this.FailWith("No job found with id " + id, HttpStatusCode.NotFound);
-
-            if (jobs.Length > 1)
-                return this.FailWith("More than one job with id " + id, HttpStatusCode.Conflict);
-
-            var job = jobs[0];
-
-            if (user.Id != job.CustomerId && job.Status <= JobStatus.BiddingClosed)
-                return Unauthorized("Can't get bids until bidding closes");
-
-            return Json(job.Bids);
-        }
-
-        // POST: /api/Job/
+        // POST: /api/job/
+        /// <summary>
+        /// Create a new Job with defaults
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateJob([FromBody]JobUpdateModel update)
+        public async Task<ActionResult<JobModel>> CreateJob() //ToDo: This should have a post model
         {
-            // TODO: Get current user
-            ApplicationUser currentUser = await this.GetCurrentUser(_session);
-            if(currentUser == null)
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return Json(new { err = "Not logged in" });
-            }
+            var user = await CurrentUser;
 
             var newJob = new JobModel()
             {
                 Status = JobStatus.PendingOpen,
-                Address = currentUser.Address,
+                Address = user.Address,
                 BidClose = DateTime.Today + TimeSpan.FromDays(3),
                 Bids = new List<BidModel>(),
                 Comments = new List<CommentModel>(),
-                CustomerId = currentUser.Id,
+                CustomerId = user.Id,
                 Description = "A new job",
-                Files = new List<FileModel>(),
                 IdempotencyKey = GlobalRandom.Next(),
                 MaterialColor = MaterialColor.Any,
                 MaterialType = MaterialType.PLA,
@@ -114,106 +96,613 @@ namespace WePrint.Controllers
                 PrinterType = PrinterType.SLA,
                 Notes = "",
             };
-            ReflectionHelper.CopyPropertiesTo(update, newJob);
 
-            try
-            {
-                await _session.StoreAsync(newJob);
-                await _session.SaveChangesAsync();
-            }
-            catch(Exception e)
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(new { err = "Uncaught Exception", details = e.ToString() });
-            }
+            await Database.StoreAsync(newJob);
+            await Database.SaveChangesAsync();
 
-            return Json(newJob.GetKey());
+            return newJob;
+        }
+
+        // PUT: /api/job/{id}
+        /// <summary>
+        /// Create or update a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public async Task<ActionResult<JobModel>> UpdateJob(string id, [FromBody] JobUpdateModel update)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+            {
+                var j = new JobModel();
+                j.ApplyChanges(update);
+                await Database.StoreAsync(j);
+            }
+            else
+            {
+                if (job.IdempotencyKey != update.IdempotencyKey)
+                    return StatusCode((int) HttpStatusCode.Conflict, "Bad idempotency key. Job may have been updated.");
+
+                if ((await CurrentUser).Id != job.CustomerId)
+                    return Unauthorized("Currently user is not the customer for this job");
+
+                if (job.Status >= JobStatus.BidSelected)
+                    return Forbid();
+
+                job.ApplyChanges(update);
+                job.IdempotencyKey = GlobalRandom.Next();
+            }
+            
+            await Database.SaveChangesAsync();
+            return job;
+        }
+
+        /// <summary>
+        /// Apply a JSON Patch to a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<JobModel>> PatchJob(string id, [FromBody] JsonPatchDocument<JobModel> patchDoc)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            patchDoc.ApplyTo(job);
+
+            await Database.SaveChangesAsync();
+
+            return job;
         }
 
 
-        // PUT: /api/Job/
-        [HttpPut]
-        public async Task<IActionResult> UpdateJob([FromBody]JobUpdateModel update)
+        // DELETE: /api/job/{id}
+        /// <summary>
+        /// Delete a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteJob(string id)
         {
-            var jobs = await _session.Query<JobModel>().Where(job => job.Id == update.Id).ToArrayAsync();
+            var job = await Database.LoadAsync<JobModel>(id);
 
-            if (jobs.Length == 0)
-                return this.FailWith("No job found with id " + update.Id, HttpStatusCode.NotFound);
-
-            if (jobs.Length > 1)
-                return this.FailWith("More than one job with id " + update.Id, HttpStatusCode.Conflict);
-
-            var job = jobs[0];
-
-            if (job.IdempotencyKey != update.IdempotencyKey)
-                return this.FailWith(new { err = "Bad idempotency key. Job may have been updated.", jobs[0].IdempotencyKey }, HttpStatusCode.Conflict);
-
-            var currentUser = await this.GetCurrentUser(_session);
-
-            if (currentUser == null)
-                return this.FailWith("Not logged in", HttpStatusCode.Unauthorized);
-
-            if(currentUser.Id != job.CustomerId)
-                return this.FailWith("Currenty user is not the customer for this job", HttpStatusCode.Unauthorized);
-
-            if(job.Status >= JobStatus.BidSelected)
-                return this.FailWith("The job already has a selected bid and cannot be updated", HttpStatusCode.Forbidden);
-
-            job.ApplyChanges(update);
-            job.IdempotencyKey = GlobalRandom.Next();
-
-            try
-            {
-                await _session.StoreAsync(job);
-                await _session.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(new { err = "Uncaught Exception", details = e.ToString() });
-            }
-
-            return Json(job.GetKey());
-        }
-
-        // DELETE: /api/Job/
-        [HttpDelete]
-        public async Task<IActionResult> DeleteJob([FromBody] string jobId)
-        {
-            var jobs = await _session.Query<JobModel>().Where(job => job.Id == jobId).ToArrayAsync();
-
-            if (jobs.Length == 0)
-                return this.FailWith("No job found with id " + jobId, HttpStatusCode.NotFound);
-
-            if (jobs.Length > 1)
-                return this.FailWith("More than one job with id " + jobId, HttpStatusCode.Conflict);
-
-            var job = jobs[0];
-
-
-            var currentUser = await this.GetCurrentUser(_session);
-
-            if (currentUser == null)
-                return this.FailWith("Not logged in", HttpStatusCode.Unauthorized);
-
-            if (currentUser.Id != job.CustomerId)
-                return this.FailWith("Currenty user is not the customer for this job", HttpStatusCode.Unauthorized);
+            if ((await CurrentUser).Id != job.CustomerId)
+                return Forbid();
 
             if (job.Status >= JobStatus.BidSelected)
-                return this.FailWith("The job already has a selected bid and cannot be updated", HttpStatusCode.Forbidden);
+                return Forbid();
 
+            Database.Delete(job);
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        #endregion
+
+        #region Files
+
+        // GET: /api/job/{id}/files
+        /// <summary>
+        /// List files that are attached to a given job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/files")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
+        public async Task<IActionResult> GetFiles(string id)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            var files = Database.Advanced.Attachments.GetNames(job);
+
+            return Json(files.Select(x => new
+            {
+                x.Name,
+                x.Size
+            }));
+        }
+
+        // GET: /api/job/{id}/files/{filename}
+        /// <summary>
+        /// Download an attached file from a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/files/{filename}")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
+        public async Task<IActionResult> GetFile(string id, string filename)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            var attachment = await Database.Advanced.Attachments.GetAsync(job, filename);
+
+            if (attachment == null)
+                return NotFound(filename);
+
+            return File(attachment.Stream, attachment.Details.ContentType, filename);
+        }
+
+        // POST: /api/job/{id}/files
+        /// <summary>
+        /// Upload a single file to a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/files")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
+        public async Task<IActionResult> UploadFile(string id, IFormFile file)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            if (file.Length <= 0)
+                return BadRequest("File Length <= 0");
+
+            var maxSizeInMegs = _configuration.GetValue("FileUploads:MaxSizeInMegabytes", 100.0);
+            var maxSizeInBytes = (int)(maxSizeInMegs * 1_000_000);
+
+            if (file.Length >= maxSizeInBytes)
+                return BadRequest($"File too large. Max size is {maxSizeInBytes} bytes");
+
+
+            var allowedExtensions = _configuration.GetSection("FileUploads:AllowedExtensions").Get<string[]>();
+            if (allowedExtensions != null && !Path.GetExtension(file.FileName).In(allowedExtensions))
+                return BadRequest($"File Extension must be one of: {string.Join(", ", allowedExtensions)}");
+
+            Database.Advanced.Attachments.Store(job, file.FileName, file.OpenReadStream(), file.ContentType);
+            await Database.SaveChangesAsync();
+
+            return Created(Url.Action("GetFile", new {id, filename = file.FileName}),
+                new {Name = file.FileName, Size = file.Length});
+        }
+
+        // DELETE: /api/job/{id}/files/{filename}
+        /// <summary>
+        /// Delete an attached file from a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}/files/{filename}")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
+        public async Task<IActionResult> DeleteFile(string id, string filename)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            Database.Advanced.Attachments.Delete(job, filename);
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // PATH: /api/job/{id}/files/{filename}/rename/{newName}
+        /// <summary>
+        /// Rename an attached file
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="filename"></param>
+        /// <param name="newName"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/files/{filename}/rename/{newName}")]
+        [SwaggerOperation(Tags = new []{ "Files" })]
+        public async Task<IActionResult> RenameFile(string id, string filename, string newName)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            Database.Advanced.Attachments.Rename(job, filename, newName);
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        #endregion
+
+        #region Comments
+
+
+        // GET: /api/job/{id}/comments
+        /// <summary>
+        /// Get a list of all comments
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/comments")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<ActionResult<List<CommentModel>>> ListComments(string id)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            return job.Comments.ToList();
+        }
+
+        // GET: /api/job/{id}/comments/{commentId}
+        /// <summary>
+        /// Get a particular comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/comments/{commentId}")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<ActionResult<CommentModel>> GetComment(string id, int commentId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            var comment = job.Comments.SingleOrDefault(x => x.Id == commentId);
+
+            if (comment == null)
+                return NotFound();
+
+            return comment;
+        }
+
+        // POST: /api/job/{id}/comments
+        /// <summary>
+        /// Add a new comment to a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="comment"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/comments")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<IActionResult> AddComment(string id, CommentModel comment)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            comment.CommenterId = (await CurrentUser).Id;
+            comment.Timestamp = DateTime.Now;
+            comment.Id = job.Comments.Select(x => x.Id).Prepend(0).Max() + 1;
+            comment.Edited = false;
+
+            job.Comments.Add(comment);
+
+            await Database.SaveChangesAsync();
+
+            return Created(Url.Action("GetComment", new { id, commentId = comment.Id }), comment);
+
+        }
+
+        // PUT: /api/job/{id}/comments/{commentId}
+        /// <summary>
+        /// Add or Update a comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commentId"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        [HttpPut("{id}/comments/{commentId}")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<IActionResult> AddOrUpdateComment(string id, int commentId, CommentModel update)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            if (job == null)
+                return NotFound("Job not found");
+
+            update.CommenterId = (await CurrentUser).Id;
+            update.Timestamp = DateTime.Now;
+            update.Edited = false;
+
+            var existing = job.Comments.SingleOrDefault(x => x.Id == commentId);
+
+            if (existing != null)
+            {
+                // Update the comment
+                if (existing.CommenterId != (await CurrentUser).Id)
+                    return Forbid();
+
+                existing.Text = update.Text;
+                existing.Edited = true;
+            }
+            else
+            {
+                // Create the comment
+                update.Id = job.Comments.Select(x => x.Id).Prepend(0).Max() + 1;
+                job.Comments.Add(update);
+            }
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: /api/job/{id}/comments/{commentId}
+        /// <summary>
+        /// Delete a comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}/comments/{commentId}")]
+        [SwaggerOperation(Tags = new []{ "Comments" })]
+        public async Task<ActionResult<CommentModel>> DeleteComment(string id, int commentId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (!await CheckJobAccess(job))
+                return Forbid();
+
+            if (job == null)
+                return NotFound("Job Not found");
+
+            var comment = job.Comments.SingleOrDefault(x => x.Id == commentId);
+
+            if (comment == null)
+                return NotFound();
+
+            if (comment.CommenterId != (await CurrentUser).Id)
+                return Forbid();
+
+            job.Comments.Remove(comment);
+
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        #endregion
+
+        #region Bids
+
+        // GET : /api/job/{id}/bids
+        /// <summary>
+        /// Get a list of all bids associated with the job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/bids")] 
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<List<BidModel>>> ListBids(string id)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+
+            var user = await CurrentUser;
+            if (job.CustomerId != user.Id && job.Status < JobStatus.BiddingClosed)
+                return Forbid();
+
+            return job.Bids.ToList();
+        }
+
+        // GET : /api/job/{id}/bids/{bidId}
+        /// <summary>
+        /// Get a particular bid from a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/bids/{bidId}")] 
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<BidModel>> GetBid(string id, int bidId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+            var user = await CurrentUser;
+            var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+            if (bid == null)
+                return NotFound();
+
+            if (job.CustomerId != user.Id && bid.BidderId != user.Id && job.Status < JobStatus.BiddingClosed)
+                return Forbid();
+
+            return bid;
+        }
+
+        // POST: /api/job/{id}/bids
+        /// <summary>
+        /// Add a new comment to a job
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bid"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/bids")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<IActionResult> AddBid(string id, BidModel bid)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound(id);
+
+
+            var user = await CurrentUser;
+            if (user.PrinterIds == null || !user.PrinterIds.Any())
+                return Forbid(); // Is this the right return code? Feels good enough
+
+            bid.BidderId = user.Id;
+            bid.Id = job.Bids.Select(x => x.Id).Prepend(0).Max() + 1;
+
+            job.Bids.Add(bid);
+
+            await Database.SaveChangesAsync();
+
+            return Created(Url.Action("GetBid", new { id, bidId = bid.Id }), bid);
+
+        }
+
+        // PUT: /api/job/{id}/bids/{bidId}
+        /// <summary>
+        /// Add or Update a bid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        [HttpPut("{id}/bids/{bidId}")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<IActionResult> AddOrUpdateBid(string id, int bidId, BidModel update)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+            if (job == null)
+                return NotFound("Job not found");
+
+            var user = await CurrentUser;
+            update.BidderId = (await CurrentUser).Id;
+            var oldBid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+
+            if (oldBid == null)
+            {
+                update.Id = job.Bids.Select(x => x.Id).Prepend(0).Max() + 1;
+                job.Bids.Add(update);
+            }
+            else
+            {
+                if (oldBid.BidderId != user.Id)
+                    return Forbid();
+
+                oldBid.ApplyChanges(update);
+            }
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Apply a JSON Patch to a bid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/bids/{bidId")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<BidModel>> PatchBid(string id, int bidId, [FromBody] JsonPatchDocument<BidModel> patchDoc)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+            if (job == null)
+                return NotFound("Job not found");
+
+            var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+            if (bid == null)
+                return NotFound("Bid not found");
+
+            if (bid.BidderId != (await CurrentUser).Id)
+                return Forbid();
+
+            patchDoc.ApplyTo(bid);
+
+            await Database.SaveChangesAsync();
+
+            return bid;
+        }
+
+        // DELETE: /api/job/{id}/bids/{bidId}
+        /// <summary>
+        /// Delete a bid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bidId"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}/bids/{bidId}")]
+        [SwaggerOperation(Tags = new []{ "Bids" })]
+        public async Task<ActionResult<BidModel>> DeleteBid(string id, int bidId)
+        {
+            var job = await Database.LoadAsync<JobModel>(id);
+
+            if (job == null)
+                return NotFound("Job Not found");
+
+            var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
+
+            if (bid == null)
+                return NotFound();
+
+            if (bid.BidderId != (await CurrentUser).Id)
+                return Forbid();
+
+            job.Bids.Remove(bid);
+
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+        #endregion
+
+
+        // I think that job access ends up being pretty situational, a lot of stuff gets opened up once bidding is closed
+        // we will probably need to write custom logic at least in some places
+        private async Task<bool> CheckJobAccess(JobModel job)
+        {
             try
             {
-                _session.Delete(job);
-                await _session.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json(new { err = "Uncaught Exception", details = e.ToString() });
-            }
+                var user = await CurrentUser;
 
-            return Json(job.GetKey());
+                if (user == null)
+                    return false;
+
+                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

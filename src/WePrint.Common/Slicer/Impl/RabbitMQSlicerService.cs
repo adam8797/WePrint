@@ -26,7 +26,7 @@ namespace WePrint.Common.Slicer.Impl
 
         }
 
-        public async Task<SlicerJob> SliceAsync(Job job, CancellationToken cancellationToken)
+        public async Task<SlicerJob> SliceAsync(JobModel job, CancellationToken cancellationToken)
         {
             var slicerJob = new SlicerJob()
             {
@@ -56,7 +56,7 @@ namespace WePrint.Common.Slicer.Impl
             return slicerJob;
         }
 
-        public async Task<SlicerJob> SliceAsync(Job job, IEnumerable<string> files, CancellationToken cancellationToken)
+        public async Task<SlicerJob> SliceAsync(JobModel job, IEnumerable<string> files, CancellationToken cancellationToken)
         {
             var slicerJob = new SlicerJob()
             {
