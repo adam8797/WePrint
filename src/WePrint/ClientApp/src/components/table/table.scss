@@ -11,6 +11,10 @@
   td {
     border-top: unset;
   }
+
+  &--clickable {
+    cursor: pointer;
+  }
 }
 
 .table__content-count {
