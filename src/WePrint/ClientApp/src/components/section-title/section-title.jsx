@@ -8,7 +8,14 @@ function SectionTitle({ title, id, actions }) {
   const anchor = id || `${title.toLocaleLowerCase()}-section`;
 
   const actionItems = actions.map(action => (
-    <Button type={Button.Type.PRIMARY} key={action.key} onClick={action.action}>
+    <Button
+      size={Button.Size.SMALL}
+      type={Button.Type.PRIMARY}
+      key={action.key}
+      onClick={action.action}
+      icon={action.icon}
+      selected={action.selected}
+    >
       {action.text}
     </Button>
   ));
@@ -16,7 +23,7 @@ function SectionTitle({ title, id, actions }) {
   return (
     <div className="section-title" id={anchor}>
       <h2>{title}</h2>
-      <div>{actionItems}</div>
+      <div className="section-title__actions">{actionItems}</div>
     </div>
   );
 }
@@ -25,7 +32,12 @@ SectionTitle.propTypes = {
   title: PropTypes.string.isRequired,
   id: PropTypes.string,
   actions: PropTypes.arrayOf(
-    PropTypes.shape({ text: PropTypes.string, key: PropTypes.string, action: PropTypes.func })
+    PropTypes.shape({
+      text: PropTypes.string,
+      key: PropTypes.string,
+      action: PropTypes.func,
+      icon: PropTypes.string,
+    })
   ),
 };
 

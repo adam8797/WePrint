@@ -11,6 +11,7 @@ import {
   faQuestionCircle,
   faInfoCircle,
   faBars,
+  faTh,
 } from '@fortawesome/free-solid-svg-icons';
 
 // fonts should be added to the library here once so we're
@@ -26,5 +27,6 @@ library.add(
   faReceipt,
   faQuestionCircle,
   faInfoCircle,
-  faBars
+  faBars,
+  faTh
 );

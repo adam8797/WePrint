@@ -36,7 +36,7 @@ function JobCard(props) {
           </div>
           <div>
             <span className="job-card__text--medium">{printTime}</span>
-            <span className="job-card__text--small">Final Print Time</span>
+            <span className="job-card__text--small">Print Time</span>
           </div>
           <div>
             <span className="job-card__text--medium">{prints}</span>
