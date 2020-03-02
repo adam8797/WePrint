@@ -11,3 +11,12 @@ export const ErrorOnBadStatus = switchMap(res =>
     res.status >= 200 && res.status < 300 ? 
     of(res.data) :
     throwError(res.status));
+
+export function ArrayDeepEquals(a, b, elementComparer) {
+    if(a.length !== b.length) return false;
+    for(let i = 0; i < a.length; i++)
+        if(!elementComparer(a[i], b[i])) 
+            return false;
+
+    return true;
+}

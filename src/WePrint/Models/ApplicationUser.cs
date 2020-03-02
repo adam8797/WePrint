@@ -11,7 +11,7 @@ namespace WePrint.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public List<PrinterModel> PrinterIds { get; set; }
+        public List<PrinterModel> Printers { get; set; }
         public string Bio { get; set; }
         public List<string> ReviewIds { get; set; }
         public AddressModel Address { get; set; }

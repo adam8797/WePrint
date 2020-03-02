@@ -45,12 +45,12 @@ namespace WePrint.Controllers
             }
 
             var myJobs = await _session.Query<JobModel>().Where(job => job.CustomerId == user.Id || job.Bids.Any(b => b.BidderId == user.Id)).ToArrayAsync();
-
+            
             return Json(myJobs);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetJobs(string id)
+        public async Task<IActionResult> GetJob(string id)
         {
             var user = await this.GetCurrentUser(_session);
             if (user == null)
@@ -58,7 +58,31 @@ namespace WePrint.Controllers
                 return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
             }
 
-            return await this.QueryItemById<JobModel>(_session, System.Web.HttpUtility.UrlDecode(id));
+            return await this.QueryItemById<JobModel>(_session, HttpUtility.UrlDecode(id));
+        }
+
+        [HttpGet("{id}/bid")]
+        public async Task<IActionResult> GetBidsForJob([FromRoute] string id)
+        {
+            var user = await this.GetCurrentUser(_session);
+            if (user == null)
+            {
+                return this.FailWith("Not Logged in", HttpStatusCode.Unauthorized);
+            }
+            var jobs = await _session.Query<JobModel>().Where(j => j.Id == id).ToArrayAsync();
+
+            if (jobs.Length == 0)
+                return this.FailWith("No job found with id " + id, HttpStatusCode.NotFound);
+
+            if (jobs.Length > 1)
+                return this.FailWith("More than one job with id " + id, HttpStatusCode.Conflict);
+
+            var job = jobs[0];
+
+            if (user.Id != job.CustomerId && job.Status <= JobStatus.BiddingClosed)
+                return Unauthorized("Can't get bids until bidding closes");
+
+            return Json(job.Bids);
         }
 
         // POST: /api/Job/

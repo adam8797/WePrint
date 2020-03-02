@@ -1,3 +1,4 @@
+import { TimeModel } from './TimeModel';
 export class BidModel
 {
     constructor() {
@@ -6,16 +7,16 @@ export class BidModel
         this.jobIdempotencyKey = 0;
         this.jobId = null;
         this.price = 0;
-        this.workTime = null;
+        this.workTime = new TimeModel();
         this.notes = null;
         this.layerHeight = 0;
         this.shellThickness = 0;
         this.fillPercentage = 0;
         this.supportDensity = 0;
-        this.printerId = null,
-        this.materialType = 'ABS',
-        this.materialColor = 'Red',
-        this.finishType = 'None',
+        this.printerId = null;
+        this.materialType = 'ABS';
+        this.materialColor = 'Red';
+        this.finishType = 'None';
         this.idempotencyKey = 0;
         this.accepted = false;
     }
@@ -31,7 +32,7 @@ export class BidModel
             a.jobIdempotencyKey == b.jobIdempotencyKey &&
             a.jobId == b.jobId &&
             a.price == b.price &&
-            a.workTime == b.workTime &&
+            TimeModel.AllPropertiesEqual(a.workTime, b.workTime) &&
             a.notes == b.notes &&
             a.layerHeight == b.layerHeight &&
             a.shellThickness == b.shellThickness &&

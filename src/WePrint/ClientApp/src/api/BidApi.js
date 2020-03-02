@@ -1,9 +1,8 @@
 import axios from "axios-observable";
 import { timer } from 'rxjs';
-import { exhaustMap, distinctUntilChanged } from 'rxjs/operators';
-import { BuildUrl, ErrorOnBadStatus } from "./CommonApi";
-import { JobModel } from "./JobModel";
-import { BidModel } from "./BidModel";
+import { exhaustMap, distinctUntilChanged, map } from 'rxjs/operators';
+import { BuildUrl, ErrorOnBadStatus, ArrayDeepEquals } from "./CommonApi";
+import { BidModel } from "../models/BidModel";
 
 export class BidApi {
     static MyBids() {
@@ -12,6 +11,19 @@ export class BidApi {
 
     static GetBid(id) {
         return axios.get(BuildUrl('bid', id)).pipe(ErrorOnBadStatus);
+    }
+
+    static GetBidsForJob(jobid) {
+        return axios.get(BuildUrl('job', jobid, 'bid')).pipe(ErrorOnBadStatus);
+    }
+    
+    static TrackBidsForJob(jobid, pollInterval) {
+        return timer(0, pollInterval).pipe(
+            exhaustMap(v => BidApi.GetBidsForJob(jobid)),
+            // IF it turns out the order of bids can change, we need to sort them, but I don't think it ever will.
+            // map(bids => bids.sort((a,b) => a.id.localeCompare(b.id))),
+            distinctUntilChanged((a,b) => ArrayDeepEquals(a, b, BidModel.AllPropertiesEqual))
+        );
     }
 
     static CreateBid(bidModel) {

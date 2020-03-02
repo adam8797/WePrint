@@ -2,7 +2,7 @@ import axios from "axios-observable";
 import { timer } from 'rxjs';
 import { exhaustMap, distinctUntilChanged } from 'rxjs/operators';
 import { BuildUrl, ErrorOnBadStatus } from "./CommonApi";
-import { JobModel } from "./JobModel";
+import { JobModel } from "../models/JobModel";
 
 export class JobApi {
     static MyJobs() {

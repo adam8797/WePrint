@@ -23,7 +23,6 @@ namespace WePrint.Models
 
     public class PrinterUpdateModel
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public PrinterType? Type { get; set; }
         public double? XMax { get; set; }

@@ -34,12 +34,8 @@ namespace WePrint.Controllers
 
         // GET: /api/Bid/
         [HttpGet]
-        public async Task<IActionResult> GetBids([FromQuery] string Id)
+        public async Task<IActionResult> GetBids()
         {
-            if (Id != null)
-                return await this.QueryItemById<BidModel>(_session, Id);
-
-
             var user = await this.GetCurrentUser(_session);
             if (user == null)
             {
@@ -49,6 +45,14 @@ namespace WePrint.Controllers
             var myBids = await _session.Query<BidModel>().Where(bid => bid.BidderId == user.Id).ToArrayAsync();
 
             return Json(myBids);
+        }
+
+
+        // GET: /api/Bid/
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBid([FromRoute] string id)
+        {
+            return await this.QueryItemById<BidModel>(_session, HttpUtility.UrlDecode(id));
         }
 
         // POST: /api/Bid/
@@ -63,7 +67,7 @@ namespace WePrint.Controllers
             if (user == null)
                 return this.FailWith("Not logged in", HttpStatusCode.Unauthorized);
 
-            if (user.PrinterIds != null && user.PrinterIds.Count == 0)
+            if (user.Printers != null && user.Printers.Count == 0)
                 return this.FailWith("User has no printers set up", HttpStatusCode.Conflict);
 
             return await EnsureJobBiddingOpen(bid.JobId, bid.JobIdempotencyKey, async job =>
@@ -103,7 +107,7 @@ namespace WePrint.Controllers
             if (user == null)
                 return this.FailWith("Not logged in", HttpStatusCode.Unauthorized);
 
-            if (user.PrinterIds != null && user.PrinterIds.Count == 0)
+            if (user.Printers != null && user.Printers.Count == 0)
                 return this.FailWith("User has no printers set up", HttpStatusCode.Conflict);
 
             JobModel job;

@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using WePrint.Common.ServiceDiscovery;
 using WePrint.Models;
@@ -31,7 +35,10 @@ namespace WePrint.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPrinters()
         {
-            return Json("Under Construction");
+            var user = await this.GetCurrentUser(_session);
+            if (user == null) return Unauthorized();
+
+            return Json(user.Printers);
         }
 
         // GET" /api/Printer/id
@@ -41,23 +48,72 @@ namespace WePrint.Controllers
 
         // POST: /api/Printer/
         [HttpPost]
-        public async Task<IActionResult> CreatePrinter()
+        public async Task<IActionResult> CreatePrinter([FromBody]PrinterModel model)
         {
-            return Json("Under construction");
+            var user = await this.GetCurrentUser(_session);
+            user.Printers.Add(model);
+            try
+            {
+                await _session.StoreAsync(user);
+            }
+            catch(Exception e)
+            {
+                return this.FailWith(new { err = "Uncaught Exception", details = e.ToString() });
+            }
+            return Ok(model.Id);
         }
 
         // PUT: /api/Printer/
-        [HttpPut]
-        public async Task<IActionResult> UpdatePrinter()
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePrinter([FromRoute]string id, [FromBody] PrinterUpdateModel model)
         {
-            return Json("Under construction");
+            var user = await this.GetCurrentUser(_session);
+
+            if (user == null) 
+                return Unauthorized();
+
+            var printer = user.Printers.FirstOrDefault(p => p.Id == id);
+
+            if (printer == null)
+                return NotFound("Printer " + id + " not found");
+
+            ReflectionHelper.CopyPropertiesTo(model, printer);
+
+            try
+            {
+                await _session.StoreAsync(user);
+            }
+            catch (Exception e)
+            {
+                return this.FailWith(new { err = "Uncaught Exception", details = e.ToString() });
+            }
+            return Ok();
         }
 
         // DELETE: /api/Printer/
-        [HttpDelete]
-        public async Task<IActionResult> DeletePrinter()
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePrinter([FromRoute] string id)
         {
-            return Json("Under construction");
+            var user = await this.GetCurrentUser(_session);
+
+            if (user == null)
+                return Unauthorized();
+
+            var printer = user.Printers.FindIndex(p => p.Id == id);
+
+            if (printer == -1)
+                return NotFound("Printer " + id + " not found");
+
+            try
+            {
+                user.Printers.RemoveAt(printer);
+                await _session.StoreAsync(user);
+            }
+            catch (Exception e)
+            {
+                return this.FailWith(new { err = "Uncaught Exception", details = e.ToString() });
+            }
+            return Ok();
         }
     }
 }
