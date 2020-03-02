@@ -1,12 +1,19 @@
 import axios from "axios-observable";
 import { timer } from 'rxjs';
 import { exhaustMap, distinctUntilChanged } from 'rxjs/operators';
-import { BuildUrl, ErrorOnBadStatus } from "./CommonApi";
-import { printerModel } from "../models/PrinterModel";
+import { BuildUrl, ErrorOnBadStatus, ArrayDeepEquals } from "./CommonApi";
+import { PrinterModel } from "../models/PrinterModel";
 
 export class PrinterApi {
     static MyPrinters() {
         return axios.get(BuildUrl('printer')).pipe(ErrorOnBadStatus);
+    }
+
+    static TrackMyPrinters(pollInterval) {
+        return timer(0, pollInterval).pipe(
+            exhaustMap(v => PrinterApi.MyPrinters()),
+            distinctUntilChanged((a,b) => ArrayDeepEquals(a, b, PrinterModel.AllPropsEquals))
+        );
     }
 
     static GetPrinter(id) {

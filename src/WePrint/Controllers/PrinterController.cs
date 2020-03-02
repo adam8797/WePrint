@@ -51,9 +51,13 @@ namespace WePrint.Controllers
         public async Task<IActionResult> CreatePrinter([FromBody]PrinterModel model)
         {
             var user = await this.GetCurrentUser(_session);
+            if (user.Printers == null)
+                user.Printers = new List<PrinterModel>();
             user.Printers.Add(model);
             try
             {
+                await _session.StoreAsync(model);
+                // Don't think this works: For some reason, even after this call, user.Printers is always null
                 await _session.StoreAsync(user);
             }
             catch(Exception e)

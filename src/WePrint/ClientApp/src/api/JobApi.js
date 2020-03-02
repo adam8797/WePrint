@@ -1,12 +1,20 @@
 import axios from "axios-observable";
 import { timer } from 'rxjs';
 import { exhaustMap, distinctUntilChanged } from 'rxjs/operators';
-import { BuildUrl, ErrorOnBadStatus } from "./CommonApi";
+import { BuildUrl, ErrorOnBadStatus, ArrayDeepEquals } from "./CommonApi";
 import { JobModel } from "../models/JobModel";
 
+// See BidApi for documentation, this works the same way that does.
 export class JobApi {
     static MyJobs() {
         return axios.get(BuildUrl('job')).pipe(ErrorOnBadStatus);
+    }
+
+    static TrackMyJobs(pollInterval) {
+        return timer(0, pollInterval).pipe(
+            exhaustMap(v => JobApi.MyJobs()),
+            distinctUntilChanged((a, b) => ArrayDeepEquals(a, b, JobModel.AllPropsEquals))
+        );
     }
 
     static GetJob(id) {
