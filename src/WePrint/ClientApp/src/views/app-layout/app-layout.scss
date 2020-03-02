@@ -1,8 +1,7 @@
-@import '../../assets/styles/base';
 @import '../../assets/styles/colors';
+@import '../../assets/styles/effects';
 
 .app-layout {
-
   box-sizing: border-box;
   margin: 0;
   width: 100%;
@@ -11,11 +10,9 @@
   &__content-wrap {
     display: grid;
     grid-template-areas:
-      "header header"
-      "nav content";
-    // grid-template-columns: 300px auto;
-    // grid-template-rows: max-content auto;
-    grid-template-columns: 150px 1fr;
+      'header header'
+      'nav content';
+    grid-template-columns: 200px 1fr;
     grid-template-rows: auto 1fr;
     height: 100vh;
     overflow: hidden;
@@ -33,6 +30,10 @@
     grid-area: content;
     overflow-y: auto;
     background: $blue-4;
+    box-shadow: inset $card-shadow;
   }
-
+  &__content {
+    display: grid;
+    min-height: 100%;
+  }
 }

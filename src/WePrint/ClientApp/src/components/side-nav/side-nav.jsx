@@ -9,26 +9,23 @@ const SideNav = () => {
   const match = useRouteMatch();
   return (
     <nav className="side-nav">
-      <NavItem to="/" active={match.path === '/'}>
+      <NavItem to="/" active={match.path === '/'} icon="tachometer-alt">
         Dashboard
       </NavItem>
-      <NavItem to="/devices" active={match.path.startsWith('/devices')}>
+      <NavItem to="/devices" active={match.path.startsWith('/devices')} icon="microchip">
         Devices
       </NavItem>
-      <NavItem to="/topics" active={match.path.startsWith('/topics')}>
-        Topics
-      </NavItem>
-      <NavItem to="/find" active={match.path.startsWith('/find')}>
+      <NavItem to="/find" active={match.path.startsWith('/find')} icon="search-dollar">
         Find a Job
       </NavItem>
-      <NavItem to="/post" active={match.path.startsWith('/post')}>
+      <NavItem to="/post" active={match.path.startsWith('/post')} icon="file-invoice-dollar">
         Post a Job
       </NavItem>
-      <NavItem to="/help" active={match.path.startsWith('/help')}>
-        Help
+      <NavItem to="/finished" active={match.path.startsWith('/finished')} icon="receipt">
+        Finished Jobs
       </NavItem>
-      <NavItem to="/about" active={match.path.startsWith('/about')}>
-        About
+      <NavItem to="/help" active={match.path.startsWith('/help')} icon="question-circle">
+        Help
       </NavItem>
     </nav>
   );

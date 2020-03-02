@@ -1,6 +1,15 @@
+@import '../../assets/styles/effects';
+
 .body-card {
+  justify-self: stretch;
+  align-self: stretch;
   background: white;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: $card-shadow;
   margin: 20px;
   padding: 1em;
+
+  &--centered {
+    justify-self: center;
+    align-self: center;
+  }
 }

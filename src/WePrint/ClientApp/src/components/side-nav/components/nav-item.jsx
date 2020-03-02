@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useRouteMatch } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './nav-item.scss';
 
 export default function NavItem({ icon, to, children }) {
@@ -12,7 +13,10 @@ export default function NavItem({ icon, to, children }) {
   return (
     <div className={`nav-item ${isActive ? ' nav-item--active' : ''}`}>
       <Link to={to} className="nav-item__link">
-        <div className="nav-item__icon">{icon}</div>
+        <div className="nav-item__icon">
+          <FontAwesomeIcon icon={icon} />
+        </div>
+
         <div className="nav-item__title">{children}</div>
       </Link>
     </div>
@@ -26,5 +30,5 @@ NavItem.propTypes = {
 };
 
 NavItem.defaultProps = {
-  icon: '>',
+  icon: '',
 };

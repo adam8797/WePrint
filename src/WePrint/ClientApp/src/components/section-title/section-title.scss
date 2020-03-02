@@ -1,0 +1,20 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.section-title {
+  border-bottom: 1px solid $grey-5;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  h2 {
+    font-size: ms(2);
+    margin-bottom: ms(-4);
+  }
+}
+
+.section-title__actions {
+  button {
+    margin: ms(-10);
+  }
+}

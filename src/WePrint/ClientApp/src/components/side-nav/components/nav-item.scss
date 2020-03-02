@@ -1,11 +1,14 @@
 @import '../../../assets/styles/colors';
 
+$highlight-bar-width: 0.3em;
+
 .nav-item {
   position: relative;
   display: grid;
-  grid-template-areas: "icon title";
+  grid-template-areas: 'icon title';
   grid-template-columns: 2rem auto;
   height: 2rem;
+  padding-left: $highlight-bar-width;
 
   &:hover {
     background: $blue-2;
@@ -18,10 +21,10 @@
   &:hover:before,
   &--active:before {
     content: '';
-    background: $grey-4;
+    background: $grey-5;
     position: absolute;
     left: 0;
-    width: 0.3em;
+    width: $highlight-bar-width;
     height: 100%;
   }
 
@@ -45,8 +48,7 @@
     display: flex;
     align-items: center;
     grid-area: title;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
     font-weight: bold;
   }
-
 }

@@ -7,7 +7,13 @@ const Header = () => {
     <header className="header">
       <div className="header__logo">WePrint</div>
       <div className="header__menu-bar">
-        <input type="text" name="search" id="search " className="header__search" />
+        <input
+          type="text"
+          name="search"
+          id="search "
+          className="header__search"
+          placeholder="Search for makers or jobs"
+        />
         <div className="header__notif-area">
           <NotifArea />
         </div>

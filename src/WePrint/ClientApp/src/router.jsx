@@ -10,7 +10,8 @@ import {
   Home,
   PageNotFound,
   PostJob,
-  Topics,
+  JobDetail,
+  FinishedJobs,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -33,11 +34,14 @@ export default function AppRouter({ basename }) {
           <Route path="/post">
             <PostJob />
           </Route>
-          <Route path="/topics">
-            <Topics />
+          <Route path="/finished">
+            <FinishedJobs />
           </Route>
           <Route exact path="/">
             <Home />
+          </Route>
+          <Route path="/job/:jobId">
+            <JobDetail />
           </Route>
           <Route path="*">
             <PageNotFound />

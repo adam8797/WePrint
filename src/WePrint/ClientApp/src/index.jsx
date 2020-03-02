@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRouter from './router';
+import './fa-library';
 import './assets/styles/_base.scss';
 import { BidApi } from './api/BidApi';
 import { ArrayDeepEquals } from './api/CommonApi';
