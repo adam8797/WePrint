@@ -631,7 +631,7 @@ namespace WePrint.Controllers
         /// <param name="bidId"></param>
         /// <param name="patchDoc"></param>
         /// <returns></returns>
-        [HttpPatch("{id}/bids/{bidId")]
+        [HttpPatch("{id}/bids/{bidId}")]
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<ActionResult<BidModel>> PatchBid(string id, int bidId, [FromBody] JsonPatchDocument<BidModel> patchDoc)
         {
