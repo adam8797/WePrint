@@ -4,49 +4,24 @@ import JobCard from './components/job-card';
 
 import './job-grid.scss';
 
-function JobGrid({ jobs }) {
+function JobGrid(props) {
+  const { jobs } = props;
   return (
     <div className="job-grid">
-      <JobCard
-        name="DnD Minis"
-        jobId="1234"
-        user="Emily"
-        parts="4"
-        printTime="4h"
-        prints="4"
-        source="Thingiverse"
-        externalId="12345678"
-      />
-      <JobCard
-        name="DnD Minis"
-        jobId="1234"
-        user="Emily"
-        image="http://placekitten.com/250/250"
-        parts="4"
-        printTime="4h"
-        prints="4"
-        source="Custom"
-      />
-      <JobCard
-        name="DnD Minis"
-        jobId="1234"
-        user="Emily"
-        image="http://placekitten.com/500/500"
-        parts="4"
-        printTime="4h"
-        prints="4"
-        source="Custom"
-      />
-      <JobCard
-        name="DnD Minis"
-        jobId="1234"
-        user="Emily"
-        image="http://placekitten.com/900"
-        parts="4"
-        printTime="4h"
-        prints="4"
-        source="Custom"
-      />
+      {jobs.map(job => (
+        <JobCard
+          name={job.name}
+          image={job.image}
+          jobId={job.jobId}
+          user={job.user}
+          parts={job.parts}
+          printTime={job.printTime}
+          prints={job.prints}
+          source={job.source}
+          externalId={job.externalId}
+          key={job.jobId}
+        />
+      ))}
     </div>
   );
 }
