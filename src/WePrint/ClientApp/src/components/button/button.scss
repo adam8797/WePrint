@@ -2,7 +2,6 @@
 @import '../../assets/styles/sizes';
 
 .button {
-  padding: ms(-2);
   border: none;
   border-radius: 5px;
 
@@ -23,5 +22,22 @@
   &--primary {
     color: $white;
     background: $blue-1;
+  }
+
+  &--deselected {
+    color: black;
+    background: $grey-6;
+  }
+
+  &--small {
+    padding: ms(-3);
+  }
+
+  &--medium {
+    padding: ms(-2);
+  }
+
+  &--large {
+    padding: ms(-1);
   }
 }

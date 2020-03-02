@@ -2,14 +2,14 @@
 
 .header {
   display: grid;
-  grid-template-columns: 150px auto;
+  grid-template-columns: 200px auto;
   background: $white;
 
   &__logo {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 150px;
+    width: 200px;
     background: $blue-2;
     color: $white;
     font-size: 2rem;

@@ -15,9 +15,15 @@ export const ButtonSize = {
 };
 
 function Button(props) {
-  const { children, className, type, htmlType, size, icon, ...rest } = props;
+  const { children, className, type, htmlType, size, icon, selected, ...rest } = props;
 
-  const buttonClass = classNames('button', className, `button--${size}`, `button--${type}`);
+  const buttonClass = classNames(
+    'button',
+    className,
+    `button--${size}`,
+    `button--${type}`,
+    `button--${selected ? 'selected' : 'deselected'}`
+  );
 
   return (
     // eslint-disable-next-line react/button-has-type
@@ -37,15 +43,17 @@ Button.propTypes = {
   size: PropTypes.oneOf(Object.values(ButtonSize)),
   htmlType: PropTypes.string,
   icon: PropTypes.string,
+  selected: PropTypes.bool,
 };
 
 Button.defaultProps = {
   children: '',
   className: '',
   type: ButtonType.PRIMARY,
-  size: ButtonSize.SMALL,
+  size: ButtonSize.MEDIUM,
   htmlType: 'button',
   icon: '',
+  selected: true,
 };
 
 Button.Type = ButtonType;
