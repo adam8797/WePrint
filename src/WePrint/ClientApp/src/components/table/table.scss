@@ -17,8 +17,11 @@
   }
 }
 
+.table__footer {
+  text-align: center;
+}
+
 .table__content-count {
   color: $grey-3;
   padding-top: 20px;
-  text-align: center;
 }

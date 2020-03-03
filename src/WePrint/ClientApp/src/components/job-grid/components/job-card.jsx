@@ -7,7 +7,6 @@ import './job-card.scss';
 
 function JobCard(props) {
   const { image, name, jobId, user, source, externalId, parts, printTime, prints } = props;
-
   const history = useHistory();
 
   return (
@@ -54,12 +53,12 @@ JobCard.propTypes = {
   jobId: PropTypes.string.isRequired,
   user: PropTypes.string.isRequired,
   source: PropTypes.string.isRequired,
-  parts: PropTypes.string.isRequired,
-  prints: PropTypes.string.isRequired,
   // optional
   image: PropTypes.string,
   externalId: PropTypes.string,
   printTime: PropTypes.string,
+  parts: PropTypes.string,
+  prints: PropTypes.string,
 };
 
 JobCard.defaultProps = {
@@ -67,6 +66,8 @@ JobCard.defaultProps = {
   source: 'Custom',
   externalId: '',
   printTime: '-',
+  parts: '-',
+  prints: '-',
 };
 
 export default JobCard;

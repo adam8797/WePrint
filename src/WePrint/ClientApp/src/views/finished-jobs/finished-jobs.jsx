@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { JobApi } from '../../api/JobApi';
 
 import { BodyCard, JobGrid, SectionTitle, Table } from '../../components';
 
@@ -7,70 +8,8 @@ class FinishedJobs extends Component {
     super(props);
     this.state = {
       showGrid: true,
+      jobs: [],
     };
-
-    this.jobs = [
-      {
-        name: 'DnD Minis',
-        jobId: '1234',
-        user: 'Emily',
-        maker: 'Steve',
-        image: 'http://placekitten.com/500/500',
-        parts: '4',
-        price: '$10',
-        printTime: '4h',
-        prints: '4',
-        source: 'Custom',
-        status: 'Completed',
-        completedDate: '02/10/2020',
-        link: '/job/1234',
-      },
-      {
-        name: 'DnD Minis',
-        jobId: '5678',
-        user: 'Steve',
-        maker: 'Emily',
-        parts: '4',
-        price: '$0',
-        printTime: '4h',
-        prints: '4',
-        source: 'Thingiverse',
-        externalId: '1234567',
-        status: 'Completed',
-        completedDate: '03/01/2020',
-        link: '/job/1234',
-      },
-      {
-        name: 'DnD Minis',
-        jobId: '91011',
-        user: 'Emily',
-        maker: 'Mike',
-        image: 'http://placekitten.com/250',
-        parts: '4',
-        price: '$5',
-        printTime: '4h',
-        prints: '4',
-        source: 'Custom',
-        status: 'Cancelled',
-        completedDate: '-',
-        link: '/job/1234',
-      },
-      {
-        name: 'DnD Minis',
-        jobId: '147295',
-        user: 'Emily',
-        maker: 'luigi',
-        image: 'http://placekitten.com/420',
-        parts: '4',
-        price: '$50',
-        printTime: '4h',
-        prints: '4',
-        source: 'Custom',
-        status: 'Shipped',
-        completedDate: '-',
-        link: '/job/1234',
-      },
-    ];
 
     this.columns = [
       {
@@ -108,6 +47,16 @@ class FinishedJobs extends Component {
     ];
   }
 
+  componentDidMount() {
+    this.subscription = JobApi.TrackMyJobs(1000).subscribe(jobs => {
+      this.setState({ ...this.state, jobs });
+    }, console.error);
+  }
+
+  componentWillUnmount() {
+    if (this.subscription) this.subscription.unsubscribe();
+  }
+
   toggleGrid(showGrid) {
     this.setState({ showGrid: showGrid });
   }
@@ -115,10 +64,19 @@ class FinishedJobs extends Component {
   render() {
     let data;
 
+    let jobs = this.state.jobs.filter(job => {
+      if (job.status === 6 || job.status === 7 || job.status === 8) {
+        job.user = job.customerId.split('ApplicationUsers-')[1];
+        job.link = `/job/${job.id}`;
+        return true;
+      }
+      return false;
+    });
+
     if (this.state.showGrid) {
-      data = <JobGrid jobs={this.jobs} />;
+      data = <JobGrid jobs={jobs} />;
     } else {
-      data = <Table columns={this.columns} data={this.jobs} />;
+      data = <Table columns={this.columns} data={jobs} />;
     }
 
     const actions = [

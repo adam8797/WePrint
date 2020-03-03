@@ -23,6 +23,17 @@ function Table({ title, columns, data, actions }) {
     }
   }
 
+  function getTableFooter() {
+    if (!data.length) {
+      return <div>No Data To Display</div>;
+    }
+    return (
+      <div className="table__content-count">
+        Showing <strong>{data.length}</strong> Results
+      </div>
+    );
+  }
+
   return (
     <div className="table">
       {header}
@@ -55,9 +66,7 @@ function Table({ title, columns, data, actions }) {
           })}
         </tbody>
       </table>
-      <div className="table__content-count">
-        Showing <strong>{data.length}</strong> Results
-      </div>
+      <div className="table__footer">{getTableFooter()}</div>
     </div>
   );
 }
