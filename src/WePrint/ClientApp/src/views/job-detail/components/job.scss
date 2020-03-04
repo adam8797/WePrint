@@ -1,6 +1,10 @@
 @import '../../../assets/styles/sizes';
 @import '../../../assets/styles/colors';
 
+.job {
+  margin-bottom: 2em;
+}
+
 .job__title {
   font-size: $font-size-heading;
 }
