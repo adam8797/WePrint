@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Table } from '../../../components';
-import { JobApi } from '../../../api/JobApi';
-import JobPlaceholder from '../../../assets/images/job.png';
+import PropTypes from 'prop-types';
 import Moment from 'react-moment';
+import { Table } from '../../../components';
+import JobApi from '../../../api/JobApi';
+import JobPlaceholder from '../../../assets/images/job.png';
 
 import './job.scss';
 
@@ -67,7 +68,8 @@ class Job extends Component {
   }
 
   componentDidMount() {
-    this.subscription = JobApi.TrackJob(this.props.jobId, 1000).subscribe(job => {
+    const { jobId } = this.props;
+    this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
       this.setState({ job });
     }, console.error);
   }
@@ -77,24 +79,26 @@ class Job extends Component {
   }
 
   render() {
-    if (!Object.keys(this.state.job).length) {
+    const { job } = this.state;
+    if (!Object.keys(job).length) {
       return <div>Job Loading</div>;
     }
-    var timeLeft, bidDeadlineStyle;
-    if (this.state.job) {
+    let timeLeft;
+    let bidDeadlineStyle;
+    if (job) {
       bidDeadlineStyle = 'close';
       timeLeft = (
         <Moment fromNow ago>
-          {this.state.job.bidClose}
+          {job.bidClose}
         </Moment>
       );
     }
-    const poster = this.state.job.customerId.split('ApplicationUsers-')[1];
-    const status = this.state.job.status === 1 ? 'OPEN' : 'CLOSED';
+    const poster = job.customerId.split('ApplicationUsers-')[1];
+    const status = job.status === 1 ? 'OPEN' : 'CLOSED';
     return (
       <div className="job">
         <div className="job__header">
-          <span className="job__title">{this.state.job.name}</span>
+          <span className="job__title">{job.name}</span>
           <span className="job__subtitle">
             <span>Posted by: {poster}</span>
             <h4>
@@ -105,15 +109,11 @@ class Job extends Component {
           <hr />
         </div>
         <div className="job__body">
-          <img
-            className="job__image"
-            src={this.state.job.image || JobPlaceholder}
-            alt="Job Preview"
-          />
+          <img className="job__image" src={job.image || JobPlaceholder} alt="Job Preview" />
           <div className="job__detail">
             <span>
               <span className="job__section">Bid Deadline:</span>
-              {this.state.job.bidClose}
+              {job.bidClose}
               {timeLeft && (
                 <span className={`job__deadline--${bidDeadlineStyle}`}>
                   &nbsp; ({timeLeft} left)
@@ -122,21 +122,21 @@ class Job extends Component {
             </span>
             <span>
               <span className="job__section">Printer Type:</span>
-              {this.state.job.printerType}
+              {job.printerType}
             </span>
             <span>
               <span className="job__section">Material:</span>
-              {this.state.job.materialColor}&nbsp;
-              {this.state.job.materialType}
+              {job.materialColor}&nbsp;
+              {job.materialType}
             </span>
             <span>
               <span className="job__section">Destination:</span>
-              {this.state.job.address.zipCode}
+              {job.address.zipCode}
             </span>
             <span>
               <span className="job__section">Description:</span>
               <br />
-              <span className="job__description">{this.state.job.description}</span>
+              <span className="job__description">{job.description}</span>
             </span>
           </div>
         </div>
@@ -150,5 +150,9 @@ class Job extends Component {
     );
   }
 }
+
+Job.propTypes = {
+  jobId: PropTypes.string.isRequired,
+};
 
 export default Job;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { JobApi } from '../../api/JobApi';
+import JobApi from '../../api/JobApi';
 
 import { BodyCard, JobGrid, SectionTitle, Table } from '../../components';
 
@@ -58,25 +58,27 @@ class FinishedJobs extends Component {
   }
 
   toggleGrid(showGrid) {
-    this.setState({ showGrid: showGrid });
+    this.setState({ showGrid });
   }
 
   render() {
+    const { jobs, showGrid } = this.state;
     let data;
 
-    let jobs = this.state.jobs.filter(job => {
-      if (job.status === 6 || job.status === 7 || job.status === 8) {
-        job.user = job.customerId.split('ApplicationUsers-')[1];
-        job.link = `/job/${job.id}`;
-        return true;
-      }
-      return false;
-    });
+    const displayJobs = jobs
+      .filter(job => {
+        return job.status === 6 || job.status === 7 || job.status === 8;
+      })
+      .map(job => ({
+        ...job,
+        user: job.customerId.replace('ApplicationUsers-', ''),
+        link: `/job/${job.id}`,
+      }));
 
-    if (this.state.showGrid) {
-      data = <JobGrid jobs={jobs} />;
+    if (showGrid) {
+      data = <JobGrid jobs={displayJobs} />;
     } else {
-      data = <Table columns={this.columns} data={jobs} />;
+      data = <Table columns={this.columns} data={displayJobs} />;
     }
 
     const actions = [
@@ -84,13 +86,13 @@ class FinishedJobs extends Component {
         key: 'grid',
         icon: 'th',
         action: () => this.toggleGrid(true),
-        selected: this.state.showGrid,
+        selected: showGrid,
       },
       {
         key: 'list',
         icon: 'bars',
         action: () => this.toggleGrid(false),
-        selected: !this.state.showGrid,
+        selected: !showGrid,
       },
     ];
 

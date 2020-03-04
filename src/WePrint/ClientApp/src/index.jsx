@@ -4,9 +4,6 @@ import ReactDOM from 'react-dom';
 import AppRouter from './router';
 import './fa-library';
 import './assets/styles/_base.scss';
-import { BidApi } from './api/BidApi';
-import { ArrayDeepEquals } from './api/CommonApi';
-import { BidModel } from './models/BidModel';
 // import registerServiceWorker from './registerServiceWorker';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');

@@ -29,28 +29,34 @@ function JobGrid(props) {
 }
 
 JobGrid.propTypes = {
-  jobs: PropTypes.arrayOf({
-    // required
-    name: PropTypes.string.isRequired,
-    jobId: PropTypes.string.isRequired,
-    user: PropTypes.string.isRequired,
-    source: PropTypes.string.isRequired,
-    // optional
-    image: PropTypes.string,
-    externalId: PropTypes.string,
-    printTime: PropTypes.string,
-    parts: PropTypes.string,
-    prints: PropTypes.string,
-  }),
+  jobs: PropTypes.arrayOf(
+    PropTypes.shape({
+      // required
+      name: PropTypes.string.isRequired,
+      jobId: PropTypes.string.isRequired,
+      user: PropTypes.string.isRequired,
+      source: PropTypes.string.isRequired,
+      // optional
+      image: PropTypes.string,
+      externalId: PropTypes.string,
+      printTime: PropTypes.string,
+      parts: PropTypes.string,
+      prints: PropTypes.string,
+    })
+  ),
 };
 
 JobGrid.defaultProps = {
-  image: JobPlaceholder,
-  source: 'Custom',
-  externalId: '',
-  printTime: '-',
-  parts: '-',
-  prints: '-',
+  jobs: [
+    {
+      image: JobPlaceholder,
+      source: 'Custom',
+      externalId: '',
+      printTime: '-',
+      parts: '-',
+      prints: '-',
+    },
+  ],
 };
 
 export default JobGrid;

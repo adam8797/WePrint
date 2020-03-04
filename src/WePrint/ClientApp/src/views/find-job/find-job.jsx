@@ -1,6 +1,6 @@
 import React from 'react';
 import { BodyCard } from '../../components';
-import { JobApi } from '../../api/JobApi';
+import JobApi from '../../api/JobApi';
 
 // THIS IS A DEMO OF THE API
 // As jobs are added/removed from this user, they'll populate the list here
@@ -24,11 +24,12 @@ class FindJob extends React.Component {
   }
 
   render() {
+    const { myJobs } = this.state;
     return (
       <BodyCard>
         <h2>Find a Job</h2>
         <ul>
-          {this.state.myJobs.map(job => (
+          {myJobs.map(job => (
             <li key={job.id}>
               {job.id}: {job.name} {job.status}
             </li>

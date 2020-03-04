@@ -10,6 +10,8 @@ function JobCard(props) {
   const history = useHistory();
 
   return (
+    // TODO: may want to revisit this to enable keyboard interaction of the page?
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <div
       className="job-card"
       onClick={() => {
@@ -52,7 +54,7 @@ JobCard.propTypes = {
   name: PropTypes.string.isRequired,
   jobId: PropTypes.string.isRequired,
   user: PropTypes.string.isRequired,
-  source: PropTypes.string.isRequired,
+  source: PropTypes.string,
   // optional
   image: PropTypes.string,
   externalId: PropTypes.string,
