@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table } from '../../../components';
 import { JobApi } from '../../../api/JobApi';
 import JobPlaceholder from '../../../assets/images/job.png';
+import Moment from 'react-moment';
 
 import './job.scss';
 
@@ -67,7 +68,7 @@ class Job extends Component {
 
   componentDidMount() {
     this.subscription = JobApi.TrackJob(this.props.jobId, 1000).subscribe(job => {
-      this.setState({ ...this.state, job });
+      this.setState({ job });
     }, console.error);
   }
 
@@ -79,8 +80,15 @@ class Job extends Component {
     if (!Object.keys(this.state.job).length) {
       return <div>Job Loading</div>;
     }
-    const timeLeft = '';
-    const bidDeadlineStyle = 'close';
+    var timeLeft, bidDeadlineStyle;
+    if (this.state.job) {
+      bidDeadlineStyle = 'close';
+      timeLeft = (
+        <Moment fromNow ago>
+          {this.state.job.bidClose}
+        </Moment>
+      );
+    }
     const poster = this.state.job.customerId.split('ApplicationUsers-')[1];
     const status = this.state.job.status === 1 ? 'OPEN' : 'CLOSED';
     return (
@@ -106,7 +114,11 @@ class Job extends Component {
             <span>
               <span className="job__section">Bid Deadline:</span>
               {this.state.job.bidClose}
-              <span className={`job__deadline--${bidDeadlineStyle}`}>&nbsp; ({timeLeft} left)</span>
+              {timeLeft && (
+                <span className={`job__deadline--${bidDeadlineStyle}`}>
+                  &nbsp; ({timeLeft} left)
+                </span>
+              )}
             </span>
             <span>
               <span className="job__section">Printer Type:</span>

@@ -42,7 +42,7 @@ class Devices extends Component {
 
   componentDidMount() {
     this.subscription = PrinterApi.TrackMyPrinters(1000).subscribe(printers => {
-      this.setState({ ...this.state, printers });
+      this.setState({ printers });
     }, console.error);
   }
 
