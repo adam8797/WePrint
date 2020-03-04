@@ -1,53 +1,68 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { PrinterApi } from '../../api/PrinterApi';
 import { BodyCard, Table } from '../../components';
 
-function Devices() {
-  const columns = [
-    {
-      Header: 'Name',
-      accessor: 'name',
-    },
-    {
-      Header: 'Type',
-      accessor: 'type',
-    },
-    {
-      Header: 'Dimensions',
-      accessor: 'dimensions',
-    },
-    {
-      Header: 'Model',
-      accessor: 'model',
-    },
-  ];
-  const data = [
-    {
-      name: 'Boring Printer',
-      type: 'FDM',
-      dimensions: '250 x 210 x 200 mm',
-      model: 'Boring model',
-    },
-    {
-      name: 'Fun Printer',
-      type: 'SLA',
-      dimensions: '180 x 180 x 180 mm',
-      model: 'Fancy model',
-    },
-  ];
-  const actions = [
-    {
-      text: 'Add Device',
-      key: 'addDevice',
-      action: () => {
-        console.log('adding device');
+class Devices extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      printers: [],
+    };
+
+    this.columns = [
+      {
+        Header: 'Name',
+        accessor: 'name',
       },
-    },
-  ];
-  return (
-    <BodyCard>
-      <Table title="My Printers" columns={columns} data={data} actions={actions} />
-    </BodyCard>
-  );
+      {
+        Header: 'Type',
+        accessor: 'type',
+      },
+      {
+        Header: 'Dimensions',
+        accessor: 'dimensions',
+      },
+      {
+        Header: 'Model',
+        accessor: 'model',
+      },
+    ];
+
+    this.actions = [
+      {
+        text: 'Add Device',
+        key: 'addDevice',
+        action: () => {
+          console.log('adding device');
+        },
+      },
+    ];
+  }
+
+  componentDidMount() {
+    this.subscription = PrinterApi.TrackMyPrinters(1000).subscribe(printers => {
+      this.setState({ printers });
+    }, console.error);
+  }
+
+  componentWillUnmount() {
+    if (this.subscription) this.subscription.unsubscribe();
+  }
+
+  render() {
+    this.state.printers.map(p => (p.dimensions = `${p.XMax} x ${p.YMax} x ${p.ZMax} mm`));
+    return (
+      <BodyCard>
+        <Table
+          title="My Printers"
+          columns={this.columns}
+          data={this.state.printers}
+          actions={this.actions}
+        />
+      </BodyCard>
+    );
+  }
 }
 
 export default Devices;

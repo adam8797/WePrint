@@ -6,33 +6,33 @@ import { JobApi } from '../../api/JobApi';
 // As jobs are added/removed from this user, they'll populate the list here
 
 class FindJob extends React.Component {
-
-  constructor(){
+  constructor() {
     super();
-    this.state = { myJobs: [] }
+    this.state = { myJobs: [] };
   }
 
   componentDidMount() {
     // When the component mounts, we start tracking jobs. We store the subscription becasue we MUST unsubscribe when we're done with it.
-    this.subscription = JobApi.TrackMyJobs(1000).subscribe( myJobs => {
-      this.setState({ ...this.state, myJobs });
+    this.subscription = JobApi.TrackMyJobs(1000).subscribe(myJobs => {
+      this.setState({ myJobs });
     }, console.error);
   }
 
   componentWillUnmount() {
     // when we unmount, we unsubscribe.
-    if(this.subscription)
-      this.subscription.unsubscribe();
+    if (this.subscription) this.subscription.unsubscribe();
   }
 
-  render(){
+  render() {
     return (
       <BodyCard>
         <h2>Find a Job</h2>
         <ul>
-          {this.state.myJobs.map(job => 
-            <li key={job.id}>{job.id}: {job.name} {job.status}</li>
-          )}
+          {this.state.myJobs.map(job => (
+            <li key={job.id}>
+              {job.id}: {job.name} {job.status}
+            </li>
+          ))}
         </ul>
       </BodyCard>
     );

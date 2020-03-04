@@ -49,7 +49,7 @@ class FinishedJobs extends Component {
 
   componentDidMount() {
     this.subscription = JobApi.TrackMyJobs(1000).subscribe(jobs => {
-      this.setState({ ...this.state, jobs });
+      this.setState({ jobs });
     }, console.error);
   }
 
