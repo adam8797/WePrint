@@ -34,7 +34,7 @@ function checkProgressStatus(active, stateId) {
 
 function ArrowProgressBar({ states, active = 0 }) {
   return (
-    <div className="arrow-progress-bar">
+    <div className="arrow-progress-bar" style={{ '--num-arrows': states.length }}>
       <ProgressArrow
         name=""
         status={active > 0 ? ProgressStatus.COMPLETE : ProgressStatus.ACTIVE}

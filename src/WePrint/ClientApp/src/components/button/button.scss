@@ -23,6 +23,14 @@
     color: $white;
     background: $blue-1;
   }
+  &--success {
+    color: $white;
+    background: $green;
+  }
+  &--danger {
+    color: $white;
+    background: $red;
+  }
 
   &--deselected {
     color: black;

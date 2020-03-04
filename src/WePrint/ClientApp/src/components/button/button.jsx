@@ -6,6 +6,8 @@ import './button.scss';
 
 export const ButtonType = {
   PRIMARY: 'primary',
+  SUCCESS: 'success',
+  DANGER: 'danger',
 };
 
 export const ButtonSize = {
