@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PrinterApi } from '../../api/PrinterApi';
+import PrinterApi from '../../api/PrinterApi';
 import { BodyCard, Table } from '../../components';
 
 class Devices extends Component {
@@ -51,13 +51,16 @@ class Devices extends Component {
   }
 
   render() {
-    this.state.printers.map(p => (p.dimensions = `${p.XMax} x ${p.YMax} x ${p.ZMax} mm`));
+    const { printers } = this.state;
+    const printersWDimensions = printers.map(p => {
+      return { ...p, dimensions: `${p.XMax} x ${p.YMax} x ${p.ZMax} mm` };
+    });
     return (
       <BodyCard>
         <Table
           title="My Printers"
           columns={this.columns}
-          data={this.state.printers}
+          data={printersWDimensions}
           actions={this.actions}
         />
       </BodyCard>

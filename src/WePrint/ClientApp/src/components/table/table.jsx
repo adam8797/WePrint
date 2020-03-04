@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useTable } from 'react-table';
-import { SectionTitle } from '../../components';
+import SectionTitle from '../section-title/section-title';
 import './table.scss';
 
 function Table({ title, columns, data, actions }) {

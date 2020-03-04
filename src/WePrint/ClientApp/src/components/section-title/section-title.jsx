@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '../../components';
+import Button from '../button/button';
 import './section-title.scss';
 
 function SectionTitle({ title, id, actions }) {
