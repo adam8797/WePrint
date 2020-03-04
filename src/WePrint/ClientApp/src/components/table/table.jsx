@@ -12,11 +12,6 @@ function Table({ title, columns, data, actions }) {
   });
   const history = useHistory();
 
-  let header = '';
-  if (title) {
-    header = <SectionTitle title={title} actions={actions} />;
-  }
-
   function clickAction(row) {
     if (row.original.link) {
       history.push(row.original.link);
@@ -25,7 +20,7 @@ function Table({ title, columns, data, actions }) {
 
   function getTableFooter() {
     if (!data.length) {
-      return <div>No Data To Display</div>;
+      return <div className="table__content--empty">No Data To Display</div>;
     }
     return (
       <div className="table__content-count">
@@ -36,7 +31,7 @@ function Table({ title, columns, data, actions }) {
 
   return (
     <div className="table">
-      {header}
+      {title && <SectionTitle title={title} actions={actions} />}
       <table {...getTableProps()} className="table__content">
         <thead>
           {headerGroups.map(headerGroup => (
