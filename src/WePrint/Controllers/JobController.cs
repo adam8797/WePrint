@@ -4,6 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
@@ -50,7 +51,16 @@ namespace WePrint.Controllers
             if (user == null)
                 return Unauthorized();
 
-            return await Database.Query<JobModel>().Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id)).ToArrayAsync();
+            var jobs = await Database.Query<JobModel>()
+                .Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id))
+                .ToArrayAsync();
+
+            var returnableJobs = new List<JobModel>();
+            foreach (var j in jobs)
+            {
+                returnableJobs.Add(j.GetViewableJob(user.Id));
+            }
+            return returnableJobs;
         }
 
         // GET: /api/job/{id}
@@ -68,6 +78,27 @@ namespace WePrint.Controllers
                 return job;
 
             return Forbid();
+        }
+
+        // GET: /api/job/search
+        /// <summary>
+        /// Search for all jobs matching some string
+        /// </summary>
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<JobModel>>> SearchJob(string searchString)
+        {
+            var user = await CurrentUser;
+            var jobs = await Database.Query<JobModel>()
+                .Search(j => j.Name, searchString)
+                .Search(j => j.Description, searchString)
+                .ToArrayAsync();
+
+            var returnableJobs = new List<JobModel>();
+            foreach (var j in jobs)
+            {
+                returnableJobs.Add(j.GetViewableJob(user.Id));
+            }
+            return returnableJobs;
         }
 
         // POST: /api/job/

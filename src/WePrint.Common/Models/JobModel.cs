@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using WePrint.Common.Slicer.Models;
 
@@ -26,6 +27,19 @@ namespace WePrint.Common.Models
         public void ApplyChanges(JobUpdateModel update)
         {
             ReflectionHelper.CopyPropertiesTo(update, this);
+        }
+
+        public JobModel GetViewableJob(string userId)
+        {
+            JobModel returnable = this;
+            if (returnable.CustomerId != userId && returnable.Status < JobStatus.Closed)
+            {
+                returnable.Bids = returnable.Bids.Where(b => b.BidderId == userId).ToList();
+            }
+            if (returnable.MakerId != userId && returnable.CustomerId != userId)
+                returnable.Comments = new List<CommentModel>();
+                
+            return returnable;
         }
     }
 
