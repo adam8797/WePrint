@@ -5,7 +5,7 @@ using WePrint.Common.Slicer.Models;
 
 namespace WePrint.Common.Models
 {
-    public class JobModel : DbModel, IIdempotentDbModel
+    public class JobModel : DbModel
     {
         public BidModel AcceptedBid { get; set; }
         public string CustomerId { get; set; }
@@ -22,7 +22,6 @@ namespace WePrint.Common.Models
         public string Notes { get; set; }
         public DateTime BidClose { get; set; }
         public ICollection<CommentModel> Comments { get; set; }
-        public int IdempotencyKey { get; set; }
 
         public void ApplyChanges(JobUpdateModel update)
         {

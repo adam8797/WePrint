@@ -107,7 +107,7 @@ namespace WePrint.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<JobModel>> CreateJob() //ToDo: This should have a post model
+        public async Task<ActionResult<JobModel>> CreateJob([FromBody] JobUpdateModel enteredJob) //ToDo: This should have a post model
         {
             var user = await CurrentUser;
 
@@ -115,17 +115,16 @@ namespace WePrint.Controllers
             {
                 Status = JobStatus.PendingOpen,
                 Address = user.Address,
-                BidClose = DateTime.Today + TimeSpan.FromDays(3),
+                BidClose = (enteredJob.BidClose != null ? (DateTime) enteredJob.BidClose : DateTime.Today + TimeSpan.FromDays(3)),
                 Bids = new List<BidModel>(),
                 Comments = new List<CommentModel>(),
                 CustomerId = user.Id,
-                Description = "A new job",
-                IdempotencyKey = GlobalRandom.Next(),
-                MaterialColor = MaterialColor.Any,
-                MaterialType = MaterialType.PLA,
-                Name = "New Job",
-                PrinterType = PrinterType.SLA,
-                Notes = "",
+                Description = enteredJob.Description,
+                MaterialColor = (enteredJob.MaterialColor != null ? (MaterialColor)enteredJob.MaterialColor : MaterialColor.Any),
+                MaterialType = (enteredJob.MaterialType != null ? (MaterialType)enteredJob.MaterialType :  MaterialType.PLA),
+                Name = enteredJob.Name,
+                PrinterType = (enteredJob.PrinterType != null ? (PrinterType)enteredJob.PrinterType : PrinterType.SLA),
+                Notes = enteredJob.Notes,
             };
 
             await Database.StoreAsync(newJob);
@@ -154,9 +153,6 @@ namespace WePrint.Controllers
             }
             else
             {
-                if (job.IdempotencyKey != update.IdempotencyKey)
-                    return StatusCode((int) HttpStatusCode.Conflict, "Bad idempotency key. Job may have been updated.");
-
                 if ((await CurrentUser).Id != job.CustomerId)
                     return Unauthorized("Currently user is not the customer for this job");
 
@@ -164,7 +160,6 @@ namespace WePrint.Controllers
                     return Forbid();
 
                 job.ApplyChanges(update);
-                job.IdempotencyKey = GlobalRandom.Next();
             }
             
             await Database.SaveChangesAsync();
