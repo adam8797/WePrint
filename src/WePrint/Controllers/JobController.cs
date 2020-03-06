@@ -603,7 +603,7 @@ namespace WePrint.Controllers
 
 
             var user = await CurrentUser;
-            if (user.PrinterIds == null || !user.PrinterIds.Any())
+            if (user.Printers == null || !user.Printers.Any())
                 return Forbid(); // Is this the right return code? Feels good enough
 
             bid.BidderId = user.Id;
