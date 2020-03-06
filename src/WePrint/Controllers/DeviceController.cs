@@ -19,7 +19,7 @@ namespace WePrint.Controllers
     [Route("api/device")]
     public class DeviceController : WePrintController
     {
-        public DeviceController(ILogger log, IAsyncDocumentSession database) : base(log, database)
+        public DeviceController(ILogger<DeviceController> log, IAsyncDocumentSession database) : base(log, database)
         {
         }
 
