@@ -35,13 +35,13 @@ export default class BidApi {
     );
   }
 
-  // Returns an observable, which emits a bid Id and idempotency key when the bid is created.
+  // Returns an observable, which emits a bid Id when the bid is created.
   // If the creation fails, the observable returns an error.
   static CreateBid(bidModel) {
     return axios.post(BuildUrl('bid'), { params: bidModel }).pipe(ErrorOnBadStatus);
   }
 
-  // Returns an observable, which emits a bid Id and idempotency key when the bid is updated.
+  // Returns an observable, which emits a bid Id when the bid is updated.
   // If the update fails, the observable returns an error.
   static UpdateBid(id, bidModel) {
     return axios.put(BuildUrl('bid', id), { params: bidModel }).pipe(ErrorOnBadStatus);

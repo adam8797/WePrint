@@ -6,7 +6,7 @@ import PrinterModel from '../models/PrinterModel';
 
 export default class PrinterApi {
   static MyPrinters() {
-    return axios.get(BuildUrl('printer')).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl('device')).pipe(ErrorOnBadStatus);
   }
 
   static TrackMyPrinters(pollInterval) {
@@ -17,18 +17,18 @@ export default class PrinterApi {
   }
 
   static GetPrinter(id) {
-    return axios.get(BuildUrl('printer', id)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl('device', id)).pipe(ErrorOnBadStatus);
   }
 
   static CreatePrinter(printerModel) {
-    return axios.post(BuildUrl('printer'), { params: printerModel }).pipe(ErrorOnBadStatus);
+    return axios.post(BuildUrl('device'), { params: printerModel }).pipe(ErrorOnBadStatus);
   }
 
   static UpdatePrinter(id, printerModel) {
-    return axios.put(BuildUrl('printer', id), { params: printerModel }).pipe(ErrorOnBadStatus);
+    return axios.put(BuildUrl('device', id), { params: printerModel }).pipe(ErrorOnBadStatus);
   }
 
   static DeletePrinter(id) {
-    return axios.delete(BuildUrl('printer', id)).pipe(ErrorOnBadStatus);
+    return axios.delete(BuildUrl('device', id)).pipe(ErrorOnBadStatus);
   }
 }

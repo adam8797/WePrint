@@ -1,10 +1,11 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using WePrint.Common.Slicer.Models;
 
 namespace WePrint.Common.Models
 {
-    public class JobModel : DbModel, IIdempotentDbModel
+    public class JobModel : DbModel
     {
         public BidModel AcceptedBid { get; set; }
         public string CustomerId { get; set; }
@@ -21,18 +22,29 @@ namespace WePrint.Common.Models
         public string Notes { get; set; }
         public DateTime BidClose { get; set; }
         public ICollection<CommentModel> Comments { get; set; }
-        public int IdempotencyKey { get; set; }
 
         public void ApplyChanges(JobUpdateModel update)
         {
             ReflectionHelper.CopyPropertiesTo(update, this);
+        }
+
+        public JobModel GetViewableJob(string userId)
+        {
+            JobModel returnable = this;
+            if (returnable.CustomerId != userId && returnable.Status < JobStatus.Closed)
+            {
+                returnable.Bids = returnable.Bids.Where(b => b.BidderId == userId).ToList();
+            }
+            if (returnable.MakerId != userId && returnable.CustomerId != userId)
+                returnable.Comments = new List<CommentModel>();
+                
+            return returnable;
         }
     }
 
     public class JobUpdateModel
     {
         public string Id { get; set; }
-        public int IdempotencyKey { get; set; }
 
         // Everything past here is optional
         public AddressModel Address { get; set; }
