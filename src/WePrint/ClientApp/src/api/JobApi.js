@@ -29,6 +29,10 @@ export default class JobApi {
     return axios.put(BuildUrl('job', id), { params: jobModel }).pipe(ErrorOnBadStatus);
   }
 
+  static SearchJobs(searchString) {
+    return axios.get(BuildUrl('job', 'search')).pipe(ErrorOnBadStatus);
+  }
+
   // Tracks a job, returning an observable that emits a value every time the job changes
   static TrackJob(id, pollInterval) {
     return timer(0, pollInterval).pipe(

@@ -1,10 +1,10 @@
 import TimeModel from './TimeModel';
+import { MaterialType, MaterialColor, FinishType } from './Enums';
 
 export default class BidModel {
   constructor() {
     this.id = null;
     this.bidderId = null;
-    this.jobIdempotencyKey = 0;
     this.jobId = null;
     this.price = 0;
     this.workTime = new TimeModel();
@@ -14,10 +14,9 @@ export default class BidModel {
     this.fillPercentage = 0;
     this.supportDensity = 0;
     this.printerId = null;
-    this.materialType = 'ABS';
-    this.materialColor = 'Red';
-    this.finishType = 'None';
-    this.idempotencyKey = 0;
+    this.materialType = MaterialType.ABS;
+    this.materialColor = MaterialColor.Red;
+    this.finishType = FinishType.None;
     this.accepted = false;
   }
 

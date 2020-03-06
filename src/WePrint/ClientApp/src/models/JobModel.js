@@ -1,17 +1,17 @@
 import AddressModel from './AddressModel';
+import { JobStatus, PrinterType, MaterialType, MaterialColor } from './Enums';
 
 export default class JobModel {
   constructor() {
     this.id = null;
     this.name = null;
-    this.idempotencyKey = 0;
     this.customerId = null;
     this.makerId = null;
-    this.status = 'PendingOpen';
+    this.status = JobStatus.PendingOpen;
     this.description = '';
-    this.printerType = 'SLA';
-    this.materialType = 'ABS';
-    this.materialColor = 'Any';
+    this.printerType = PrinterType.SLA;
+    this.materialType = MaterialType.ABS;
+    this.materialColor = MaterialColor.Any;
     this.notes = '';
     this.bidClose = null;
     this.address = new AddressModel(null, null, null, 0);

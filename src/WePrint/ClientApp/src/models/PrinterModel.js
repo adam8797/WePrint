@@ -1,3 +1,5 @@
+import PrinterType from './Enums';
+
 export default class PrinterModel {
   constructor() {
     this.id = null;
@@ -5,7 +7,7 @@ export default class PrinterModel {
     this.xMax = 0;
     this.yMax = 0;
     this.zMax = 0;
-    this.printerType = 'SLA';
+    this.printerType = PrinterType.SLA;
     this.layerMin = 0;
   }
 
