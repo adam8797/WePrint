@@ -45,7 +45,6 @@ namespace WePrint.Common.Models
     public class JobUpdateModel
     {
         public string Id { get; set; }
-        public int IdempotencyKey { get; set; }
 
         // Everything past here is optional
         public AddressModel Address { get; set; }
