@@ -18,7 +18,7 @@ export default class JobModel {
   }
 
   static IdEquals(a, b) {
-    return a.id === b.id && a.idempotencyKey === b.idempotencyKey;
+    return a.id === b.id;
   }
 
   static AllPropsEquals(a, b) {

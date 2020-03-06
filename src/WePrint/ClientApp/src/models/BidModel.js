@@ -21,14 +21,13 @@ export default class BidModel {
   }
 
   static IdEquals(a, b) {
-    return a.id === b.id && a.idempotencyKey === b.idempotencyKey;
+      return a.id === b.id;
   }
 
   static AllPropertiesEqual(a, b) {
     return (
       BidModel.IdEquals(a, b) &&
       a.bidderId === b.bidderId &&
-      a.jobIdempotencyKey === b.jobIdempotencyKey &&
       a.jobId === b.jobId &&
       a.price === b.price &&
       TimeModel.AllPropertiesEqual(a.workTime, b.workTime) &&

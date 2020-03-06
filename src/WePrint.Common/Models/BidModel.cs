@@ -6,7 +6,6 @@ namespace WePrint.Common.Models
     {
         public int Id { get; set; }
         public string BidderId { get; set; }
-        // We store the Job Idempotency Key here so that if it doesn't match the jobs current idemp key, we know this bid is out-of-date and no longer valid.
         public string JobId { get; set; }
         public float Price { get; set; }
         public TimeSpan WorkTime { get; set; }

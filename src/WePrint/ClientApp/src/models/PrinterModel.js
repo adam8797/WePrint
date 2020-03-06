@@ -1,4 +1,4 @@
-import PrinterType from './Enums';
+import { PrinterType } from './Enums';
 
 export default class PrinterModel {
   constructor() {
