@@ -14,7 +14,7 @@ function JobGrid(props) {
     }
     return (
       <div className="job-grid__content-count">
-        Showing <strong>{jobs.length}</strong> Results
+        Showing <strong>{jobs.length}</strong> Result{jobs.length !== 1 && 's'}
       </div>
     );
   }

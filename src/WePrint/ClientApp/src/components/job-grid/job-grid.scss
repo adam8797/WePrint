@@ -1,16 +1,20 @@
 @import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
 
-.job-grid__content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 10px;
-
-  &--empty {
-    padding-top: 1em;
+.job-grid {
+  &__footer {
+    text-align: center;
+    color: $grey-3;
   }
-}
 
-.job-grid__footer {
-  text-align: center;
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 10px;
+
+    &--empty {
+      padding-top: 1em;
+    }
+  }
 }
