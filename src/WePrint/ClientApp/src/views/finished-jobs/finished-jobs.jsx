@@ -14,7 +14,11 @@ class FinishedJobs extends Component {
 
   componentDidMount() {
     this.subscription = JobApi.TrackMyJobs(1000).subscribe(jobs => {
-      this.setState({ jobs });
+      if (!Array.isArray(jobs)) {
+        this.setState({ jobs: [] });
+      } else {
+        this.setState({ jobs });
+      }
     }, console.error);
   }
 
