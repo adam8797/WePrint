@@ -33,11 +33,11 @@ JobGrid.propTypes = {
     PropTypes.shape({
       // required
       name: PropTypes.string.isRequired,
-      jobId: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
       user: PropTypes.string.isRequired,
-      source: PropTypes.string.isRequired,
       // optional
       image: PropTypes.string,
+      source: PropTypes.string,
       externalId: PropTypes.string,
       printTime: PropTypes.string,
       parts: PropTypes.string,

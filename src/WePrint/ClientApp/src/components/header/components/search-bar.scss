@@ -1,0 +1,33 @@
+@import '../../../assets/styles/colors';
+
+.search-bar__input {
+  margin-left: 1em;
+  border-radius: 100px;
+  border: 1px solid $grey-3;
+  width: 40em;
+  font-size: 0.8em;
+  padding: 4px 10px;
+  outline: none;
+}
+
+.search-bar__submit {
+  color: $white;
+  border-radius: 100px;
+  font-size: 0.9em;
+  padding: 4px;
+  width: 4em;
+  margin-left: -4.2em;
+  outline: none !important;
+  cursor: pointer;
+  background-color: $blue-1;
+  border: none;
+
+  &:hover {
+    background-color: $blue-2;
+  }
+
+  &:disabled {
+    cursor: no-drop;
+    background-color: $blue-3;
+  }
+}

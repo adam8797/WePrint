@@ -6,5 +6,6 @@ export { default as JobGrid } from './job-grid/job-grid';
 export { default as Table } from './table/table';
 export { default as SectionTitle } from './section-title/section-title';
 export { default as Button } from './button/button';
+export { default as ToggleableDisplay } from './toggleable-display/toggleable-display';
 export { ButtonType } from './button/button';
 export { ButtonSize } from './button/button';
