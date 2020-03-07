@@ -80,27 +80,6 @@ namespace WePrint.Controllers
             return Forbid();
         }
 
-        // GET: /api/job/search
-        /// <summary>
-        /// Search for all jobs matching some string
-        /// </summary>
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<JobModel>>> SearchJob(string searchString)
-        {
-            var user = await CurrentUser;
-            var jobs = await Database.Query<JobModel>()
-                .Search(j => j.Name, searchString)
-                .Search(j => j.Description, searchString)
-                .ToArrayAsync();
-
-            var returnableJobs = new List<JobModel>();
-            foreach (var j in jobs)
-            {
-                returnableJobs.Add(j.GetViewableJob(user.Id));
-            }
-            return returnableJobs;
-        }
-
         // POST: /api/job/
         /// <summary>
         /// Create a new Job with defaults

@@ -19,7 +19,7 @@ namespace WePrint.Controllers
     [Route("api/user")]
     public class UserController : WePrintController
     {
-        public UserController(ILogger log, IAsyncDocumentSession database) : base(log, database)
+        public UserController(ILogger<UserController> log, IAsyncDocumentSession database) : base(log, database)
         {
         }
 
