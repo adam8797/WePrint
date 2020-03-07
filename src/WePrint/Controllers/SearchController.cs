@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +36,8 @@ namespace WePrint.Controllers
                     .Search(j => j.Name, q)
                     .Search(j => j.Description, q);
             }
-            var result = (await jobs.ToListAsync()).Select(j => j.GetViewableJob(user.Id));
+
+            var result = (await jobs.ToListAsync()).Select(j => j.GetViewableJob(user?.Id));
             return Ok(result);
         }
 
