@@ -53,7 +53,6 @@ class ToggleableDisplay extends Component {
 
   render() {
     const { showGrid } = this.state;
-    let data;
     const actions = [
       {
         key: 'grid',
