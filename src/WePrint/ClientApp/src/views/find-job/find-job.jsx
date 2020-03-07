@@ -11,10 +11,6 @@ class FindJob extends React.Component {
     this.state = { jobResults: [] };
   }
 
-  componentWillUnmount() {
-    if (this.subscription) this.subscription.unsubscribe();
-  }
-
   render() {
     // get the current query string from the location
     const q = get(this, 'props.location.state.query', '');
@@ -22,8 +18,7 @@ class FindJob extends React.Component {
     // if the query string has changed...
     if (this.query !== q) {
       //we need to add remove the old subscription and add a new one
-      if (this.subscription) this.subscription.unsubscribe();
-      this.subscription = JobApi.SearchJobs(q).subscribe(jobResults => {
+      JobApi.SearchJobs(q).subscribe(jobResults => {
         this.setState({
           jobResults,
         });
