@@ -73,7 +73,7 @@ Table.propTypes = {
     PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
   ).isRequired,
   data: PropTypes.arrayOf(
-    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]))
   ).isRequired,
   actions: PropTypes.arrayOf(
     PropTypes.shape({ text: PropTypes.string, key: PropTypes.string, action: PropTypes.func })

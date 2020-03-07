@@ -1,6 +1,6 @@
 export default class AddressModel {
   constructor(streetAddress, city, state, zipCode) {
-    this.streetAdress = streetAddress;
+    this.streetAddress = streetAddress;
     this.city = city;
     this.state = state;
     this.zipCode = zipCode;
@@ -12,7 +12,7 @@ export default class AddressModel {
     if (a === b && a === undefined) return true;
     if (a !== undefined || b !== undefined) return false;
     return (
-      a.streetAdress === b.streetAdress &&
+      a.streetAddress === b.streetAddress &&
       a.city === b.city &&
       a.state === b.state &&
       a.zipCode === b.zipCode

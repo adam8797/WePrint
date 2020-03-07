@@ -22,11 +22,11 @@ export default class JobApi {
   }
 
   static CreateJob(jobModel) {
-    return axios.post(BuildUrl('job'), { params: jobModel }).pipe(ErrorOnBadStatus);
+    return axios.post(BuildUrl('job'), jobModel).pipe(ErrorOnBadStatus);
   }
 
   static UpdateJob(id, jobModel) {
-    return axios.put(BuildUrl('job', id), { params: jobModel }).pipe(ErrorOnBadStatus);
+    return axios.put(BuildUrl('job', id), jobModel).pipe(ErrorOnBadStatus);
   }
 
   // Returns an input object and output object. Subscribe to the output object to get search results.
@@ -52,5 +52,29 @@ export default class JobApi {
       exhaustMap(() => JobApi.GetJob(id)),
       distinctUntilChanged(JobModel.AllPropsEquals)
     );
+  }
+
+  //
+  // File Operations
+  //
+
+  static GetJobFiles(jobId) {
+    return axios.get(BuildUrl('job', jobId, 'files')).pipe(ErrorOnBadStatus);
+  }
+
+  static GetFile(jobId, fileName) {
+    return axios.get(BuildUrl('job', jobId, 'files', fileName)).pipe(ErrorOnBadStatus);
+  }
+
+  static CreateFile(jobId, file, onUploadProgress) {
+    return axios
+      .post(BuildUrl('job', jobId, 'files'), file, {
+        onUploadProgress: ProgressEvent => onUploadProgress(ProgressEvent, file),
+      })
+      .pipe(ErrorOnBadStatus);
+  }
+
+  static DeleteFile(jobId, fileName) {
+    return axios.delete(BuildUrl('job', jobId, 'files', fileName)).pipe(ErrorOnBadStatus);
   }
 }

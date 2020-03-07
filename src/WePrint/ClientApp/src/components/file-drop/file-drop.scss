@@ -29,4 +29,17 @@
   &--reject {
     border-color: $red;
   }
+
+  &--disabled {
+    cursor: not-allowed;
+    background: $grey-5;
+    color: $grey-3;
+    border-color: $grey-3;
+
+    &:focus,
+    &:hover {
+      background: $grey-5;
+      box-shadow: none;
+    }
+  }
 }

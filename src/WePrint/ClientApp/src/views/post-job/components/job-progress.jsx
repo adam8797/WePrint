@@ -32,15 +32,15 @@ function checkProgressStatus(active, stateId) {
   return ProgressStatus.INACTIVE;
 }
 
-function ArrowProgressBar({ states, active = 0 }) {
+function ArrowProgressBar({ stages, active = 0 }) {
   return (
-    <div className="arrow-progress-bar" style={{ '--num-arrows': states.length }}>
+    <div className="arrow-progress-bar" style={{ '--num-arrows': stages.length }}>
       <ProgressArrow
         name=""
         status={active > 0 ? ProgressStatus.COMPLETE : ProgressStatus.ACTIVE}
       />
-      {states &&
-        states.map((state, i) => {
+      {stages &&
+        stages.map((state, i) => {
           return (
             <ProgressArrow
               key={state.name}
@@ -49,16 +49,15 @@ function ArrowProgressBar({ states, active = 0 }) {
             />
           );
         })}
-      <ProgressArrow name="" status={checkProgressStatus(active, states.length - 1)} />
+      <ProgressArrow name="" status={checkProgressStatus(active, stages.length - 1)} />
     </div>
   );
 }
 
 ArrowProgressBar.propTypes = {
-  states: PropTypes.arrayOf(
+  stages: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
-      status: PropTypes.oneOf(Object.values(ProgressStatus)),
     })
   ).isRequired,
   active: PropTypes.number,
