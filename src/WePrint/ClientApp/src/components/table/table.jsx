@@ -24,7 +24,7 @@ function Table({ title, columns, data, actions }) {
     }
     return (
       <div className="table__content-count">
-        Showing <strong>{data.length}</strong> Results
+        Showing <strong>{data.length}</strong> Result{data.length !== 1 && 's'}
       </div>
     );
   }

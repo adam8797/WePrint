@@ -7,23 +7,38 @@ import './job-grid.scss';
 
 function JobGrid(props) {
   const { jobs } = props;
+
+  function getGridFooter() {
+    if (!jobs.length) {
+      return <div className="job-grid__content--empty">No Data To Display</div>;
+    }
+    return (
+      <div className="job-grid__content-count">
+        Showing <strong>{jobs.length}</strong> Result{jobs.length !== 1 && 's'}
+      </div>
+    );
+  }
+
   return (
     <div className="job-grid">
-      {jobs.map(job => (
-        <JobCard
-          name={job.name}
-          image={job.image}
-          jobId={job.id}
-          user={job.user}
-          parts={job.parts}
-          printTime={job.printTime}
-          prints={job.prints}
-          source={job.source}
-          externalId={job.externalId}
-          status={job.status}
-          key={job.id}
-        />
-      ))}
+      <div className="job-grid__content">
+        {jobs.map(job => (
+          <JobCard
+            name={job.name}
+            image={job.image}
+            jobId={job.id}
+            user={job.user}
+            parts={job.parts}
+            printTime={job.printTime}
+            prints={job.prints}
+            source={job.source}
+            externalId={job.externalId}
+            status={job.status}
+            key={job.id}
+          />
+        ))}
+      </div>
+      <div className="job-grid__footer">{getGridFooter()}</div>
     </div>
   );
 }
