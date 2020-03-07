@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using WePrint.Common.Models;
 
@@ -26,17 +27,17 @@ namespace WePrint.Controllers
         public async Task<ActionResult<IEnumerable<JobModel>>> SearchJob([FromQuery]string q)
         {
             var user = await CurrentUser;
-            var jobs = await Database.Query<JobModel>()
-                .Search(j => j.Name, q)
-                .Search(j => j.Description, q)
-                .ToArrayAsync();
 
-            var returnableJobs = new List<JobModel>();
-            foreach (var j in jobs)
+            IRavenQueryable<JobModel> jobs = Database.Query<JobModel>();
+
+            if (!string.IsNullOrWhiteSpace(q))
             {
-                returnableJobs.Add(j.GetViewableJob(user.Id));
+                jobs = jobs
+                    .Search(j => j.Name, q)
+                    .Search(j => j.Description, q);
             }
-            return returnableJobs;
+            var result = (await jobs.ToListAsync()).Select(j => j.GetViewableJob(user.Id));
+            return Ok(result);
         }
 
     }
