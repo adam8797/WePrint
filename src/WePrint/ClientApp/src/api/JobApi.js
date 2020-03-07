@@ -30,7 +30,7 @@ export default class JobApi {
   }
 
   static SearchJobs(searchString) {
-    return axios.get(BuildUrl('job', 'search', { params: { searchString } })).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl('search'), { params: { q: searchString } }).pipe(ErrorOnBadStatus);
   }
 
   // Tracks a job, returning an observable that emits a value every time the job changes
