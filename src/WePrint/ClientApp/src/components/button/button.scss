@@ -4,6 +4,11 @@
 .button {
   border: none;
   border-radius: 5px;
+  --btn-color: #{$grey-4};
+  --btn-bg: #{$grey-1};
+  --btn-bg-focus: #{$grey-5};
+  color: var(--btn-color);
+  background: var(--btn-bg);
 
   &__inner-container {
     display: flex;
@@ -16,20 +21,30 @@
 
   &:hover,
   &:focus {
-    background: $blue-2;
+    background: var(--btn-bg-focus);
   }
 
   &--primary {
-    color: $white;
-    background: $blue-1;
+    --btn-color: #{$white};
+    --btn-bg: #{$blue-1};
+    --btn-bg-focus: #{$blue-2};
   }
   &--success {
-    color: $white;
-    background: $green;
+    --btn-color: #{$white};
+    --btn-bg: #{$green};
+    --btn-bg-focus: #{lighten($green, 10)};
   }
   &--danger {
-    color: $white;
-    background: $red;
+    --btn-color: #{$white};
+    --btn-bg: #{$red};
+    --btn-bg-focus: #{lighten($red, 10)};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    --btn-color: #{$white};
+    --btn-bg: #{$grey-4};
+    --btn-bg-focus: #{$grey-4};
   }
 
   &--deselected {
