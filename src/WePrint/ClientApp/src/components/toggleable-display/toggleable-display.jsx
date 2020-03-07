@@ -69,16 +69,14 @@ class ToggleableDisplay extends Component {
       },
     ];
 
-    if (showGrid) {
-      data = <JobGrid jobs={this.props.data} />;
-    } else {
-      data = <Table columns={this.columns} data={this.props.data} />;
-    }
-
     return (
       <div>
         <SectionTitle title={this.props.title} actions={actions} />
-        {data}
+        {showGrid ? (
+          <JobGrid jobs={this.props.data} />
+        ) : (
+          <Table columns={this.columns} data={this.props.data} />
+        )}
       </div>
     );
   }

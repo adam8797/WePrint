@@ -10,21 +10,19 @@ class SearchBar extends Component {
       query: '',
       isButtonDisabled: true,
     };
-    this.submit = this.submit.bind(this);
-    this.textChange = this.textChange.bind(this);
   }
 
-  submit(e) {
+  submit = e => {
     this.props.history.push('/find', { query: this.state.query });
     e.preventDefault();
-  }
+  };
 
-  textChange(e) {
+  textChange = e => {
     this.setState({
       query: e.target.value,
       isButtonDisabled: e.target.value.length > 0 ? false : true,
     });
-  }
+  };
 
   render() {
     return (
