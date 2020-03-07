@@ -40,9 +40,9 @@ class NotifArea extends Component {
             </div>
             <div className="notif-area__avatar">
               {user.avatar ? (
-                <img src={user.avatar} alt="User Avatar" />
+                <img className="notif-area__ava-icon" src={user.avatar} alt="User Avatar" />
               ) : (
-                <Jdenticon value={`${user.id}`} />
+                <Jdenticon className="notif-area__ava-icon" value={`${user.id}`} />
               )}
             </div>
             <div className="notif-area__icon">
