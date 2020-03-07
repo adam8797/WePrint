@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
-import { BodyCard, Button, Table, WepInput, WepTextarea, WepDropdown } from '../../components';
+import moment from 'moment';
+import filesize from 'filesize';
+import {
+  BodyCard,
+  Button,
+  FileDrop,
+  Table,
+  WepInput,
+  WepTextarea,
+  WepDropdown,
+} from '../../components';
+import JobApi from '../../api/JobApi';
+import { MaterialType, MaterialColor, PrinterType, JobStatus } from '../../models/Enums';
+import JobModel from '../../models/JobModel';
 import ArrowProgressBar from './components/job-progress';
 import './post-job.scss';
 
@@ -7,7 +20,7 @@ class PostJob extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentStage: 0,
+      currentStage: 2,
       jobType: '',
       title: '',
       biddingPeriod: '',
@@ -15,18 +28,37 @@ class PostJob extends Component {
       materialColor: '',
       shippingLocation: '',
       description: '',
-      fileData: [
-        {
-          filename: 'test.txt',
-          size: '200MB',
-          progress: 'Processing',
-        },
-      ],
+      files: [],
     };
   }
 
   setJobType(jobType) {
     this.setState({ jobType });
+  }
+
+  removeFile = i => {
+    this.setState(prevState => ({
+      files: [...prevState.files.slice(0, i), ...prevState.files.slice(i + 1)],
+    }));
+  };
+
+  handleFileChange = newFiles => {
+    const { files: currFiles } = this.state;
+    const maxFiles = 5;
+    if (
+      currFiles.length >= maxFiles ||
+      currFiles.length + newFiles.length > maxFiles ||
+      newFiles.length > maxFiles
+    ) {
+      console.log("That's too many files!");
+      return;
+    }
+    if (newFiles && newFiles.length)
+      this.setState(prevState => ({ files: [...prevState.files, ...newFiles] }));
+  };
+
+  handleFormChange(prop, value) {
+    this.setState({ [prop]: value });
   }
 
   advanceStage() {
@@ -49,10 +81,18 @@ class PostJob extends Component {
       biddingPeriod,
       materialType,
       materialColor,
-      shippingLocation,
+      // shippingLocation,
       description,
-      fileData,
+      files,
+      // fileData,
     } = this.state;
+
+    const fileData = files.map(file => ({
+      filename: file.name,
+      size: file.size,
+      progress: 'uploading',
+    }));
+
     const states = [
       {
         name: 'Job Type',
@@ -68,35 +108,49 @@ class PostJob extends Component {
       },
     ];
 
-    const matOptions = [
-      {
-        displayName: '',
-        value: '',
-      },
-      {
-        displayName: 'The Red one',
-        value: 'red',
-      },
-      {
-        displayName: 'Maybe blue?',
-        value: 'blue',
-      },
+    const biddingOpts = [
+      { displayName: '', value: '' },
+      { displayName: '1 Day', value: '1' },
+      { displayName: '2 Days', value: '2' },
+      { displayName: '3 Days', value: '3' },
+      { displayName: '4 Days', value: '4' },
+      { displayName: '5 Days', value: '5' },
+    ];
+
+    const matTypeOpts = [
+      { displayName: '', value: '' },
+      ...Object.entries(MaterialType).map(([key, value]) => ({ displayName: value, value: key })),
+    ];
+    const matColorOpts = [
+      { displayName: '', value: '' },
+      ...Object.entries(MaterialColor).map(([key, value]) => ({ displayName: value, value: key })),
     ];
 
     const fileUploadCols = [
       {
-        Header: 'Filename',
+        id: 'delete',
         accessor: 'filename',
+        Cell: ({ row: { id } }) => {
+          return (
+            <Button
+              icon="trash"
+              size={Button.Size.SMALL}
+              type={Button.Type.DANGER}
+              onClick={() => this.removeFile(+id)}
+            />
+          );
+        },
       },
+      { Header: 'Filename', accessor: 'filename' },
       {
         Header: 'Size',
         accessor: 'size',
+        Cell: ({ cell: { value } }) => filesize(value),
       },
-      {
-        Header: 'Progress',
-        accessor: 'progress',
-      },
+      { Header: 'Progress', accessor: 'progress' },
     ];
+
+    const jobFormValid = jobType && title && biddingPeriod && materialType && materialColor;
 
     return (
       <>
@@ -106,23 +160,23 @@ class PostJob extends Component {
             <h2>Select Type of Job</h2>
             <div className="type-buttons">
               <Button
-                type={jobType === 'FDM' ? Button.Type.SUCCESS : Button.Type.PRIMARY}
+                type={jobType === PrinterType.FDM ? Button.Type.SUCCESS : Button.Type.PRIMARY}
                 size={Button.Size.LARGE}
-                onClick={() => this.setJobType('FDM')}
+                onClick={() => this.setJobType(PrinterType.FDM)}
               >
                 FDM
               </Button>
               <Button
-                type={jobType === 'SLA' ? Button.Type.SUCCESS : Button.Type.PRIMARY}
+                type={jobType === PrinterType.SLA ? Button.Type.SUCCESS : Button.Type.PRIMARY}
                 size={Button.Size.LARGE}
-                onClick={() => this.setJobType('SLA')}
+                onClick={() => this.setJobType(PrinterType.SLA)}
               >
                 SLA
               </Button>
               <Button
-                type={jobType === 'Laser' ? Button.Type.SUCCESS : Button.Type.PRIMARY}
+                type={jobType === PrinterType.LaserCut ? Button.Type.SUCCESS : Button.Type.PRIMARY}
                 size={Button.Size.LARGE}
-                onClick={() => this.setJobType('Laser')}
+                onClick={() => this.setJobType(PrinterType.LaserCut)}
               >
                 Laser
               </Button>
@@ -155,11 +209,12 @@ class PostJob extends Component {
               </div>
               <div className="input-group">
                 <label htmlFor="title">Bidding Period:</label>
-                <WepInput
+                <WepDropdown
                   name="biddingPeriod"
                   id="biddingPeriod"
                   value={biddingPeriod}
-                  placeholder="Bidding Period"
+                  placeholder="Bidding Period..."
+                  options={biddingOpts}
                   handleChange={ev => this.handleFormChange('biddingPeriod', ev.target.value)}
                 />
               </div>
@@ -170,7 +225,7 @@ class PostJob extends Component {
                   id="materialType"
                   value={materialType}
                   placeholder="Select one..."
-                  options={matOptions}
+                  options={matTypeOpts}
                   handleChange={ev => this.handleFormChange('materialType', ev.target.value)}
                 />
               </div>
@@ -181,11 +236,11 @@ class PostJob extends Component {
                   id="materialColor"
                   value={materialColor}
                   placeholder="Select one..."
-                  options={matOptions}
+                  options={matColorOpts}
                   handleChange={ev => this.handleFormChange('materialColor', ev.target.value)}
                 />
               </div>
-              <div className="input-group input-group--wide">
+              {/* <div className="input-group input-group--wide">
                 <label htmlFor="shippingLocation">Shipping Location:</label>
                 <WepInput
                   name="shippingLocation"
@@ -194,7 +249,7 @@ class PostJob extends Component {
                   placeholder="Location..."
                   handleChange={ev => this.handleFormChange('shippingLocation', ev.target.value)}
                 />
-              </div>
+              </div> */}
               <div className="input-group input-group--wide">
                 <label htmlFor="description">Description:</label>
                 <WepTextarea
@@ -217,7 +272,7 @@ class PostJob extends Component {
               <Button
                 type={Button.Type.SUCCESS}
                 className="body-card__action-right"
-                onClick={() => this.advanceStage()}
+                disabled={!jobFormValid}
               >
                 Next
               </Button>
@@ -227,7 +282,11 @@ class PostJob extends Component {
         {currentStage === 2 && (
           <BodyCard centered className="post-job-page">
             <h2>Upload Files</h2>
-            <div className="file-drop-area">Drag Files Here!</div>
+            <FileDrop
+              className="post-job-page__file-drop"
+              handleFiles={this.handleFileChange}
+              multiple
+            />
             <div className="file-list">
               <Table columns={fileUploadCols} data={fileData} emptyMessage="No files added yet" />
             </div>
@@ -243,6 +302,7 @@ class PostJob extends Component {
                 type={Button.Type.SUCCESS}
                 className="body-card__action-right"
                 onClick={() => this.advanceStage()}
+                disabled={!files.length}
               >
                 Next
               </Button>

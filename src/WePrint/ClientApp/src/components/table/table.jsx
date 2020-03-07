@@ -69,8 +69,12 @@ function Table({ title, columns, data, actions, emptyMessage }) {
 Table.propTypes = {
   title: PropTypes.string,
   emptyMessage: PropTypes.string,
-  columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  columns: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
+  ).isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))
+  ).isRequired,
   actions: PropTypes.arrayOf(
     PropTypes.shape({ text: PropTypes.string, key: PropTypes.string, action: PropTypes.func })
   ),

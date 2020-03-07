@@ -29,15 +29,9 @@
     }
   }
 
-  .file-drop-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
+  &__file-drop {
+    min-height: 150px;
     margin-bottom: 1rem;
-    border: 2px dashed $blue-2;
-    border-radius: 20px;
-    font-size: ms(2);
   }
 
   .file-list {

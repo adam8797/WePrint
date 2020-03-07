@@ -1,0 +1,32 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.file-drop {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed $blue-2;
+  border-radius: 20px;
+  font-size: ms(2);
+  outline: none;
+  cursor: pointer;
+
+  &:focus,
+  &:hover {
+    background: $grey-6;
+    box-shadow: 0 0 3px $blue-2;
+  }
+
+  &--active {
+    color: $white;
+    background: $grey-4;
+    border-style: solid;
+    box-shadow: 0 0 3px $blue-2;
+  }
+  &--accept {
+    border-color: $green;
+  }
+  &--reject {
+    border-color: $red;
+  }
+}

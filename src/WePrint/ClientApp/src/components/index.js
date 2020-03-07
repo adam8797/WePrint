@@ -12,3 +12,4 @@ export { ButtonSize } from './button/button';
 export { default as WepInput } from './wep-input/wep-input';
 export { default as WepTextarea } from './wep-textarea/wep-textarea';
 export { default as WepDropdown } from './wep-dropdown/wep-dropdown';
+export { default as FileDrop } from './file-drop/file-drop';
