@@ -1,6 +1,6 @@
 import axios from 'axios-observable';
-import { timer } from 'rxjs';
-import { exhaustMap, distinctUntilChanged } from 'rxjs/operators';
+import { timer, Subject } from 'rxjs';
+import { exhaustMap, distinctUntilChanged, switchMap, auditTime } from 'rxjs/operators';
 import { BuildUrl, ErrorOnBadStatus, ArrayDeepEquals } from './CommonApi';
 import JobModel from '../models/JobModel';
 
@@ -29,8 +29,21 @@ export default class JobApi {
     return axios.put(BuildUrl('job', id), { params: jobModel }).pipe(ErrorOnBadStatus);
   }
 
-  static SearchJobs(searchString) {
-    return axios.get(BuildUrl('search'), { params: { q: searchString } }).pipe(ErrorOnBadStatus);
+  // Returns an input object and output object. Subscribe to the output object to get search results.
+  // Submit searches by calling .next("queryString") on the input object.
+  // Requests will be automatically debounced, and old requests automatically cancelled.
+  static BuildSearchStream() {
+    const input = new Subject();
+    return { input, output: JobApi.SearchJobsStream(input) };
+  }
+
+  // Probably most useful as a helper for BuildSearchStream();
+  static SearchJobsStream(inputObservable) {
+    return inputObservable.pipe(auditTime(1000), switchMap(JobApi.SearchJobs));
+  }
+
+  static SearchJobs(q) {
+    return axios.get(BuildUrl('search'), { params: { q } }).pipe(ErrorOnBadStatus);
   }
 
   // Tracks a job, returning an observable that emits a value every time the job changes
