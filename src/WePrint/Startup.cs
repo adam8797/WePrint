@@ -52,10 +52,10 @@ namespace WePrint
                             (ravenOptions, config) => config.Bind(ravenOptions.Settings))
                         .Wait();
 
-                    x.BeforeInitializeDocStore = store =>
-                    {
-                        store.Conventions.IdentityPartsSeparator = "-";
-                    };
+                    //x.BeforeInitializeDocStore = store =>
+                    //{
+                    //    store.Conventions.IdentityPartsSeparator = "-";
+                    //};
                 })
                 .AddRavenDbAsyncSession()
                 .AddRavenDbSession();
@@ -70,10 +70,16 @@ namespace WePrint
 
             services.AddSingleton<RavenPersistedGrantStore>();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
+                {
+                    opts.Password.RequireDigit = false;
+                    opts.Password.RequireLowercase = false;
+                    opts.Password.RequireNonAlphanumeric = false;
+                    opts.Password.RequiredLength = 1;
+                    opts.Password.RequireUppercase = false;
+                })
                 .AddRavenDbIdentityStores<ApplicationUser>()
-                .AddDefaultTokenProviders()
-                .AddDefaultUI();
+                .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                 .AddIdentityResources()

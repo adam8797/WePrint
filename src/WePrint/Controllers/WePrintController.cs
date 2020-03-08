@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Nito.AsyncEx;
@@ -15,23 +16,17 @@ namespace WePrint.Controllers
     {
         protected readonly IAsyncDocumentSession Database;
         protected readonly ILogger Log;
+        protected readonly UserManager<ApplicationUser> UserManager;
 
         // This lazy may be unnecessary since Raven may do this for us, but I'm not sure
         protected readonly AsyncLazy<ApplicationUser> CurrentUser;
 
-        protected WePrintController(ILogger log, IAsyncDocumentSession database)
+        protected WePrintController(ILogger log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database)
         {
             Database = database;
             Log = log;
-            CurrentUser = new AsyncLazy<ApplicationUser>(async () =>
-            {
-                var identity = HttpContext.User.Identity;
-
-                if (!identity.IsAuthenticated)
-                    return null;
-
-                return await Database.Query<ApplicationUser>().SingleOrDefaultAsync(x => x.Email == identity.Name);
-            });
+            UserManager = userManager;
+            CurrentUser = new AsyncLazy<ApplicationUser>(async () => await UserManager.GetUserAsync(HttpContext.User));
         }
 
         protected async Task<IEnumerable<ApplicationUser>> GetUsers()

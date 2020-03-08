@@ -9,5 +9,12 @@ module.exports = {
     'react/require-default-props': [2, { ignoreFunctionalComponents: true }],
     /* prevents divs from having click handlers... common */
     'jsx-a11y/no-static-element-interactions': 'off',
+    'jsx-a11y/label-has-associated-control': [
+      2,
+      {
+        controlComponents: ['WepInput', 'WepTextarea', 'WepDropdown'],
+        depth: 3,
+      },
+    ],
   },
 };

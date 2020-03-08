@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
@@ -19,7 +20,7 @@ namespace WePrint.Controllers
     [Route("api/user")]
     public class UserController : WePrintController
     {
-        public UserController(ILogger<UserController> log, IAsyncDocumentSession database) : base(log, database)
+        public UserController(ILogger<UserController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
         {
         }
 
@@ -28,7 +29,8 @@ namespace WePrint.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
             var user = await CurrentUser;
-            if (user == null) return Unauthorized();
+            if (user == null)
+                return Unauthorized();
 
             return Json(user.GetPublicModel());
         }

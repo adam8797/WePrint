@@ -11,6 +11,6 @@ namespace WePrint.Common.Slicer.Impl
         public string Job { get; set; }
         public ICollection<string> Files { get; set; }
         public string Worker { get; set; }
-        public JobStatus Status { get; set; }
+        public SliceJobStatus Status { get; set; }
     }
 }

@@ -18,7 +18,6 @@ using WePrint.Slicer.Impl;
 using WePrint.Slicer.Interface;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using JobStatus = WePrint.Common.JobStatus;
 
 namespace WePrint.Slicer
 {
@@ -103,7 +102,7 @@ namespace WePrint.Slicer
                     Console.WriteLine("Loaded Job from Database");
 
                     Console.WriteLine("Marking slice job as active");
-                    slicejob.Status = JobStatus.Processing;
+                    slicejob.Status = SliceJobStatus.Processing;
                     slicejob.Worker = _instanceId;
                     session.SaveChanges();
 
@@ -152,7 +151,7 @@ namespace WePrint.Slicer
                         if (_config["CleanupSliceJobs"].ToLower() == "true")
                             session.Delete(slicejob);
                         else
-                            slicejob.Status = JobStatus.Complete;
+                            slicejob.Status = SliceJobStatus.Complete;
 
                         session.SaveChanges();
                     }
@@ -161,7 +160,7 @@ namespace WePrint.Slicer
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error Caught: " + ex);
-                    slicejob.Status = JobStatus.Error;
+                    slicejob.Status = SliceJobStatus.Error;
                     session.SaveChanges();
                 }
 

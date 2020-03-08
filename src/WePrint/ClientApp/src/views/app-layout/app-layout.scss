@@ -35,5 +35,6 @@
   &__content {
     display: grid;
     min-height: 100%;
+    grid-template-rows: auto 1fr;
   }
 }

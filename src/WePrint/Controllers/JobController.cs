@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,14 +24,18 @@ using WePrint.Common.ServiceDiscovery;
 
 namespace WePrint.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/job")]
     public class JobController : WePrintController
     {
         private readonly IConfiguration _configuration;
 
-        public JobController(ILogger<JobController> logger, IAsyncDocumentSession database, IConfiguration configuration) : base(logger, database)
+        public JobController(
+            ILogger<JobController> logger, 
+            IAsyncDocumentSession database, 
+            UserManager<ApplicationUser> userManager, 
+            IConfiguration configuration) 
+            : base(logger, userManager, database)
         {
             _configuration = configuration;
         }
@@ -47,7 +52,6 @@ namespace WePrint.Controllers
         public async Task<ActionResult<IEnumerable<JobViewModel>>> GetJobs()
         {
             var user = await CurrentUser;
-
             if (user == null)
                 return Unauthorized();
 
@@ -57,7 +61,9 @@ namespace WePrint.Controllers
 
             var allUsers = await GetUsers(); // This is a kludge because I can't figure out how to include all the fields we need
             return jobs.Select(job => new JobViewModel(job, allUsers, user.Id)).ToList();
+
         }
+
 
         // GET: /api/job/{id}
         /// <summary>
@@ -68,8 +74,11 @@ namespace WePrint.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<JobViewModel>> GetJob(string id)
         {
-            var job = await Database.LoadAsync<JobModel>(id);
             var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
+            var job = await Database.LoadAsync<JobModel>(id);
 
             var allUsers = await GetUsers();
             if (await CheckJobAccess(job))
@@ -84,23 +93,26 @@ namespace WePrint.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<JobModel>> CreateJob([FromBody] JobUpdateModel enteredJob) //ToDo: This should have a post model
+        public async Task<ActionResult<JobModel>> CreateJob([FromBody] JobUpdateModel enteredJob)
         {
             var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
 
             var newJob = new JobModel()
             {
+                Id = "",
                 Status = JobStatus.PendingOpen,
                 Address = user.Address,
-                BidClose = (enteredJob.BidClose != null ? (DateTime) enteredJob.BidClose : DateTime.Today + TimeSpan.FromDays(3)),
+                BidClose = enteredJob.BidClose ?? DateTime.Today + TimeSpan.FromDays(3),
                 Bids = new List<BidModel>(),
                 Comments = new List<CommentModel>(),
                 CustomerId = user.Id,
                 Description = enteredJob.Description,
-                MaterialColor = (enteredJob.MaterialColor != null ? (MaterialColor)enteredJob.MaterialColor : MaterialColor.Any),
-                MaterialType = (enteredJob.MaterialType != null ? (MaterialType)enteredJob.MaterialType :  MaterialType.PLA),
+                MaterialColor = enteredJob.MaterialColor ?? MaterialColor.Any,
+                MaterialType = enteredJob.MaterialType ?? MaterialType.PLA,
                 Name = enteredJob.Name,
-                PrinterType = (enteredJob.PrinterType != null ? (PrinterType)enteredJob.PrinterType : PrinterType.SLA),
+                PrinterType = enteredJob.PrinterType ?? PrinterType.SLA,
                 Notes = enteredJob.Notes,
             };
 
@@ -120,6 +132,10 @@ namespace WePrint.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<JobModel>> UpdateJob(string id, [FromBody] JobUpdateModel update)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -152,6 +168,10 @@ namespace WePrint.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult<JobModel>> PatchJob(string id, [FromBody] JsonPatchDocument<JobModel> patchDoc)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (!await CheckJobAccess(job))
@@ -174,6 +194,10 @@ namespace WePrint.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJob(string id)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if ((await CurrentUser).Id != job.CustomerId)
@@ -202,6 +226,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> GetFiles(string id)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -227,6 +255,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> GetFile(string id, string filename)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -254,6 +286,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> UploadFile(string id, IFormFile file)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -294,6 +330,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> DeleteFile(string id, string filename)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -321,6 +361,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Files" })]
         public async Task<IActionResult> RenameFile(string id, string filename, string newName)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -351,6 +395,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Comments" })]
         public async Task<ActionResult<List<CommentViewModel>>> ListComments(string id)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -374,6 +422,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Comments" })]
         public async Task<ActionResult<CommentViewModel>> GetComment(string id, int commentId)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -403,6 +455,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Comments" })]
         public async Task<IActionResult> AddComment(string id, CommentModel comment)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
@@ -436,6 +492,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Comments" })]
         public async Task<IActionResult> AddOrUpdateComment(string id, int commentId, CommentModel update)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (!await CheckJobAccess(job))
@@ -482,6 +542,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Comments" })]
         public async Task<ActionResult<CommentModel>> DeleteComment(string id, int commentId)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (!await CheckJobAccess(job))
@@ -520,13 +584,16 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<ActionResult<List<BidViewModel>>> ListBids(string id)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
                 return NotFound(id);
 
 
-            var user = await CurrentUser;
             if (job.CustomerId != user.Id && job.Status < JobStatus.BiddingClosed)
                 return Forbid();
 
@@ -546,12 +613,15 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<ActionResult<BidViewModel>> GetBid(string id, int bidId)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
                 return NotFound(id);
 
-            var user = await CurrentUser;
             var bid = job.Bids.SingleOrDefault(x => x.Id == bidId);
             if (bid == null)
                 return NotFound();
@@ -574,13 +644,16 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<IActionResult> AddBid(string id, BidModel bid)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)
                 return NotFound(id);
 
 
-            var user = await CurrentUser;
             if (user.Printers == null || !user.Printers.Any())
                 return Forbid(); // Is this the right return code? Feels good enough
 
@@ -607,11 +680,14 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<IActionResult> AddOrUpdateBid(string id, int bidId, BidModel update)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
             if (job == null)
                 return NotFound("Job not found");
 
-            var user = await CurrentUser;
             update.BidderId = (await CurrentUser).Id;
             var oldBid = job.Bids.SingleOrDefault(x => x.Id == bidId);
 
@@ -644,6 +720,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<ActionResult<BidModel>> PatchBid(string id, int bidId, [FromBody] JsonPatchDocument<BidModel> patchDoc)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
             if (job == null)
                 return NotFound("Job not found");
@@ -673,6 +753,10 @@ namespace WePrint.Controllers
         [SwaggerOperation(Tags = new []{ "Bids" })]
         public async Task<ActionResult<BidModel>> DeleteBid(string id, int bidId)
         {
+            var user = await CurrentUser;
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
             if (job == null)

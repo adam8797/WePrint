@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
@@ -15,7 +16,7 @@ namespace WePrint.Controllers
     [Route("api/search")]
     public class SearchController : WePrintController
     {
-        public SearchController(ILogger<SearchController> log, IAsyncDocumentSession database) : base(log, database)
+        public SearchController(ILogger<SearchController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
         {
         }
 

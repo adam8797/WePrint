@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace WePrint.Common
 {
-    public enum MachineType
-    {
-        FDM,
-        SLA,
-    }
-
-    public enum JobStatus
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum SliceJobStatus
     {
         Waiting,
         Processing,

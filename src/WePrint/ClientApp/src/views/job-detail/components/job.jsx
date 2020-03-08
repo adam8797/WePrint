@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import { Table } from '../../../components';
 import JobApi from '../../../api/JobApi';
+import UserApi from '../../../api/UserApi';
 import JobPlaceholder from '../../../assets/images/job.png';
 
 import './job.scss';
@@ -11,7 +12,8 @@ class Job extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      job: {},
+        job: {},
+        customer: {}
     };
     this.filesTableCols = [
       {
@@ -69,9 +71,11 @@ class Job extends Component {
 
   componentDidMount() {
     const { jobId } = this.props;
-    this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
-      this.setState({ job });
-    }, console.error);
+      this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
+          UserApi.GetUser(job.customerId).subscribe(customer => {
+              this.setState({ job, customer });
+          });
+      }, console.error);
   }
 
   componentWillUnmount() {
@@ -79,7 +83,7 @@ class Job extends Component {
   }
 
   render() {
-    const { job } = this.state;
+    const { job, customer } = this.state;
     if (!Object.keys(job).length) {
       return <div>Job Loading</div>;
     }
@@ -92,15 +96,16 @@ class Job extends Component {
           {job.bidClose}
         </Moment>
       );
+
     }
-    const poster = job.customerId.split('ApplicationUsers-')[1];
+
     const status = job.status === 1 ? 'OPEN' : 'CLOSED';
     return (
       <div className="job">
         <div className="job__header">
           <span className="job__title">{job.name}</span>
           <span className="job__subtitle">
-            <span>Posted by: {poster}</span>
+            <span>Posted by: @{customer.userName}</span>
             <h4>
               Bidding:&nbsp;
               <span className={`job__status--${status.toLowerCase()}`}>{status}</span>
@@ -131,7 +136,7 @@ class Job extends Component {
             </span>
             <span>
               <span className="job__section">Destination:</span>
-              {job.address.zipCode}
+              {job.address ? job.address.zipCode : "N/A"}
             </span>
             <span>
               <span className="job__section">Description:</span>
