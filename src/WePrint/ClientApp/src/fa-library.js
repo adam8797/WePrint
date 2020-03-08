@@ -40,6 +40,6 @@ library.add(
   faArrowLeft,
   faComments,
   faBuilding,
-  faQuestionCircleOutline
+  faQuestionCircleOutline,
   faTrash
 );
