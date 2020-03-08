@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import filesize from 'filesize';
-import { Progress } from 'reactstrap';
-import {
-  BodyCard,
-  Button,
-  FileDrop,
-  Table,
-  WepInput,
-  WepTextarea,
-  WepDropdown,
-} from '../../components';
 import JobApi from '../../api/JobApi';
-import { MaterialType, MaterialColor, PrinterType, JobStatus } from '../../models/Enums';
+import { JobStatus } from '../../models/Enums';
 import JobModel from '../../models/JobModel';
 import ArrowProgressBar from './components/job-progress';
-import SuccessStage from './components/success-stage';
+import StageType from './components/stage-type';
+import StageInfo from './components/stage-info';
+import StageUpload from './components/stage-upload';
+import StageProcess from './components/stage-process';
+import StageSuccess from './components/stage-success';
 import './post-job.scss';
 
 const ProgressColors = {
@@ -24,6 +17,15 @@ const ProgressColors = {
   INFO: 'info',
   WARNING: 'warning',
   DANGER: 'danger',
+};
+
+const UploadStates = {
+  PENDING: 'Pending...',
+  UPLOADING: 'Uploading',
+  ERROR: 'Error!',
+  COMPLETE: 'Complete!',
+  REMOVING: 'Removing',
+  ERROR_REMOVING: 'Error Deleting',
 };
 
 class PostJob extends Component {
@@ -43,9 +45,9 @@ class PostJob extends Component {
     };
   }
 
-  setPrinterType(printerType) {
+  setPrinterType = printerType => {
     this.setState({ printerType });
-  }
+  };
 
   removeFile = fileName => {
     // update progress to removing
@@ -54,11 +56,11 @@ class PostJob extends Component {
     // delete from state
     const { jobId } = this.state;
 
-    this.updateFileProgress(fileName, 'Removing', ProgressColors.WARNING, 100);
+    this.updateFileProgress(fileName, UploadStates.REMOVING, ProgressColors.WARNING, 100);
 
     JobApi.DeleteFile(jobId, fileName).subscribe({
       error: err => {
-        this.updateFileProgress(fileName, 'Error Deleting!', ProgressColors.DANGER, 100);
+        this.updateFileProgress(fileName, UploadStates.ERROR_REMOVING, ProgressColors.DANGER, 100);
         console.error(err);
       },
       complete: () => {
@@ -92,7 +94,11 @@ class PostJob extends Component {
         fileName: file.name,
         size: file.size,
         fileData: file,
-        progress: 'Pending',
+        progress: {
+          color: ProgressColors.PRIMARY,
+          label: 'Pending',
+          percent: 0,
+        },
       }));
 
       this.setState(
@@ -142,22 +148,20 @@ class PostJob extends Component {
       const progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100);
       this.updateFileProgress(fileName, `${progress}%`, ProgressColors.PRIMARY, progress);
     }).subscribe({
-      next: () => {
-        this.updateFileProgress(fileName, 'Uploaded', ProgressColors.PRIMARY, 100);
-      },
       error: err => {
-        this.updateFileProgress(fileName, 'Error!', ProgressColors.DANGER, 100);
+        this.updateFileProgress(fileName, UploadStates.ERROR, ProgressColors.DANGER, 100);
         console.error(err);
       },
       complete: () => {
-        this.updateFileProgress(fileName, 'Complete!', ProgressColors.SUCCESS, 100);
+        this.updateFileProgress(fileName, UploadStates.COMPLETE, ProgressColors.SUCCESS, 100);
       },
     });
   };
 
-  handleFormChange(prop, value) {
-    this.setState({ [prop]: value });
-  }
+  handleFormChange = ev => {
+    const { name, value } = ev.target;
+    this.setState({ [name]: value });
+  };
 
   advanceStage() {
     this.setState(prevState => ({ currentStage: prevState.currentStage + 1 }));
@@ -234,311 +238,62 @@ class PostJob extends Component {
     } = this.state;
 
     const stages = [
-      {
-        name: 'Job Type',
-      },
-      {
-        name: 'Basic Info',
-      },
-      {
-        name: 'Upload Files',
-      },
-      {
-        name: 'Pre-Process',
-      },
+      { name: 'Job Type' },
+      { name: 'Basic Info' },
+      { name: 'Upload Files' },
+      { name: 'Pre-Process' },
     ];
 
-    const biddingOpts = [
-      { displayName: '', value: '' },
-      { displayName: '1 Day', value: '1' },
-      { displayName: '2 Days', value: '2' },
-      { displayName: '3 Days', value: '3' },
-      { displayName: '4 Days', value: '4' },
-      { displayName: '5 Days', value: '5' },
-    ];
-    const matTypeOpts = [
-      { displayName: '', value: '' },
-      ...Object.entries(MaterialType).map(([key, value]) => ({ displayName: value, value: key })),
-    ];
-    const matColorOpts = [
-      { displayName: '', value: '' },
-      ...Object.entries(MaterialColor).map(([key, value]) => ({ displayName: value, value: key })),
-    ];
-
-    const fileUploadCols = [
-      {
-        id: 'delete',
-        accessor: 'fileName',
-        Cell: ({ cell: { value: fileName } }) => (
-          <Button
-            icon="trash"
-            size={Button.Size.SMALL}
-            type={Button.Type.DANGER}
-            onClick={() => this.removeFile(fileName)}
-          />
-        ),
-      },
-      {
-        Header: 'Filename',
-        accessor: 'fileName',
-      },
-      {
-        Header: 'Size',
-        accessor: 'size',
-        Cell: ({ cell: { value } }) => filesize(value),
-      },
-      {
-        Header: 'Progress',
-        accessor: 'progress',
-        Cell: ({ cell: { value: progress } }) => (
-          <Progress color={progress.color} value={progress.percent}>
-            {progress.label}
-          </Progress>
-        ),
-      },
-    ];
-    // map state.files to proper table data and exclude excess
-    const fileUploadData = files.map(({ fileName, size, progress }) => ({
-      fileName,
-      size,
-      progress,
-    }));
-
-    const fileProcessCols = [
-      {
-        Header: 'Filename',
-        accessor: 'fileName',
-      },
-      {
-        Header: 'Size',
-        accessor: 'size',
-        Cell: ({ cell: { value } }) => filesize(value),
-      },
-      {
-        Header: 'Volume',
-        accessor: 'volume',
-        Cell: ({ cell: { value } }) => value || 'Pending...',
-      },
-      {
-        Header: 'Est. Time',
-        accessor: 'estTime',
-        Cell: ({ cell: { value } }) => value || 'Pending...',
-      },
-    ];
-    const fileProcessData = files.map(({ fileName, size }) => {
-      let volume = 'Processing...';
-      let estTime = 'Processing...';
-      if (sliceData) {
-        const i = sliceData.findIndex(sData => sData.fileName === fileName);
-        if (i !== -1) {
-          const { matEstimates, timeEstimates } = sliceData[i];
-          volume = matEstimates.map(matEst => `${matEst.value}(${matEst.unit})`).join(' x ');
-          estTime =
-            timeEstimates.reduce((acc, timeEst) => acc + timeEst.timeSpan, 0) /
-            timeEstimates.length;
-        }
-      }
-      return {
-        fileName,
-        size,
-        volume,
-        estTime,
-      };
-    });
-
-    const jobFormValid = printerType && name && biddingPeriod && materialType && materialColor;
+    // TODO: might want to change this to a concrete "status" prop of progress
+    // so progress.label can still have percentages
+    const uploadComplete = files
+      .map(file => file.progress.label)
+      .reduce((acc, label) => {
+        return acc && label === UploadStates.COMPLETE;
+      }, true);
 
     return (
       <>
         <ArrowProgressBar stages={stages} active={currentStage} />
         {currentStage === 0 && (
-          <BodyCard centered className="post-job-page">
-            <h2>Select Type of Job</h2>
-            <div className="type-buttons">
-              <Button
-                type={printerType === PrinterType.FDM ? Button.Type.SUCCESS : Button.Type.PRIMARY}
-                size={Button.Size.LARGE}
-                onClick={() => this.setPrinterType(PrinterType.FDM)}
-              >
-                FDM
-              </Button>
-              <Button
-                type={printerType === PrinterType.SLA ? Button.Type.SUCCESS : Button.Type.PRIMARY}
-                size={Button.Size.LARGE}
-                onClick={() => this.setPrinterType(PrinterType.SLA)}
-              >
-                SLA
-              </Button>
-              <Button
-                type={
-                  printerType === PrinterType.LaserCut ? Button.Type.SUCCESS : Button.Type.PRIMARY
-                }
-                size={Button.Size.LARGE}
-                onClick={() => this.setPrinterType(PrinterType.LaserCut)}
-              >
-                Laser
-              </Button>
-            </div>
-            <div className="body-card__actions">
-              <Button
-                type={Button.Type.SUCCESS}
-                className="body-card__action-right"
-                onClick={() => this.advanceStage()}
-                disabled={!printerType}
-              >
-                Next
-              </Button>
-            </div>
-          </BodyCard>
+          <StageType
+            printerType={printerType}
+            setPrinterType={this.setPrinterType}
+            advanceAction={() => this.advanceStage()}
+          />
         )}
         {currentStage === 1 && (
-          <BodyCard centered className="post-job-page">
-            <h2>Basic Info</h2>
-            <div className="basic-info__form">
-              <div className="input-group">
-                <label htmlFor="name">Job Name:</label>
-                <WepInput
-                  name="name"
-                  id="name"
-                  value={name}
-                  placeholder="Job name..."
-                  handleChange={ev => this.handleFormChange('name', ev.target.value)}
-                />
-              </div>
-              <div className="input-group">
-                <label htmlFor="biddingPeriod">Bidding Period:</label>
-                <WepDropdown
-                  name="biddingPeriod"
-                  id="biddingPeriod"
-                  value={biddingPeriod}
-                  placeholder="Bidding Period..."
-                  options={biddingOpts}
-                  handleChange={ev => this.handleFormChange('biddingPeriod', ev.target.value)}
-                />
-              </div>
-              <div className="input-group">
-                <label htmlFor="materialType">Material Type:</label>
-                <WepDropdown
-                  name="materialType"
-                  id="materialType"
-                  value={materialType}
-                  placeholder="Select one..."
-                  options={matTypeOpts}
-                  handleChange={ev => this.handleFormChange('materialType', ev.target.value)}
-                />
-              </div>
-              <div className="input-group">
-                <label htmlFor="materialColor">Material Color:</label>
-                <WepDropdown
-                  name="materialColor"
-                  id="materialColor"
-                  value={materialColor}
-                  placeholder="Select one..."
-                  options={matColorOpts}
-                  handleChange={ev => this.handleFormChange('materialColor', ev.target.value)}
-                />
-              </div>
-              <div className="input-group input-group--wide">
-                <label htmlFor="description">Description:</label>
-                <WepTextarea
-                  name="description"
-                  id="description"
-                  value={description}
-                  placeholder="Description here"
-                  handleChange={ev => this.handleFormChange('description', ev.target.value)}
-                />
-              </div>
-            </div>
-            <div className="body-card__actions">
-              <Button
-                type={Button.Type.DANGER}
-                className="body-card__action-left"
-                onClick={() => this.reverseStage()}
-              >
-                Back
-              </Button>
-              <Button
-                type={Button.Type.SUCCESS}
-                className="body-card__action-right"
-                onClick={() => this.submitForm()}
-                disabled={!jobFormValid}
-              >
-                Next
-              </Button>
-            </div>
-          </BodyCard>
+          <StageInfo
+            name={name}
+            biddingPeriod={biddingPeriod}
+            materialType={materialType}
+            materialColor={materialColor}
+            description={description}
+            handleFormChange={this.handleFormChange}
+            reverseAction={() => this.reverseStage()}
+            advanceAction={() => this.submitForm()}
+          />
         )}
         {currentStage === 2 && (
-          <BodyCard centered className="post-job-page">
-            <h2>Upload Files to: {name}</h2>
-            <FileDrop
-              className="post-job-page__file-drop"
-              handleFiles={this.handleFileChange}
-              accept=".3mf, .stl"
-              multiple
-              disabled={files.length >= maxFiles}
-              customMsg="Drag .3mf & .stl files here, or click to select files"
-              disabledMsg={`Cannot add more files, max ${maxFiles} allowed`}
-            />
-            <div className="file-list">
-              <Table
-                columns={fileUploadCols}
-                data={fileUploadData}
-                emptyMessage="No files added yet"
-              />
-            </div>
-            <div className="body-card__actions">
-              <Button
-                type={Button.Type.DANGER}
-                className="body-card__action-left"
-                onClick={() => this.reverseStage()}
-              >
-                Back
-              </Button>
-              <Button
-                type={Button.Type.SUCCESS}
-                className="body-card__action-right"
-                onClick={() => this.advanceStage()}
-                disabled={!files.length}
-              >
-                Next
-              </Button>
-            </div>
-          </BodyCard>
+          <StageUpload
+            name={name}
+            handleFileChange={this.handleFileChange}
+            files={files}
+            maxFiles={maxFiles}
+            uploadComplete={uploadComplete}
+            reverseAction={() => this.reverseStage()}
+            advanceAction={() => this.advanceStage()}
+          />
         )}
         {currentStage === 3 && (
-          <BodyCard centered className="post-job-page">
-            <h2>Your job has been created!</h2>
-            <p>
-              We&apos;re currently processing your files. You can wait for processing to finish or
-              you can submit now.
-            </p>
-            <div className="file-list-processing">
-              <Table
-                columns={fileProcessCols}
-                data={fileProcessData}
-                emptyMessage="Something went wrong, this job has no files!"
-              />
-            </div>
-            <div className="body-card__actions">
-              <Button
-                type={Button.Type.DANGER}
-                className="body-card__action-left"
-                onClick={() => this.reverseStage()}
-              >
-                Back
-              </Button>
-              <Button
-                type={Button.Type.SUCCESS}
-                className="body-card__action-right"
-                onClick={() => this.advanceStage()}
-              >
-                Done
-              </Button>
-            </div>
-          </BodyCard>
+          <StageProcess
+            files={files}
+            sliceData={sliceData}
+            reverseAction={() => this.reverseStage()}
+            advanceAction={() => this.advanceStage()}
+          />
         )}
-        {currentStage > 3 && <SuccessStage jobId={jobId} />}
+        {currentStage > 3 && <StageSuccess jobId={jobId} />}
       </>
     );
   }

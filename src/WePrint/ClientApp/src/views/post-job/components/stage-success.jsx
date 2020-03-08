@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { BodyCard, Button } from '../../../components';
 
-function SuccessStage({ jobId }) {
+function StageSuccess({ jobId }) {
   const history = useHistory();
 
   const goToJobPage = () => {
@@ -22,8 +22,8 @@ function SuccessStage({ jobId }) {
   );
 }
 
-SuccessStage.propTypes = {
+StageSuccess.propTypes = {
   jobId: PropTypes.string.isRequired,
 };
 
-export default SuccessStage;
+export default StageSuccess;
