@@ -12,7 +12,14 @@ import {
   faInfoCircle,
   faBars,
   faTh,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
+
+import {
+  faComments,
+  faBuilding,
+  faQuestionCircle as faQuestionCircleOutline,
+} from '@fortawesome/free-regular-svg-icons';
 
 // fonts should be added to the library here once so we're
 // not including more than we need or explicitly loading them everywhere
@@ -28,5 +35,9 @@ library.add(
   faQuestionCircle,
   faInfoCircle,
   faBars,
-  faTh
+  faTh,
+  faArrowLeft,
+  faComments,
+  faBuilding,
+  faQuestionCircleOutline
 );
