@@ -7,10 +7,11 @@ import './job-card.scss';
 
 function JobCard(props) {
   const { image, name, jobId, user, source, externalId, parts, printTime, prints } = props;
-
   const history = useHistory();
 
   return (
+    // TODO: may want to revisit this to enable keyboard interaction of the page?
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <div
       className="job-card"
       onClick={() => {
@@ -53,13 +54,13 @@ JobCard.propTypes = {
   name: PropTypes.string.isRequired,
   jobId: PropTypes.string.isRequired,
   user: PropTypes.string.isRequired,
-  source: PropTypes.string.isRequired,
-  parts: PropTypes.string.isRequired,
-  prints: PropTypes.string.isRequired,
+  source: PropTypes.string,
   // optional
   image: PropTypes.string,
   externalId: PropTypes.string,
   printTime: PropTypes.string,
+  parts: PropTypes.string,
+  prints: PropTypes.string,
 };
 
 JobCard.defaultProps = {
@@ -67,6 +68,8 @@ JobCard.defaultProps = {
   source: 'Custom',
   externalId: '',
   printTime: '-',
+  parts: '-',
+  prints: '-',
 };
 
 export default JobCard;

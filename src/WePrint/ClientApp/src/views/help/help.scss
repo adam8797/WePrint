@@ -1,0 +1,28 @@
+@import '../../assets/styles/colors';
+
+.help__selection {
+  margin-top: 5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.help__selection-text {
+  font-size: 3em;
+}
+
+.help__selection-cards {
+  margin-top: 3em;
+  display: flex;
+}
+
+.help__link {
+  color: $blue-0;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+
+.help__content {
+  margin: 1em;
+}

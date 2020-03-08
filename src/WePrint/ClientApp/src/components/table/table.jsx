@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useTable } from 'react-table';
-import { SectionTitle } from '../../components';
+import SectionTitle from '../section-title/section-title';
 import './table.scss';
 
 function Table({ title, columns, data, actions }) {
@@ -12,20 +12,26 @@ function Table({ title, columns, data, actions }) {
   });
   const history = useHistory();
 
-  let header = '';
-  if (title) {
-    header = <SectionTitle title={title} actions={actions} />;
-  }
-
   function clickAction(row) {
     if (row.original.link) {
       history.push(row.original.link);
     }
   }
 
+  function getTableFooter() {
+    if (!data.length) {
+      return <div className="table__content--empty">No Data To Display</div>;
+    }
+    return (
+      <div className="table__content-count">
+        Showing <strong>{data.length}</strong> Result{data.length !== 1 && 's'}
+      </div>
+    );
+  }
+
   return (
     <div className="table">
-      {header}
+      {title && <SectionTitle title={title} actions={actions} />}
       <table {...getTableProps()} className="table__content">
         <thead>
           {headerGroups.map(headerGroup => (
@@ -55,9 +61,7 @@ function Table({ title, columns, data, actions }) {
           })}
         </tbody>
       </table>
-      <div className="table__content-count">
-        Showing <strong>{data.length}</strong> Results
-      </div>
+      <div className="table__footer">{getTableFooter()}</div>
     </div>
   );
 }

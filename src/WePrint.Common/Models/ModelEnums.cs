@@ -1,5 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace WePrint.Common.Models
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum JobStatus
     {
         PendingOpen,
@@ -13,6 +17,7 @@ namespace WePrint.Common.Models
         Cancelled
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum PrinterType
     {
         SLA,
@@ -20,6 +25,7 @@ namespace WePrint.Common.Models
         LaserCut
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum MaterialType
     {
         ABS,
@@ -29,6 +35,7 @@ namespace WePrint.Common.Models
         Flexible
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum MaterialColor
     {
         Red,
@@ -39,11 +46,13 @@ namespace WePrint.Common.Models
         Any
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum FinishType
     {
         Sanding,
         Varnish,
         Priming,
-        Painting
+        Painting,
+        None
     }
 }
