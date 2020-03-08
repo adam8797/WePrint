@@ -5,7 +5,7 @@ import { useTable } from 'react-table';
 import SectionTitle from '../section-title/section-title';
 import './table.scss';
 
-function Table({ title, columns, data, actions }) {
+function Table({ title, columns, data, actions, emptyMessage }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -20,7 +20,7 @@ function Table({ title, columns, data, actions }) {
 
   function getTableFooter() {
     if (!data.length) {
-      return <div className="table__content--empty">No Data To Display</div>;
+      return <div className="table__content--empty">{emptyMessage || 'No Data To Display'}</div>;
     }
     return (
       <div className="table__content-count">
@@ -68,8 +68,13 @@ function Table({ title, columns, data, actions }) {
 
 Table.propTypes = {
   title: PropTypes.string,
-  columns: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  emptyMessage: PropTypes.string,
+  columns: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
+  ).isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]))
+  ).isRequired,
   actions: PropTypes.arrayOf(
     PropTypes.shape({ text: PropTypes.string, key: PropTypes.string, action: PropTypes.func })
   ),

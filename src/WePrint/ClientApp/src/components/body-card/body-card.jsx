@@ -4,15 +4,16 @@ import classNames from 'classnames';
 import './body-card.scss';
 
 function BodyCard(props) {
-  const { centered, children } = props;
-  const className = classNames('body-card', { 'body-card--centered': centered });
+  const { centered, className = '', children } = props;
+  const cardClass = classNames('body-card', className, { 'body-card--centered': centered });
 
-  return <div className={className}>{children}</div>;
+  return <div className={cardClass}>{children}</div>;
 }
 
 BodyCard.propTypes = {
   children: PropTypes.node.isRequired,
   centered: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 BodyCard.defaultProps = {

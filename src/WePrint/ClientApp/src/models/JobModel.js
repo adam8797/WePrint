@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import AddressModel from './AddressModel';
 import { JobStatus, PrinterType, MaterialType, MaterialColor } from './Enums';
 
@@ -15,6 +16,7 @@ export default class JobModel {
     this.notes = '';
     this.bidClose = null;
     this.address = new AddressModel(null, null, null, 0);
+    this.sliceReports = [];
   }
 
   static IdEquals(a, b) {
@@ -34,6 +36,7 @@ export default class JobModel {
       a.materialColor === b.materialColor &&
       a.notes === b.notes &&
       a.bidClose === b.bidClose &&
+      isEqual(a.sliceReports, b.sliceReports) &&
       AddressModel.Equals(a.address, b.address)
     );
   }

@@ -13,6 +13,7 @@ import {
   faBars,
   faTh,
   faArrowLeft,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -39,5 +40,6 @@ library.add(
   faArrowLeft,
   faComments,
   faBuilding,
-  faQuestionCircleOutline
+  faQuestionCircleOutline,
+  faTrash
 );

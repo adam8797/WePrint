@@ -1,0 +1,55 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.post-job-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 600px;
+  min-height: 550px;
+
+  .type-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .basic-info__form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em;
+    flex-grow: 1;
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+
+      &--wide {
+        grid-column: span 2;
+      }
+    }
+  }
+
+  &__file-drop {
+    min-height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .file-list {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+
+  .file-list-processing {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+}
+
+.body-card__actions {
+  .body-card__action-left {
+    float: left;
+  }
+  .body-card__action-right {
+    float: right;
+  }
+}

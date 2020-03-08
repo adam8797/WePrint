@@ -1,0 +1,23 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/effects';
+
+.wep-input {
+  border-radius: 10px;
+  padding: ms(-4) ms(-2);
+  outline: none;
+  color: $grey-1;
+  --border-color: #{$grey-3};
+  border: 1px solid var(--border-color);
+
+  &:focus {
+    --border-color: #{$blue-1};
+    border-color: var(--border-color);
+    box-shadow: 0 0 3px var(--border-color);
+  }
+
+  &--error,
+  &--error:focus {
+    --border-color: #{$red};
+  }
+}
