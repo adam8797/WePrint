@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ClacksMiddleware.Extensions;
 using EasyNetQ;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
@@ -131,6 +132,8 @@ namespace WePrint
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.GnuTerryPratchett();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
