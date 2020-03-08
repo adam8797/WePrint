@@ -18,7 +18,7 @@ class ToggleableDisplay extends Component {
       },
       {
         Header: 'Owner',
-        accessor: 'userName',
+        accessor: 'customerUserName',
       },
       {
         Header: 'Maker',

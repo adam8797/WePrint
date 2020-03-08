@@ -44,7 +44,7 @@ class Job extends Component {
       },
       {
         Header: 'User',
-        accessor: 'userName',
+        accessor: 'customerUserName',
       },
       {
         Header: 'Printer',
@@ -120,7 +120,7 @@ class Job extends Component {
         <div className="job__header">
           <span className="job__title">{job.name}</span>
           <span className="job__subtitle">
-            <span>Posted by: @{job.userName}</span>
+            <span>Posted by: @{job.customerUserName}</span>
             <h4>
               Bidding:&nbsp;
               <span className={`job__status--${status.toLowerCase()}`}>{status}</span>

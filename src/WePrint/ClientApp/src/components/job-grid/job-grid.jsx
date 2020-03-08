@@ -27,7 +27,7 @@ function JobGrid(props) {
             name={job.name}
             image={job.image}
             jobId={job.id}
-            userName={job.userName}
+            customerUserName={job.customerUserName}
             customerId={job.customerId}
             parts={job.parts}
             printTime={job.printTime}
@@ -51,7 +51,7 @@ JobGrid.propTypes = {
       name: PropTypes.string.isRequired,
       id: PropTypes.string.isRequired,
       customerId: PropTypes.string.isRequired,
-      userName: PropTypes.string.isRequired,
+      customerUserName: PropTypes.string.isRequired,
       // optional
       image: PropTypes.string,
       source: PropTypes.string,

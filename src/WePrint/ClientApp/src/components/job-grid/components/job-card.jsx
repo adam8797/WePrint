@@ -10,7 +10,7 @@ function JobCard(props) {
     image,
     name,
     jobId,
-    userName,
+    customerUserName,
     customerId,
     source,
     externalId,
@@ -34,7 +34,7 @@ function JobCard(props) {
         <div className="job-card__detail">
           <div>
             <span>{name}</span>
-            <span className="job-card__text--small">{userName}</span>
+            <span className="job-card__text--small">{customerUserName}</span>
           </div>
           <div>
             <span>{source}</span>
@@ -64,7 +64,7 @@ JobCard.propTypes = {
   // required
   name: PropTypes.string.isRequired,
   jobId: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  customerUserName: PropTypes.string.isRequired,
   customerId: PropTypes.string.isRequired,
   source: PropTypes.string,
   // optional
