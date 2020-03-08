@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
+import moment from 'moment';
+import { JobStatus } from '../../../models/Enums';
 import { Table } from '../../../components';
 import JobApi from '../../../api/JobApi';
-import UserApi from '../../../api/UserApi';
 import JobPlaceholder from '../../../assets/images/job.png';
 
 import './job.scss';
@@ -12,8 +13,7 @@ class Job extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        job: {},
-        customer: {}
+      job: {},
     };
     this.filesTableCols = [
       {
@@ -44,7 +44,7 @@ class Job extends Component {
       },
       {
         Header: 'User',
-        accessor: 'user',
+        accessor: 'userName',
       },
       {
         Header: 'Printer',
@@ -71,11 +71,9 @@ class Job extends Component {
 
   componentDidMount() {
     const { jobId } = this.props;
-      this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
-          UserApi.GetUser(job.customerId).subscribe(customer => {
-              this.setState({ job, customer });
-          });
-      }, console.error);
+    this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
+      this.setState({ job });
+    }, console.error);
   }
 
   componentWillUnmount() {
@@ -83,29 +81,46 @@ class Job extends Component {
   }
 
   render() {
-    const { job, customer } = this.state;
+    const { job } = this.state;
     if (!Object.keys(job).length) {
-      return <div>Job Loading</div>;
+      return <div>Job Loading...</div>;
     }
     let timeLeft;
     let bidDeadlineStyle;
     if (job) {
-      bidDeadlineStyle = 'close';
-      timeLeft = (
-        <Moment fromNow ago>
-          {job.bidClose}
-        </Moment>
-      );
-
+      const diff = moment().diff(job.bidClose);
+      if (diff > 0) {
+        const hours24 = 1000 * 60 * 60 * 24;
+        bidDeadlineStyle = diff < hours24 ? 'close' : 'far';
+        timeLeft = (
+          <span>
+            (
+            <Moment fromNow ago>
+              {job.bidClose}
+            </Moment>{' '}
+            left)
+          </span>
+        );
+      } else {
+        timeLeft = (
+          <span>
+            (
+            <Moment fromNow ago>
+              {job.bidClose}
+            </Moment>{' '}
+            ago)
+          </span>
+        );
+      }
     }
 
-    const status = job.status === 1 ? 'OPEN' : 'CLOSED';
+    const status = job.status === JobStatus.PendingOpen ? 'OPEN' : 'CLOSED';
     return (
       <div className="job">
         <div className="job__header">
           <span className="job__title">{job.name}</span>
           <span className="job__subtitle">
-            <span>Posted by: @{customer.userName}</span>
+            <span>Posted by: @{job.userName}</span>
             <h4>
               Bidding:&nbsp;
               <span className={`job__status--${status.toLowerCase()}`}>{status}</span>
@@ -120,9 +135,7 @@ class Job extends Component {
               <span className="job__section">Bid Deadline:</span>
               {job.bidClose}
               {timeLeft && (
-                <span className={`job__deadline--${bidDeadlineStyle}`}>
-                  &nbsp; ({timeLeft} left)
-                </span>
+                <span className={`job__deadline--${bidDeadlineStyle}`}>&nbsp; {timeLeft}</span>
               )}
             </span>
             <span>
@@ -136,7 +149,7 @@ class Job extends Component {
             </span>
             <span>
               <span className="job__section">Destination:</span>
-              {job.address ? job.address.zipCode : "N/A"}
+              {job.address ? job.address.zipCode : 'N/A'}
             </span>
             <span>
               <span className="job__section">Description:</span>
