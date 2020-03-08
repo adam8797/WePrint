@@ -33,5 +33,10 @@ namespace WePrint.Controllers
                 return await Database.Query<ApplicationUser>().SingleOrDefaultAsync(x => x.Email == identity.Name);
             });
         }
+
+        protected async Task<IEnumerable<ApplicationUser>> GetUsers()
+        {
+            return await Database.Query<ApplicationUser>().ToArrayAsync();
+        }
     }
 }
