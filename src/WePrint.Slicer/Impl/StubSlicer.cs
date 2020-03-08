@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using WePrint.Common;
+using WePrint.Common.Models;
 using WePrint.Common.Slicer.Interface;
 using WePrint.Common.Slicer.Models;
 using WePrint.Slicer.Interface;
@@ -35,12 +36,12 @@ namespace WePrint.Slicer.Impl
                 {
                     new TimeEstimate()
                     {
-                        PrinterType = MachineType.FDM,
+                        PrinterType = PrinterType.FDM,
                         TimeSpan = TimeSpan.Parse("01:00:00")
                     },
                     new TimeEstimate()
                     {
-                        PrinterType = MachineType.SLA,
+                        PrinterType = PrinterType.SLA,
                         TimeSpan = TimeSpan.Parse("00:34:00")
                     }
                 }
