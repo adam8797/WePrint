@@ -222,6 +222,20 @@ class PostJob extends Component {
     }
   }
 
+  openBidding() {
+    const { jobId } = this.state;
+    const job = new JobModel();
+    job.id = jobId;
+    job.status = JobStatus.BiddingOpen;
+    JobApi.UpdateJob(jobId, job).subscribe({
+      // TODO: add alerts for submission in progress and posting error
+      error: console.error,
+      complete: () => {
+        this.setState(prevState => ({ currentStage: prevState.currentStage + 1 }));
+      },
+    });
+  }
+
   render() {
     const {
       currentStage,
@@ -234,7 +248,6 @@ class PostJob extends Component {
       description,
       files,
       maxFiles,
-      sliceData,
     } = this.state;
 
     const stages = [
@@ -287,10 +300,10 @@ class PostJob extends Component {
         )}
         {currentStage === 3 && (
           <StageProcess
+            jobId={jobId}
             files={files}
-            sliceData={sliceData}
             reverseAction={() => this.reverseStage()}
-            advanceAction={() => this.advanceStage()}
+            advanceAction={() => this.openBidding()}
           />
         )}
         {currentStage > 3 && <StageSuccess jobId={jobId} />}

@@ -131,7 +131,7 @@ class Job extends Component {
             </span>
             <span>
               <span className="job__section">Destination:</span>
-              {job.address}
+              {job.address ? job.address.zip : ''}
             </span>
             <span>
               <span className="job__section">Description:</span>
