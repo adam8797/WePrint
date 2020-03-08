@@ -28,5 +28,10 @@ namespace WePrint.Controllers
             UserManager = userManager;
             CurrentUser = new AsyncLazy<ApplicationUser>(async () => await UserManager.GetUserAsync(HttpContext.User));
         }
+
+        protected async Task<IEnumerable<ApplicationUser>> GetUsers()
+        {
+            return await Database.Query<ApplicationUser>().ToArrayAsync();
+        }
     }
 }

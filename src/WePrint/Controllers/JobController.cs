@@ -49,7 +49,7 @@ namespace WePrint.Controllers
         /// <returns></returns>
         /// 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobModel>>> GetJobs()
+        public async Task<ActionResult<IEnumerable<JobViewModel>>> GetJobs()
         {
             var user = await CurrentUser;
             if (user == null)
@@ -59,8 +59,11 @@ namespace WePrint.Controllers
                 .Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id))
                 .ToArrayAsync();
 
-            return jobs.Select(j => j.GetViewableJob(user.Id)).ToList();
+            var allUsers = await GetUsers(); // This is a kludge because I can't figure out how to include all the fields we need
+            return jobs.Select(job => new JobViewModel(job, allUsers, user.Id)).ToList();
+
         }
+
 
         // GET: /api/job/{id}
         /// <summary>
@@ -69,7 +72,7 @@ namespace WePrint.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<JobModel>> GetJob(string id)
+        public async Task<ActionResult<JobViewModel>> GetJob(string id)
         {
             var user = await CurrentUser;
             if (user == null)
@@ -77,8 +80,9 @@ namespace WePrint.Controllers
 
             var job = await Database.LoadAsync<JobModel>(id);
 
+            var allUsers = await GetUsers();
             if (await CheckJobAccess(job))
-                return job;
+                return new JobViewModel(job, allUsers, user.Id);
 
             return Forbid();
         }
@@ -389,7 +393,7 @@ namespace WePrint.Controllers
         /// <returns></returns>
         [HttpGet("{id}/comments")]
         [SwaggerOperation(Tags = new []{ "Comments" })]
-        public async Task<ActionResult<List<CommentModel>>> ListComments(string id)
+        public async Task<ActionResult<List<CommentViewModel>>> ListComments(string id)
         {
             var user = await CurrentUser;
             if (user == null)
@@ -403,7 +407,8 @@ namespace WePrint.Controllers
             if (!await CheckJobAccess(job))
                 return Forbid();
 
-            return job.Comments.ToList();
+            var allUsers = await GetUsers(); // Probably easy to put an includes here
+            return job.Comments.Select(c => new CommentViewModel(c, allUsers)).ToList();
         }
 
         // GET: /api/job/{id}/comments/{commentId}
@@ -415,7 +420,7 @@ namespace WePrint.Controllers
         /// <returns></returns>
         [HttpGet("{id}/comments/{commentId}")]
         [SwaggerOperation(Tags = new []{ "Comments" })]
-        public async Task<ActionResult<CommentModel>> GetComment(string id, int commentId)
+        public async Task<ActionResult<CommentViewModel>> GetComment(string id, int commentId)
         {
             var user = await CurrentUser;
             if (user == null)
@@ -434,7 +439,9 @@ namespace WePrint.Controllers
             if (comment == null)
                 return NotFound();
 
-            return comment;
+
+            var allUsers = await GetUsers();
+            return new CommentViewModel(comment, allUsers);
         }
 
         // POST: /api/job/{id}/comments
@@ -564,7 +571,7 @@ namespace WePrint.Controllers
 
 
         #endregion
-
+        
         #region Bids
 
         // GET : /api/job/{id}/bids
@@ -575,7 +582,7 @@ namespace WePrint.Controllers
         /// <returns></returns>
         [HttpGet("{id}/bids")] 
         [SwaggerOperation(Tags = new []{ "Bids" })]
-        public async Task<ActionResult<List<BidModel>>> ListBids(string id)
+        public async Task<ActionResult<List<BidViewModel>>> ListBids(string id)
         {
             var user = await CurrentUser;
             if (user == null)
@@ -590,7 +597,9 @@ namespace WePrint.Controllers
             if (job.CustomerId != user.Id && job.Status < JobStatus.BiddingClosed)
                 return Forbid();
 
-            return job.Bids.ToList();
+
+            var allUsers = await GetUsers();
+            return job.Bids.Select(b => new BidViewModel(b, allUsers)).ToList();
         }
 
         // GET : /api/job/{id}/bids/{bidId}
@@ -602,7 +611,7 @@ namespace WePrint.Controllers
         /// <returns></returns>
         [HttpGet("{id}/bids/{bidId}")] 
         [SwaggerOperation(Tags = new []{ "Bids" })]
-        public async Task<ActionResult<BidModel>> GetBid(string id, int bidId)
+        public async Task<ActionResult<BidViewModel>> GetBid(string id, int bidId)
         {
             var user = await CurrentUser;
             if (user == null)
@@ -620,7 +629,8 @@ namespace WePrint.Controllers
             if (job.CustomerId != user.Id && bid.BidderId != user.Id && job.Status < JobStatus.BiddingClosed)
                 return Forbid();
 
-            return bid;
+            var allUsers = await GetUsers();
+            return new BidViewModel(bid, allUsers);
         }
 
         // POST: /api/job/{id}/bids
@@ -766,6 +776,7 @@ namespace WePrint.Controllers
 
             return Ok();
         }
+        
         #endregion
 
 
@@ -780,7 +791,7 @@ namespace WePrint.Controllers
                 if (user == null)
                     return false;
 
-                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id);
+                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id || job.Status > JobStatus.PendingOpen);
             }
             catch
             {
