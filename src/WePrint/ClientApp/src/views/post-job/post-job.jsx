@@ -15,6 +15,7 @@ import JobApi from '../../api/JobApi';
 import { MaterialType, MaterialColor, PrinterType, JobStatus } from '../../models/Enums';
 import JobModel from '../../models/JobModel';
 import ArrowProgressBar from './components/job-progress';
+import SuccessStage from './components/success-stage';
 import './post-job.scss';
 
 const ProgressColors = {
@@ -31,7 +32,7 @@ class PostJob extends Component {
     this.state = {
       currentStage: 0,
       jobId: '',
-      jobType: '',
+      printerType: '',
       name: '',
       biddingPeriod: '',
       materialType: '',
@@ -42,8 +43,8 @@ class PostJob extends Component {
     };
   }
 
-  setJobType(jobType) {
-    this.setState({ jobType });
+  setPrinterType(printerType) {
+    this.setState({ printerType });
   }
 
   removeFile = fileName => {
@@ -169,7 +170,7 @@ class PostJob extends Component {
   submitForm() {
     const {
       jobId,
-      jobType,
+      printerType,
       name,
       biddingPeriod,
       materialType,
@@ -184,7 +185,7 @@ class PostJob extends Component {
     job.name = name;
     job.status = JobStatus.PendingOpen;
     job.description = description;
-    job.printerType = jobType;
+    job.printerType = printerType;
     job.materialType = materialType;
     job.materialColor = materialColor;
     job.bidClose = bidClose;
@@ -220,7 +221,8 @@ class PostJob extends Component {
   render() {
     const {
       currentStage,
-      jobType,
+      jobId,
+      printerType,
       name,
       biddingPeriod,
       materialType,
@@ -228,6 +230,7 @@ class PostJob extends Component {
       description,
       files,
       maxFiles,
+      sliceData,
     } = this.state;
 
     const stages = [
@@ -253,7 +256,6 @@ class PostJob extends Component {
       { displayName: '4 Days', value: '4' },
       { displayName: '5 Days', value: '5' },
     ];
-
     const matTypeOpts = [
       { displayName: '', value: '' },
       ...Object.entries(MaterialType).map(([key, value]) => ({ displayName: value, value: key })),
@@ -302,7 +304,49 @@ class PostJob extends Component {
       progress,
     }));
 
-    const jobFormValid = jobType && name && biddingPeriod && materialType && materialColor;
+    const fileProcessCols = [
+      {
+        Header: 'Filename',
+        accessor: 'fileName',
+      },
+      {
+        Header: 'Size',
+        accessor: 'size',
+        Cell: ({ cell: { value } }) => filesize(value),
+      },
+      {
+        Header: 'Volume',
+        accessor: 'volume',
+        Cell: ({ cell: { value } }) => value || 'Pending...',
+      },
+      {
+        Header: 'Est. Time',
+        accessor: 'estTime',
+        Cell: ({ cell: { value } }) => value || 'Pending...',
+      },
+    ];
+    const fileProcessData = files.map(({ fileName, size }) => {
+      let volume = 'Processing...';
+      let estTime = 'Processing...';
+      if (sliceData) {
+        const i = sliceData.findIndex(sData => sData.fileName === fileName);
+        if (i !== -1) {
+          const { matEstimates, timeEstimates } = sliceData[i];
+          volume = matEstimates.map(matEst => `${matEst.value}(${matEst.unit})`).join(' x ');
+          estTime =
+            timeEstimates.reduce((acc, timeEst) => acc + timeEst.timeSpan, 0) /
+            timeEstimates.length;
+        }
+      }
+      return {
+        fileName,
+        size,
+        volume,
+        estTime,
+      };
+    });
+
+    const jobFormValid = printerType && name && biddingPeriod && materialType && materialColor;
 
     return (
       <>
@@ -312,23 +356,25 @@ class PostJob extends Component {
             <h2>Select Type of Job</h2>
             <div className="type-buttons">
               <Button
-                type={jobType === PrinterType.FDM ? Button.Type.SUCCESS : Button.Type.PRIMARY}
+                type={printerType === PrinterType.FDM ? Button.Type.SUCCESS : Button.Type.PRIMARY}
                 size={Button.Size.LARGE}
-                onClick={() => this.setJobType(PrinterType.FDM)}
+                onClick={() => this.setPrinterType(PrinterType.FDM)}
               >
                 FDM
               </Button>
               <Button
-                type={jobType === PrinterType.SLA ? Button.Type.SUCCESS : Button.Type.PRIMARY}
+                type={printerType === PrinterType.SLA ? Button.Type.SUCCESS : Button.Type.PRIMARY}
                 size={Button.Size.LARGE}
-                onClick={() => this.setJobType(PrinterType.SLA)}
+                onClick={() => this.setPrinterType(PrinterType.SLA)}
               >
                 SLA
               </Button>
               <Button
-                type={jobType === PrinterType.LaserCut ? Button.Type.SUCCESS : Button.Type.PRIMARY}
+                type={
+                  printerType === PrinterType.LaserCut ? Button.Type.SUCCESS : Button.Type.PRIMARY
+                }
                 size={Button.Size.LARGE}
-                onClick={() => this.setJobType(PrinterType.LaserCut)}
+                onClick={() => this.setPrinterType(PrinterType.LaserCut)}
               >
                 Laser
               </Button>
@@ -338,7 +384,7 @@ class PostJob extends Component {
                 type={Button.Type.SUCCESS}
                 className="body-card__action-right"
                 onClick={() => this.advanceStage()}
-                disabled={!jobType}
+                disabled={!printerType}
               >
                 Next
               </Button>
@@ -462,7 +508,18 @@ class PostJob extends Component {
         )}
         {currentStage === 3 && (
           <BodyCard centered className="post-job-page">
-            <h2>Pre-Process</h2>
+            <h2>Your job has been created!</h2>
+            <p>
+              We&apos;re currently processing your files. You can wait for processing to finish or
+              you can submit now.
+            </p>
+            <div className="file-list-processing">
+              <Table
+                columns={fileProcessCols}
+                data={fileProcessData}
+                emptyMessage="Something went wrong, this job has no files!"
+              />
+            </div>
             <div className="body-card__actions">
               <Button
                 type={Button.Type.DANGER}
@@ -471,12 +528,17 @@ class PostJob extends Component {
               >
                 Back
               </Button>
-              <Button type={Button.Type.SUCCESS} className="body-card__action-right">
+              <Button
+                type={Button.Type.SUCCESS}
+                className="body-card__action-right"
+                onClick={() => this.advanceStage()}
+              >
                 Done
               </Button>
             </div>
           </BodyCard>
         )}
+        {currentStage > 3 && <SuccessStage jobId={jobId} />}
       </>
     );
   }
