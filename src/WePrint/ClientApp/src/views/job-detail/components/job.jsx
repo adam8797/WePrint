@@ -133,7 +133,7 @@ class Job extends Component {
           <div className="job__detail">
             <span>
               <span className="job__section">Bid Deadline:</span>
-              {job.bidClose}
+              <Moment>{job.bidClose}</Moment>
               {timeLeft && (
                 <span className={`job__deadline--${bidDeadlineStyle}`}>&nbsp; {timeLeft}</span>
               )}
