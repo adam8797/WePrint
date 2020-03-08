@@ -4,21 +4,20 @@ import { MaterialColor, MaterialType } from '../../../models/Enums';
 import { BodyCard, Button, WepInput, WepDropdown, WepTextarea } from '../../../components';
 
 const biddingOpts = [
-  { displayName: '', value: '' },
   { displayName: '1 Day', value: '1' },
   { displayName: '2 Days', value: '2' },
   { displayName: '3 Days', value: '3' },
   { displayName: '4 Days', value: '4' },
   { displayName: '5 Days', value: '5' },
 ];
-const matTypeOpts = [
-  { displayName: '', value: '' },
-  ...Object.entries(MaterialType).map(([key, value]) => ({ displayName: value, value: key })),
-];
-const matColorOpts = [
-  { displayName: '', value: '' },
-  ...Object.entries(MaterialColor).map(([key, value]) => ({ displayName: value, value: key })),
-];
+const matTypeOpts = Object.entries(MaterialType).map(([key, value]) => ({
+  displayName: value,
+  value: key,
+}));
+const matColorOpts = Object.entries(MaterialColor).map(([key, value]) => ({
+  displayName: value,
+  value: key,
+}));
 
 function StageInfo({
   name,
@@ -114,9 +113,9 @@ function StageInfo({
 
 StageInfo.propTypes = {
   name: PropTypes.string,
-  biddingPeriod: PropTypes.oneOf(biddingOpts.map(opt => opt.value)),
-  materialType: PropTypes.oneOf(matTypeOpts.map(opt => opt.value)),
-  materialColor: PropTypes.oneOf(matColorOpts.map(opt => opt.value)),
+  biddingPeriod: PropTypes.oneOf(['', ...biddingOpts.map(opt => opt.value)]),
+  materialType: PropTypes.oneOf(['', ...matTypeOpts.map(opt => opt.value)]),
+  materialColor: PropTypes.oneOf(['', ...matColorOpts.map(opt => opt.value)]),
   description: PropTypes.string,
   handleFormChange: PropTypes.func,
   reverseAction: PropTypes.func,

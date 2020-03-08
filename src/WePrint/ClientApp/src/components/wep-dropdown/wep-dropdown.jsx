@@ -11,14 +11,9 @@ function WepDropdown(props) {
   const className = classNames('wep-dropdown', { 'wep-dropdown--error': error });
 
   return (
-    <select
-      name={name}
-      id={id}
-      value={value}
-      className={className}
-      placeholder={placeholder}
-      onChange={handleChange}
-    >
+    <select name={name} id={id} value={value} className={className} onChange={handleChange}>
+      {/* Consider adding `disabled selected hidden` to the placeholder */}
+      {placeholder && <option value="">{placeholder}</option>}
       {options &&
         options.map(opt => (
           <option value={opt.value} key={opt.value}>
