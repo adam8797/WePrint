@@ -32,7 +32,8 @@ namespace WePrint.Common.Slicer.Impl
             {
                 Files = null,
                 Status = SliceJobStatus.Waiting,
-                Job = job.Id
+                Job = job.Id,
+                Id = "",
             };
 
             try
@@ -62,7 +63,8 @@ namespace WePrint.Common.Slicer.Impl
             {
                 Files = files.ToArray(),
                 Status = SliceJobStatus.Waiting,
-                Job = job.Id
+                Job = job.Id,
+                Id = ""
             };
 
             try
