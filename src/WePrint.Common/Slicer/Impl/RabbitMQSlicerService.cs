@@ -31,7 +31,7 @@ namespace WePrint.Common.Slicer.Impl
             var slicerJob = new SlicerJob()
             {
                 Files = null,
-                Status = JobStatus.Waiting,
+                Status = SliceJobStatus.Waiting,
                 Job = job.Id
             };
 
@@ -61,7 +61,7 @@ namespace WePrint.Common.Slicer.Impl
             var slicerJob = new SlicerJob()
             {
                 Files = files.ToArray(),
-                Status = JobStatus.Waiting,
+                Status = SliceJobStatus.Waiting,
                 Job = job.Id
             };
 

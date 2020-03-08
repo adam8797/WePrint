@@ -11,8 +11,6 @@ namespace WePrint.Common.Models
         public string CustomerId { get; set; }
         public string MakerId { get; set; }
         public AddressModel Address { get; set; }
-        public ICollection<BidModel> Bids { get; set; }
-        public ICollection<SliceReport> SliceReports { get; set; } = new List<SliceReport>();
         public JobStatus Status { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,7 +19,10 @@ namespace WePrint.Common.Models
         public MaterialColor MaterialColor { get; set; }
         public string Notes { get; set; }
         public DateTime BidClose { get; set; }
-        public ICollection<CommentModel> Comments { get; set; }
+
+        public ICollection<BidModel> Bids { get; set; } = new List<BidModel>();
+        public ICollection<SliceReport> SliceReports { get; set; } = new List<SliceReport>();
+        public ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>();
 
         public void ApplyChanges(JobUpdateModel update)
         {

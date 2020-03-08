@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
@@ -19,7 +20,7 @@ namespace WePrint.Controllers
     [Route("api/device")]
     public class DeviceController : WePrintController
     {
-        public DeviceController(ILogger<DeviceController> log, IAsyncDocumentSession database) : base(log, database)
+        public DeviceController(ILogger<DeviceController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
         {
         }
 
