@@ -56,7 +56,7 @@ namespace WePrint.Controllers
                 return Unauthorized();
 
             var jobs = await Database.Query<JobModel>()
-                .Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id))
+                .Where(job => job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id) || job.Status > JobStatus.PendingOpen)
                 .ToArrayAsync();
 
             var allUsers = await GetUsers(); // This is a kludge because I can't figure out how to include all the fields we need
