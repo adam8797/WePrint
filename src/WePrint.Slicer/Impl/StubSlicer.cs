@@ -17,6 +17,12 @@ namespace WePrint.Slicer.Impl
             return new SliceReport()
             {
                 FileName = fileName,
+                Volume = new Volume()
+                {
+                    X = 10,
+                    Y = 50,
+                    Z = 20
+                },
                 MaterialEstimates = new[]
                 {
                     new MaterialEstimate()

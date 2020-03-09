@@ -1,6 +1,6 @@
 namespace WePrint.Common.Models
 {
-    public class AddressModel : DbModel
+    public class AddressModel
     {
         public string StreetAddress { get; set; }
         public string City { get; set; }
