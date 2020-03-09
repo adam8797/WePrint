@@ -18,6 +18,8 @@ class Job extends Component {
     super(props);
     this.state = {
       job: {},
+      // TODO: Review if this state is needed
+      // eslint-disable-next-line react/no-unused-state
       customer: {},
       user: null,
     };
@@ -85,6 +87,8 @@ class Job extends Component {
     const { jobId } = this.props;
     this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
       UserApi.GetUser(job.customerId).subscribe(customer => {
+        // TODO: review if this state is needed
+        // eslint-disable-next-line react/no-unused-state
         this.setState({ job, customer });
       });
     }, console.error);
@@ -99,19 +103,19 @@ class Job extends Component {
 
   getBidSection = () => {
     const { user, job } = this.state;
-    if (!user || !job) return;
+    if (!user || !job) return '';
     if (user.id === job.customerId) {
       return (
         <div className="job__bids">
           <Table title="Bids" columns={this.bidTableCols} data={job.bids || []} />
         </div>
       );
-    } else if (job.status === JobStatus.BiddingOpen) {
+    }
+    if (job.status === JobStatus.BiddingOpen) {
       const bidExists = find(job.bids, { bidderId: user.id });
       return <BidPost jobId={job.id} bidderId={user.id} submitted={bidExists} />;
-    } else {
-      return <div>Sorry! Bidding is not available on this job!</div>;
     }
+    return <div>Sorry! Bidding is not available on this job!</div>;
   };
 
   render() {

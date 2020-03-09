@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import PrinterApi from '../../../api/PrinterApi';
 import BidApi from '../../../api/BidApi';
 import SectionTitle from '../../../components/section-title/section-title';
 import Button from '../../../components/button/button';
-import { WepInput, WepDropdown, WepTextarea } from '../../../components';
+import { WepNumber, WepDropdown, WepTextarea } from '../../../components';
 import { MaterialType, MaterialColor, FinishType } from '../../../models/Enums';
 import BidModel from '../../../models/BidModel';
-import TimeModel from '../../../models/TimeModel';
 import './bid-post.scss';
 
 function makeOpts(obj) {
@@ -37,6 +37,12 @@ class BidPost extends Component {
     };
   }
 
+  componentDidMount() {
+    PrinterApi.MyPrinters().subscribe(printers => {
+      this.setState({ printers });
+    });
+  }
+
   postBid = () => {
     const {
       price,
@@ -51,11 +57,12 @@ class BidPost extends Component {
       turnAround,
       notes,
     } = this.state;
+    const { bidderId, jobId } = this.props;
 
     const bid = new BidModel();
     bid.id = 0;
-    bid.bidderId = this.props.bidderId;
-    bid.jobId = this.props.jobId;
+    bid.bidderId = bidderId;
+    bid.jobId = jobId;
     bid.price = parseFloat(price);
     bid.notes = notes;
     bid.layerHeight = parseFloat(layerHeight);
@@ -67,16 +74,10 @@ class BidPost extends Component {
     bid.materialColor = color;
     bid.finishType = finishing;
     bid.workTime = `${turnAround}.00:00:00`;
-    BidApi.CreateBid(bid, this.props.jobId).subscribe(() => {
+    BidApi.CreateBid(bid, jobId).subscribe(() => {
       this.setState({ submitted: true });
     });
   };
-
-  componentDidMount() {
-    PrinterApi.MyPrinters().subscribe(printers => {
-      this.setState({ printers });
-    });
-  }
 
   handleFormChange = ev => {
     const { name, value } = ev.target;
@@ -84,7 +85,8 @@ class BidPost extends Component {
   };
 
   getContent = () => {
-    if (this.state.submitted) {
+    const { submitted } = this.state;
+    if (submitted) {
       return (
         <div className="bid-post__form-content">You have already submitted a bid for this job</div>
       );
@@ -123,12 +125,12 @@ class BidPost extends Component {
           <label className="bid-post__label" htmlFor="price">
             Price ($)
           </label>
-          <WepInput
+          <WepNumber
             name="price"
             id="price"
             value={price}
-            placeholder="Bid price..."
-            type="number"
+            placeholder="00"
+            min={1}
             handleChange={this.handleFormChange}
           />
         </div>
@@ -140,7 +142,7 @@ class BidPost extends Component {
             name="printer"
             id="printer"
             value={printer}
-            placeholder="Printer"
+            placeholder="Printer..."
             options={printers.map(p => ({ value: p.id, displayName: p.name }))}
             handleChange={this.handleFormChange}
           />
@@ -149,12 +151,12 @@ class BidPost extends Component {
           <label className="bid-post__label" htmlFor="supportDensity">
             Support Density
           </label>
-          <WepInput
+          <WepNumber
             name="supportDensity"
             id="supportDensity"
             value={supportDensity}
-            placeholder="Support Density"
-            type="number"
+            placeholder="00"
+            min={1}
             handleChange={this.handleFormChange}
           />
         </div>
@@ -162,12 +164,12 @@ class BidPost extends Component {
           <label className="bid-post__label" htmlFor="shellThickness">
             Shell Thickness (mm)
           </label>
-          <WepInput
+          <WepNumber
             name="shellThickness"
             id="shellThickness"
             value={shellThickness}
-            placeholder="Thickness"
-            type="number"
+            placeholder="00"
+            min={1}
             handleChange={this.handleFormChange}
           />
         </div>
@@ -175,12 +177,12 @@ class BidPost extends Component {
           <label className="bid-post__label" htmlFor="layerHeight">
             Layer Height (mm)
           </label>
-          <WepInput
+          <WepNumber
             name="layerHeight"
             id="layerHeight"
             value={layerHeight}
-            placeholder="Layer height..."
-            type="number"
+            placeholder="00"
+            min={1}
             handleChange={this.handleFormChange}
           />
         </div>
@@ -188,12 +190,12 @@ class BidPost extends Component {
           <label className="bid-post__label" htmlFor="fill">
             Fill Percentage (%)
           </label>
-          <WepInput
+          <WepNumber
             name="fill"
             id="fill"
             value={fill}
-            placeholder="Fill..."
-            type="number"
+            placeholder="00"
+            min={1}
             handleChange={this.handleFormChange}
           />
         </div>
@@ -205,7 +207,7 @@ class BidPost extends Component {
             name="material"
             id="material"
             value={material}
-            placeholder="Material Type"
+            placeholder="Material Type..."
             options={makeOpts(MaterialType)}
             handleChange={this.handleFormChange}
           />
@@ -218,7 +220,7 @@ class BidPost extends Component {
             name="color"
             id="color"
             value={color}
-            placeholder="Material Color"
+            placeholder="Material Color..."
             options={makeOpts(MaterialColor)}
             handleChange={this.handleFormChange}
           />
@@ -231,7 +233,7 @@ class BidPost extends Component {
             name="finishing"
             id="finishing"
             value={finishing}
-            placeholder="Finishing"
+            placeholder="Finishing..."
             options={makeOpts(FinishType)}
             handleChange={this.handleFormChange}
           />
@@ -240,12 +242,12 @@ class BidPost extends Component {
           <label className="bid-post__label" htmlFor="turnAround">
             Turnaround Time (days)
           </label>
-          <WepInput
+          <WepNumber
             name="turnAround"
             id="turnAround"
             value={turnAround}
-            placeholder="Turnaround Time"
-            type="number"
+            placeholder="00"
+            min={0}
             handleChange={this.handleFormChange}
           />
         </div>
@@ -257,7 +259,7 @@ class BidPost extends Component {
             name="notes"
             id="notes"
             value={notes}
-            placeholder="Other notes"
+            placeholder="Other notes..."
             handleChange={this.handleFormChange}
           />
         </div>
@@ -288,7 +290,7 @@ class BidPost extends Component {
     const { showForm } = this.state;
     return (
       <div>
-        <SectionTitle title="Post a Bid"></SectionTitle>
+        <SectionTitle title="Post a Bid" />
         {showForm ? (
           <div className="bid-post">{this.getContent()}</div>
         ) : (
@@ -307,5 +309,11 @@ class BidPost extends Component {
     );
   }
 }
+
+BidPost.propTypes = {
+  submitted: PropTypes.bool.isRequired,
+  jobId: PropTypes.string.isRequired,
+  bidderId: PropTypes.string.isRequired,
+};
 
 export default BidPost;

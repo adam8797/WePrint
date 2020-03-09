@@ -30,4 +30,10 @@
     width: 15em;
     margin-bottom: unset;
   }
+
+  // TODO: Find a better sizing solution for this form
+  .wep-dropdown,
+  .wep-textarea__wrapper {
+    width: 48%;
+  }
 }
