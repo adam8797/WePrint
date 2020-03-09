@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 
 import Jdenticon from 'react-jdenticon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import UserApi from '../../../api/UserApi';
 import Button from '../../button/button';
@@ -18,20 +18,38 @@ class NotifArea extends Component {
   }
 
   componentDidMount() {
-    UserApi.CurrentUser().subscribe(user => {
-      this.setState({ user, loaded: true });
+    UserApi.CurrentUser().subscribe({
+      next: user => {
+        this.setState({ user, loaded: true });
+      },
+      error: err => {
+        console.error(err);
+        // Set state to loaded to show that the api call was tried even if it didn't work
+        this.setState({ loaded: true });
+      },
     });
   }
 
-  logIn = e => {
-    //this.props.history.push('route to login screen')
-    e.preventDefault();
+  logIn = () => {
+    this.setState({ toLogin: true });
+  };
+
+  logOut = () => {
+    this.setState({ toLogout: true });
   };
 
   render() {
-    const { user, loaded } = this.state;
+    const { user, loaded, toLogin, toLogout } = this.state;
+
+    if (toLogin) {
+      return <Redirect to="/login" />;
+    }
+    if (toLogout) {
+      return <Redirect to="/logout" />;
+    }
+
     if (!loaded) {
-      return <div className="notif-area"></div>;
+      return <div className="notif-area" />;
     }
     return (
       <div className="notif-area">
@@ -49,9 +67,12 @@ class NotifArea extends Component {
                 <Jdenticon className="notif-area__ava-icon" value={`${user.id}`} />
               )}
             </div>
-            <div className="notif-area__icon">
+            {/* <div className="notif-area__icon">
               <FontAwesomeIcon icon="bars" />
-            </div>
+            </div> */}
+            <Button size={Button.Size.SMALL} onClick={this.logOut}>
+              Log out
+            </Button>
           </div>
         ) : (
           <div className="notif-area__log-in">
