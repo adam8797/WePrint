@@ -1,0 +1,19 @@
+@import '../../assets/styles/effects';
+
+.body-card {
+  justify-self: stretch;
+  align-self: stretch;
+  background: white;
+  box-shadow: $card-shadow;
+  margin: 20px;
+  padding: 1em;
+
+  &:only-child {
+    grid-row: span 2;
+  }
+
+  &--centered {
+    justify-self: center;
+    align-self: center;
+  }
+}

@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
+using WePrint.Common.Models;
+
+namespace WePrint.Controllers
+{
+    [ApiController]
+    [Route("api/search")]
+    public class SearchController : WePrintController
+    {
+        public SearchController(ILogger<SearchController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
+        {
+        }
+
+        // GET: /api/job/search
+        /// <summary>
+        /// Search for all jobs matching some string
+        /// </summary>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<JobViewModel>>> SearchJob([FromQuery]string q)
+        {
+            var user = await CurrentUser;
+
+            IRavenQueryable<JobModel> jobs = Database.Query<JobModel>();
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                jobs = jobs
+                    .Search(j => j.Name, q)
+                    .Search(j => j.Description, q);
+            }
+
+            var allUsers = await GetUsers();
+            var result = (await jobs.ToListAsync()).Select(j => new JobViewModel(j, allUsers, (user?.Id)));
+            return Ok(result);
+        }
+
+    }
+}

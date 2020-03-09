@@ -1,0 +1,44 @@
+@import '../../assets/styles/colors';
+
+.add-device-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 600px;
+  min-height: 550px;
+
+  .type-buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 100px;
+  }
+
+  &__form {
+    flex-grow: 1;
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__details {
+    margin: 1rem 0;
+  }
+
+  &__dimensions {
+    display: flex;
+    align-items: center;
+    label {
+      margin: 0.4rem 1rem;
+      flex-grow: 1;
+    }
+    .wep-number {
+      // I'm too tired to figure out why this works right now but it feels wrong
+      flex-grow: 1;
+      width: 25%;
+    }
+  }
+}

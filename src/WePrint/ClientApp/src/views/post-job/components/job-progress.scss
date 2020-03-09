@@ -1,0 +1,70 @@
+@import '../../../assets/styles/colors';
+
+$arrow-gap: 30px;
+
+.arrow-progress-bar {
+  display: grid;
+  width: 100%;
+  grid-template-rows: 1fr;
+  --num-arrows: 1;
+  grid-template-columns: auto repeat(var(--num-arrows), 1fr) auto;
+  grid-gap: 30px;
+  padding: 1rem calc(1rem + 20px);
+  --arrow-background: #{$grey-4};
+  --arrow-color: #{$white};
+
+  .progress-arrow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 10px;
+    height: 30px;
+    background: var(--arrow-background);
+    color: var(--arrow-color);
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+
+    &--inactive {
+      --arrow-background: #{$grey-4};
+      --arrow-color: #{$grey-1};
+    }
+    &--active {
+      --arrow-background: #{$blue-2};
+    }
+    &--complete {
+      --arrow-background: #{$green};
+    }
+
+    &:first-child:before {
+      border-left-color: var(--arrow-background);
+    }
+
+    &:last-child:after {
+      border-top-color: var(--arrow-background);
+      border-bottom-color: var(--arrow-background);
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -20px;
+      max-width: 20px;
+      border: var(--arrow-background) solid;
+      border-width: 15px 0 15px 20px;
+      border-left-color: transparent;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      max-width: 20px;
+      border: transparent solid;
+      border-width: 15px 0 15px 20px;
+      border-left-color: var(--arrow-background);
+    }
+  }
+}

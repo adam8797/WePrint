@@ -1,0 +1,9 @@
+@import '../../assets/styles/colors';
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $blue-1;
+  color: $white;
+}

@@ -1,0 +1,70 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/effects';
+
+.wep-textarea__wrapper {
+  position: relative;
+  display: inline-block;
+  --drag-color: #{$grey-1};
+  $drag-right: 6px;
+  $drag-bottom: 10px;
+
+  &:before {
+    position: absolute;
+    content: '';
+    height: 10px;
+    width: 1px;
+    background: var(--drag-color);
+    right: $drag-right + 2px;
+    bottom: $drag-bottom;
+    transform: rotateZ(45deg);
+    pointer-events: none;
+  }
+
+  &:after {
+    position: absolute;
+    content: '';
+    height: 6px;
+    width: 1px;
+    background: var(--drag-color);
+    right: $drag-right;
+    bottom: $drag-bottom;
+    transform: rotateZ(45deg);
+    pointer-events: none;
+  }
+}
+
+.wep-textarea {
+  border-radius: 10px;
+  padding: ms(-4) ms(-2);
+  width: 100%;
+  min-height: 2.5em;
+  outline: none;
+  color: $grey-1;
+  --border-color: #{$grey-3};
+  border: 1px solid var(--border-color);
+
+  &:focus {
+    --border-color: #{$blue-1};
+    border-color: var(--border-color);
+    box-shadow: 0 0 3px var(--border-color);
+  }
+
+  &--error,
+  &--error:focus {
+    --border-color: #{$red};
+  }
+
+  // https://css-tricks.com/almanac/properties/s/scrollbar/
+  // ::-webkit-scrollbar addresses the background of the bar itself. It is usually covered by the other elements
+  // ::-webkit-scrollbar-button addresses the directional buttons on the scrollbar
+  // ::-webkit-scrollbar-track addresses the empty space “below” the progress bar
+  // ::-webkit-scrollbar-track-piece is the top-most layer of the the progress bar not covered by the draggable scrolling element (thumb)
+  // ::-webkit-scrollbar-thumb addresses the draggable scrolling element that resizes depending on the size of the scrollable element
+  // ::-webkit-scrollbar-corner addresses the (usually) bottom corner of the scrollable element, where two scrollbars might meet
+  // ::-webkit-resizer addresses the draggable resizing handle that appears above the scrollbar-corner at the bottom corner of some elements
+
+  &::-webkit-resizer {
+    display: none;
+  }
+}

@@ -1,0 +1,66 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.button {
+  border: none;
+  border-radius: 5px;
+  --btn-color: #{$grey-4};
+  --btn-bg: #{$grey-1};
+  --btn-bg-focus: #{$grey-5};
+  color: var(--btn-color);
+  background: var(--btn-bg);
+
+  &__inner-container {
+    display: flex;
+    align-items: center;
+  }
+  // this solution feels a little hacky, maybe find something better
+  &__icon:not(:only-child) {
+    margin-right: ms(-2);
+  }
+
+  &:hover,
+  &:focus {
+    background: var(--btn-bg-focus);
+  }
+
+  &--primary {
+    --btn-color: #{$white};
+    --btn-bg: #{$blue-1};
+    --btn-bg-focus: #{$blue-2};
+  }
+  &--success {
+    --btn-color: #{$white};
+    --btn-bg: #{$green};
+    --btn-bg-focus: #{lighten($green, 10)};
+  }
+  &--danger {
+    --btn-color: #{$white};
+    --btn-bg: #{$red};
+    --btn-bg-focus: #{lighten($red, 10)};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    --btn-color: #{$white};
+    --btn-bg: #{$grey-4};
+    --btn-bg-focus: #{$grey-4};
+  }
+
+  &--deselected {
+    color: black;
+    background: $grey-6;
+  }
+
+  &--small {
+    padding: ms(-3);
+  }
+
+  &--medium {
+    padding: ms(-2);
+  }
+
+  &--large {
+    padding: ms(-1);
+  }
+}

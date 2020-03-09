@@ -1,0 +1,6 @@
+﻿Services:
+  RavenDB:
+    DatabaseName: WePrint
+
+  RabbitMQ:
+    Queue: Slicer

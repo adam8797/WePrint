@@ -1,11 +1,20 @@
-﻿Logging:
+Logging:
   LogLevel:
     Default: Debug
     Microsoft: Information
     System: Information
-    
+
+IdentityServer:
+  Key:
+    Type: Development
+
 Services:
   RavenDB:
-    #HostOverride:
-    #  - localhost
+    HostOverride:
+      - localhost
     DatabaseName: WePrint_Testing
+
+  RabbitMQ:
+    HostOverride: 
+      - localhost
+    Queue: Slicer_Testing

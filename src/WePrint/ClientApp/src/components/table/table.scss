@@ -1,0 +1,31 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.table__content {
+  width: 100%;
+
+  &--empty {
+    padding-top: 1em;
+  }
+}
+
+.table__row {
+  border-bottom: 1px solid $grey-5;
+
+  td {
+    border-top: unset;
+  }
+
+  &--clickable {
+    cursor: pointer;
+  }
+}
+
+.table__footer {
+  text-align: center;
+}
+
+.table__content-count {
+  color: $grey-3;
+  padding-top: 20px;
+}

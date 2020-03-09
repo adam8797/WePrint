@@ -1,0 +1,12 @@
+﻿CleanupSliceJobs: false
+
+Services:
+  RavenDB:
+    DiscoveryName: ravendb
+    DatabaseName: WePrint_Testing
+
+  RabbitMQ:
+    DiscoveryName: rabbitmq
+    Username: user
+    Password: password
+    Queue: Slicer

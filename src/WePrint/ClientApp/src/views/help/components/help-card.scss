@@ -1,0 +1,25 @@
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.help-card {
+  background-color: $white;
+  border-radius: 5px;
+  border: 1px solid black;
+  width: 15em;
+  height: 15em;
+  margin-right: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $grey-6;
+  }
+}
+
+.help-card__text {
+  font-size: $font-size-large;
+  margin-bottom: 0.5em;
+}

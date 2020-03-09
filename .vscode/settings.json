@@ -1,0 +1,7 @@
+{
+  "eslint.workingDirectories": [ // allows vscode to find the correct node project root
+    {
+      "mode": "auto"
+    }
+  ]
+}

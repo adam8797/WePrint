@@ -5,3 +5,9 @@ services:
     build:
       context: ../src
       dockerfile: WePrint/Dockerfile
+
+  weprint-slicer:
+    image: ${DOCKER_REGISTRY-}weprint/weprint-slicer:${BUILD_BUILDNUMBER:-latest}
+    build:
+      context: ../src
+      dockerfile: WePrint.Slicer/Dockerfile
