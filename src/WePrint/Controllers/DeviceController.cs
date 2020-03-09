@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
+using WePrint.Common;
 using WePrint.Common.ServiceDiscovery;
 using WePrint.Common.Models;
 
@@ -29,26 +30,28 @@ namespace WePrint.Controllers
         public async Task<IActionResult> GetDevices()
         {
             var user = await CurrentUser;
-            if (user == null) return Unauthorized();
+            if (user == null) 
+                return Unauthorized();
 
-            await InitUserPrinters(user);
+            user.Printers ??= new List<PrinterModel>();
             
-            return Json(user.Printers);
+            return Ok(user.Printers);
         }
 
         // GET" /api/Device/id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDeviceByID([FromRoute]string id)
+        public async Task<IActionResult> GetDeviceById([FromRoute]string id)
         {
             var user = await CurrentUser;
-            if (user == null) return Unauthorized();
+            if (user == null) 
+                return Unauthorized();
 
-            await InitUserPrinters(user);
+            user.Printers ??= new List<PrinterModel>();
 
             var printer = user.Printers.FirstOrDefault(x => x.Id == id);
             if (printer == null) return NotFound();
 
-            return Json(printer);
+            return Ok(printer);
         }
 
         // POST: /api/Device/
@@ -60,15 +63,13 @@ namespace WePrint.Controllers
             if (user == null)
                 return Unauthorized();
 
-            await InitUserPrinters(user);
-
+            user.Printers ??= new List<PrinterModel>();
+            model.Id = Guid.NewGuid().ToString();
             user.Printers.Add(model);
 
-            await Database.StoreAsync(model);
-            await Database.StoreAsync(user);
             await Database.SaveChangesAsync();
 
-            return Ok(model.Id);
+            return Created(Url.Action("GetDeviceByID", new {id = model.Id}), model);
         }
 
         // PUT: /api/Device/
@@ -79,19 +80,19 @@ namespace WePrint.Controllers
 
             if (user == null)
                 return Unauthorized();
+            
+            user.Printers ??= new List<PrinterModel>();
 
-            var Device = user.Printers.FirstOrDefault(p => p.Id == id);
+            var device = user.Printers.FirstOrDefault(p => p.Id == id);
 
-            if (Device == null)
+            if (device == null)
                 return NotFound("Device " + id + " not found");
 
-            Common.ReflectionHelper.CopyPropertiesTo(model, Device);
+            ReflectionHelper.CopyPropertiesTo(model, device);
 
-            await Database.StoreAsync(user);
-            await Database.StoreAsync(Device);
             await Database.SaveChangesAsync();
 
-            return Ok();
+            return NoContent();
         }
 
         // DELETE: /api/Device/
@@ -103,29 +104,17 @@ namespace WePrint.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var Device = user.Printers.FirstOrDefault(p => p.Id == id);
+            user.Printers ??= new List<PrinterModel>();
 
-            if (Device == null)
+            var device = user.Printers.FirstOrDefault(p => p.Id == id);
+
+            if (device == null)
                 return NotFound("Device " + id + " not found");
 
-            user.Printers.Remove(Device);
+            user.Printers.Remove(device);
 
-            await Database.StoreAsync(user);
             await Database.SaveChangesAsync();
-
-            return Ok();
-        }
-
-        private async Task InitUserPrinters(ApplicationUser user)
-        {
-            if (user.Printers != null)
-                return;
-            else
-            {
-                user.Printers = new List<PrinterModel>();
-                await Database.StoreAsync(user);
-                await Database.SaveChangesAsync();
-            }
+            return NoContent();
         }
     }
 }
