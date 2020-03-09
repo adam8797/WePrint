@@ -152,7 +152,7 @@ class Job extends Component {
       }
     }
 
-    const status = job.status === JobStatus.PendingOpen ? 'OPEN' : 'CLOSED';
+    const status = job.status === JobStatus.BiddingOpen ? 'OPEN' : 'CLOSED';
     return (
       <div className="job">
         <div className="job__header">

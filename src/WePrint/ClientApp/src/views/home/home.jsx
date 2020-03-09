@@ -6,7 +6,7 @@ import './home.scss';
 const HomePage = () => (
   <BodyCard className="homepage">
     <SectionTitle title="Welcome to WePrint" />
-    <p>We&apos;re happy you&apos;e here!</p>
+    <p>We&apos;re happy you&apos;re here!</p>
     <ul>
       <li>
         If you want to get something printed click{' '}
