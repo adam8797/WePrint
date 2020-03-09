@@ -72,12 +72,14 @@ namespace WePrint.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<JobModel>> GetJob(string id)
         {
+            var user = await CurrentUser;
+
+            if (user == null)
+                return Unauthorized();
+
             var job = await Database.LoadAsync<JobModel>(id);
 
-            if (await CheckJobAccess(job))
-                return job;
-
-            return Forbid();
+            return job.GetViewableJob(user.Id);
         }
 
         // POST: /api/job/
