@@ -163,7 +163,7 @@ function EditDevice() {
             </div>
           </div>
           <div className="input-group">
-            <label htmlFor="name">Minimum Layer Height:</label>
+            <label htmlFor="layerMin">Minimum Layer Height:</label>
             <WepNumber
               name="layerMin"
               id="layerMin"
@@ -174,7 +174,7 @@ function EditDevice() {
             />
           </div>
           <div className="input-group">
-            <label htmlFor="name">Model:</label>
+            <label htmlFor="description">Description:</label>
             <WepTextarea
               name="description"
               id="description"
