@@ -21,8 +21,8 @@ function EditDevice() {
     if (printerId) {
       PrinterApi.GetPrinter(printerId).subscribe(printer => {
         setName(printer.name);
-        setPrinterType(printer.printerType);
-        setLayerMin(printer.name);
+        setPrinterType(printer.type);
+        setLayerMin(printer.layerMin);
         setDimensions({
           x: printer.xMax,
           y: printer.yMax,
@@ -44,7 +44,7 @@ function EditDevice() {
   const handleSubmit = () => {
     const printer = new PrinterModel();
     printer.name = name;
-    printer.printerType = printerType;
+    printer.type = printerType;
     printer.xMax = dimensions.x;
     printer.yMax = dimensions.y;
     printer.zMax = dimensions.z;
@@ -53,7 +53,6 @@ function EditDevice() {
     if (printerId) {
       // update not create
       PrinterApi.UpdatePrinter(printerId, printer).subscribe({
-        next: p => console.log('update next', p),
         error: console.error,
         complete: () => {
           history.push('/devices');
@@ -61,7 +60,6 @@ function EditDevice() {
       });
     } else {
       PrinterApi.CreatePrinter(printer).subscribe({
-        next: p => console.log('next', p),
         error: console.error,
         complete: () => {
           history.push('/devices');
@@ -74,6 +72,7 @@ function EditDevice() {
     if (printerId) {
       // check again just for safety
       // TODO: add better confirmation alert
+      // eslint-disable-next-line no-alert
       if (window.confirm(`Do you really want to delete printer: ${name}?`)) {
         PrinterApi.DeletePrinter(printerId).subscribe({
           error: console.error,

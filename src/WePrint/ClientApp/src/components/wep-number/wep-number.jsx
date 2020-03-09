@@ -27,7 +27,7 @@ function WepNumber(props) {
 WepNumber.propTypes = {
   name: PropTypes.string,
   id: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   min: PropTypes.number,
   max: PropTypes.number,
   step: PropTypes.number,
