@@ -37,8 +37,8 @@ export default class BidApi {
 
   // Returns an observable, which emits a bid Id when the bid is created.
   // If the creation fails, the observable returns an error.
-  static CreateBid(bidModel) {
-    return axios.post(BuildUrl('bid'), { params: bidModel }).pipe(ErrorOnBadStatus);
+  static CreateBid(bidModel, jobId) {
+    return axios.post(BuildUrl('job', jobId, 'bids'), bidModel).pipe(ErrorOnBadStatus);
   }
 
   // Returns an observable, which emits a bid Id when the bid is updated.

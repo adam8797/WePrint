@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
 import ToggleableDisplay from '../../components/toggleable-display/toggleable-display';
 import JobApi from '../../api/JobApi';
+import { JobStatus } from '../../models/Enums';
 
 class FindJob extends React.Component {
   constructor(props) {
@@ -28,11 +29,15 @@ class FindJob extends React.Component {
 
     const { jobResults } = this.state;
 
-    const jobs = jobResults.map(job => ({
-      ...job,
-      user: job.customerId.replace('ApplicationUsers-', ''),
-      link: `/job/${job.id}`,
-    }));
+    const jobs = jobResults.map(job => {
+      if (job.status !== JobStatus.PendingOpen) {
+        return {
+          ...job,
+          user: job.customerId.replace('ApplicationUsers-', ''),
+          link: `/job/${job.id}`,
+        };
+      }
+    });
 
     return (
       <BodyCard>

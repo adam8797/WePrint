@@ -6,12 +6,12 @@ import './wep-input.scss';
 const noop = () => {};
 
 function WepInput(props) {
-  const { name, id, value, placeholder = '', handleChange = noop, error } = props;
+  const { name, id, value, placeholder = '', handleChange = noop, error, type = 'text' } = props;
   const className = classNames('wep-input', { 'wep-input--error': error });
   return (
     <input
       className={className}
-      type="text"
+      type={type}
       name={name}
       id={id}
       value={value}
@@ -28,6 +28,7 @@ WepInput.propTypes = {
   placeholder: PropTypes.string,
   handleChange: PropTypes.func,
   error: PropTypes.bool,
+  type: PropTypes.string,
 };
 
 export default WepInput;

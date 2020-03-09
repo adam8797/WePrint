@@ -1,0 +1,33 @@
+@import '../../../assets/styles/colors';
+
+.bid-post {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__form-content {
+    padding: 1em;
+    background-color: $blue-4;
+    margin-top: 0.5em;
+    border-radius: 1em;
+  }
+
+  &__input {
+    display: flex;
+    margin-top: 0.5em;
+    padding-bottom: 0.5em;
+
+    &--center {
+      justify-content: center;
+      align-items: center;
+    }
+
+    &--space {
+      place-content: space-between;
+    }
+  }
+  &__label {
+    width: 15em;
+    margin-bottom: unset;
+  }
+}
