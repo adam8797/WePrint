@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace WePrint.Common.Models
 {
@@ -10,6 +11,8 @@ namespace WePrint.Common.Models
         public string BidderId { get; set; }
         public string JobId { get; set; }
         public float Price { get; set; }
+
+        [JsonConverter(typeof(TimespanConverter))]
         public TimeSpan WorkTime { get; set; }
         public string Notes { get; set; }
         public float LayerHeight { get; set; }
@@ -33,6 +36,7 @@ namespace WePrint.Common.Models
         public string JobId { get; set; }
         public string Id { get; set; }
         public float? Price { get; set; }
+        [JsonConverter(typeof(TimespanConverter))]
         public TimeSpan? WorkTime { get; set; }
         public string Notes { get; set; }
         public float? LayerHeight { get; set; }
@@ -52,6 +56,7 @@ namespace WePrint.Common.Models
         public string BidderUserName { get; set; }
         public string JobId { get; set; }
         public float Price { get; set; }
+        [JsonConverter(typeof(TimespanConverter))]
         public TimeSpan WorkTime { get; set; }
         public string Notes { get; set; }
         public float LayerHeight { get; set; }
