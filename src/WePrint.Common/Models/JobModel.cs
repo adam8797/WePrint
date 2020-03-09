@@ -37,7 +37,10 @@ namespace WePrint.Common.Models
             if (returnable.MakerId != userId && returnable.CustomerId != userId)
             {
                 returnable.Comments = new List<CommentModel>();
-                returnable.Address = Address.GetPublicAddress();
+                if (Address != null)
+                    returnable.Address = Address.GetPublicAddress();
+                else
+                    returnable.Address = new AddressModel();
             }
 
             return returnable;

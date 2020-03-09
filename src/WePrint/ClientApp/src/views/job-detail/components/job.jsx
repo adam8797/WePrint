@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import moment from 'moment';
-import { JobStatus } from '../../../models/Enums';
+import { find } from 'lodash';
+
 import { Table } from '../../../components';
 import JobApi from '../../../api/JobApi';
+import UserApi from '../../../api/UserApi';
 import JobPlaceholder from '../../../assets/images/job.png';
+import { JobStatus } from '../../../models/Enums';
+import BidPost from './bid-post';
 
 import './job.scss';
 
@@ -14,6 +18,10 @@ class Job extends Component {
     super(props);
     this.state = {
       job: {},
+      // TODO: Review if this state is needed
+      // eslint-disable-next-line react/no-unused-state
+      customer: {},
+      user: null,
     };
     this.filesTableCols = [
       {
@@ -39,46 +47,76 @@ class Job extends Component {
     ];
     this.bidTableCols = [
       {
-        Header: 'Bid',
-        accessor: 'bid',
+        Header: 'Bid ($)',
+        accessor: 'price',
       },
       {
-        Header: 'User',
-        accessor: 'customerUserName',
+        Header: 'Bidder',
+        accessor: 'bidderUserName',
       },
-      {
-        Header: 'Printer',
-        accessor: 'printer',
-      },
+      // This needs to be added back in V2
+      // {
+      //   Header: 'Printer',
+      //   accessor: 'printer',
+      // },
       {
         Header: 'Material',
-        accessor: 'material',
+        accessor: 'materialType',
       },
       {
         Header: 'Color',
-        accessor: 'color',
+        accessor: 'materialColor',
+      },
+      {
+        Header: 'Finishing',
+        accessor: 'finishing',
       },
       {
         Header: 'Estimate', // time accepted to time it's put in the box
-        accessor: 'estimate',
+        accessor: 'workTime',
       },
-      {
-        Header: 'User Rating',
-        accessor: 'rating',
-      },
+      // V2
+      // {
+      //   Header: 'User Rating',
+      //   accessor: 'rating',
+      // },
     ];
   }
 
   componentDidMount() {
     const { jobId } = this.props;
     this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
-      this.setState({ job });
+      UserApi.GetUser(job.customerId).subscribe(customer => {
+        // TODO: review if this state is needed
+        // eslint-disable-next-line react/no-unused-state
+        this.setState({ job, customer });
+      });
     }, console.error);
+    UserApi.CurrentUser().subscribe(user => {
+      this.setState({ user });
+    });
   }
 
   componentWillUnmount() {
     if (this.subscription) this.subscription.unsubscribe();
   }
+
+  getBidSection = () => {
+    const { user, job } = this.state;
+    if (!user || !job) return '';
+    if (user.id === job.customerId) {
+      return (
+        <div className="job__bids">
+          <Table title="Bids" columns={this.bidTableCols} data={job.bids || []} />
+        </div>
+      );
+    }
+    if (job.status === JobStatus.BiddingOpen) {
+      const bidExists = find(job.bids, { bidderId: user.id });
+      return <BidPost jobId={job.id} bidderId={user.id} submitted={bidExists} />;
+    }
+    return <div>Sorry! Bidding is not available on this job!</div>;
+  };
 
   render() {
     const { job } = this.state;
@@ -158,11 +196,9 @@ class Job extends Component {
             </span>
           </div>
         </div>
-        <div className="job__bids">
-          <Table title="Bids" columns={this.bidTableCols} data={[]} />
-        </div>
+        {this.getBidSection()}
         <div className="job__files">
-          <Table title="Files" columns={this.filesTableCols} data={[]} />
+          <Table title="Files" columns={this.filesTableCols} data={job.sliceReports || []} />
         </div>
       </div>
     );
