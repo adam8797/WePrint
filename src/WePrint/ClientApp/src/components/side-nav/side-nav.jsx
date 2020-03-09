@@ -9,9 +9,9 @@ const SideNav = () => {
   const match = useRouteMatch();
   return (
     <nav className="side-nav">
-      <NavItem to="/" active={match.path === '/'} icon="tachometer-alt">
+      {/* <NavItem to="/" active={match.path === '/'} icon="tachometer-alt">
         Dashboard
-      </NavItem>
+      </NavItem> */}
       <NavItem to="/devices" active={match.path.startsWith('/devices')} icon="microchip">
         Devices
       </NavItem>

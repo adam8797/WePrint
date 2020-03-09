@@ -80,6 +80,7 @@ namespace WePrint
                     opts.Password.RequireUppercase = false;
                 })
                 .AddRavenDbIdentityStores<ApplicationUser>()
+                .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
