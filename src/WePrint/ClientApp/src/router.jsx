@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   AppLayout,
   About,
+  EditDevice,
   Devices,
   FindJob,
   Help,
@@ -24,6 +25,9 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/help">
             <Help />
+          </Route>
+          <Route path="/edit-device/:printerId?">
+            <EditDevice />
           </Route>
           <Route path="/devices">
             <Devices />
