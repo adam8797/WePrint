@@ -96,6 +96,7 @@ namespace WePrint.Common.Models
             SliceReports = viewableJob.SliceReports;
             Notes = viewableJob.Notes;
             BidClose = viewableJob.BidClose;
+            Name = viewableJob.Name;
 
             if (CustomerId != null)
                 CustomerUserName = users.FirstOrDefault(user => user.Id == CustomerId).UserName;

@@ -25,7 +25,7 @@ namespace WePrint.Controllers
         /// Search for all jobs matching some string
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobModel>>> SearchJob([FromQuery]string q)
+        public async Task<ActionResult<IEnumerable<JobViewModel>>> SearchJob([FromQuery]string q)
         {
             var user = await CurrentUser;
 
@@ -38,7 +38,8 @@ namespace WePrint.Controllers
                     .Search(j => j.Description, q);
             }
 
-            var result = (await jobs.ToListAsync()).Select(j => j.GetViewableJob(user?.Id));
+            var allUsers = await GetUsers();
+            var result = (await jobs.ToListAsync()).Select(j => new JobViewModel(j, allUsers, (user?.Id)));
             return Ok(result);
         }
 
