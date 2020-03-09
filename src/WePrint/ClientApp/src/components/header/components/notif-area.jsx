@@ -13,12 +13,13 @@ class NotifArea extends Component {
     super(props);
     this.state = {
       user: null,
+      loaded: false,
     };
   }
 
   componentDidMount() {
     UserApi.CurrentUser().subscribe(user => {
-      this.setState({ user });
+      this.setState({ user, loaded: true });
     });
   }
 
@@ -28,7 +29,10 @@ class NotifArea extends Component {
   };
 
   render() {
-    const { user } = this.state;
+    const { user, loaded } = this.state;
+    if (!loaded) {
+      return <div className="notif-area"></div>;
+    }
     return (
       <div className="notif-area">
         {user ? (
@@ -36,7 +40,7 @@ class NotifArea extends Component {
             <div className="notif-area__name">
               {user.firstName || user.lastName
                 ? `${user.firstName} ${user.lastName}`
-                : 'Unnamed User'}
+                : user.userName}
             </div>
             <div className="notif-area__avatar">
               {user.avatar ? (

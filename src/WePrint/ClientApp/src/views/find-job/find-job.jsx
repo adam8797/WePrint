@@ -30,7 +30,6 @@ class FindJob extends React.Component {
 
     const jobs = jobResults.map(job => ({
       ...job,
-      user: job.customerId.replace('ApplicationUsers-', ''),
       link: `/job/${job.id}`,
     }));
 

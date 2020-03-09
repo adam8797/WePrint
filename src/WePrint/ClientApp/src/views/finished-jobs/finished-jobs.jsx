@@ -3,6 +3,7 @@ import JobApi from '../../api/JobApi';
 
 import BodyCard from '../../components/body-card/body-card';
 import ToggleableDisplay from '../../components/toggleable-display/toggleable-display';
+import { finishedJobStatuses } from '../../models/Enums';
 
 class FinishedJobs extends Component {
   constructor(props) {
@@ -27,11 +28,10 @@ class FinishedJobs extends Component {
 
     const displayJobs = jobs
       .filter(job => {
-        return job.status === 6 || job.status === 7 || job.status === 8;
+        return finishedJobStatuses.includes(job.status);
       })
       .map(job => ({
         ...job,
-        user: job.customerId.replace('ApplicationUsers-', ''),
         link: `/job/${job.id}`,
       }));
 
