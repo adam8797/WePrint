@@ -791,7 +791,7 @@ namespace WePrint.Controllers
                 if (user == null)
                     return false;
 
-                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id || job.Status > JobStatus.PendingOpen);
+                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id) || job.Status > JobStatus.PendingOpen;
             }
             catch
             {
