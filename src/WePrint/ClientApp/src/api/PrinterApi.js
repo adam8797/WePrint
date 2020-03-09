@@ -21,11 +21,11 @@ export default class PrinterApi {
   }
 
   static CreatePrinter(printerModel) {
-    return axios.post(BuildUrl('device'), { params: printerModel }).pipe(ErrorOnBadStatus);
+    return axios.post(BuildUrl('device'), printerModel).pipe(ErrorOnBadStatus);
   }
 
   static UpdatePrinter(id, printerModel) {
-    return axios.put(BuildUrl('device', id), { params: printerModel }).pipe(ErrorOnBadStatus);
+    return axios.put(BuildUrl('device', id), printerModel).pipe(ErrorOnBadStatus);
   }
 
   static DeletePrinter(id) {

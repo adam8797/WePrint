@@ -1,37 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { BodyCard, Button, SectionTitle } from '../../components';
-import Lorem from './components/lorem';
+import { BodyCard, SectionTitle } from '../../components';
 import './home.scss';
 
 const HomePage = () => (
   <BodyCard className="homepage">
-    <SectionTitle title="Home Page" />
-    <p>This is the home page</p>
-    <p>
-      Check out this cool Topic:
-      <Link to="/topics/components">Components</Link>
-    </p>
-    <div className="homepage__examples">
-      <Button type={Button.Type.PRIMARY}>Do the thing!</Button>
-      <Button type={Button.Type.PRIMARY} icon="info-circle">
-        Info here!
-      </Button>
-      <Button type={Button.Type.PRIMARY} icon="info-circle" />
-      <FontAwesomeIcon icon="coffee" />
-      <FontAwesomeIcon icon={['fab', 'google']} size="lg" />
-      <FontAwesomeIcon icon={['fab', 'microsoft']} spin size="lg" />
-      <FontAwesomeIcon icon="check-square" border size="sm" />
-    </div>
-    <Lorem />
-    <Lorem />
-    <Lorem />
-    <Lorem />
-    <Lorem />
-    <SectionTitle title="Lower Section" />
-    <Lorem />
-    <Lorem />
+    <SectionTitle title="Welcome to WePrint" />
+    <p>We&apos;re happy you&apos;e here!</p>
+    <ul>
+      <li>
+        If you want to get something printed click{' '}
+        <Link to="/post">
+          <b>Post a Job</b>
+        </Link>{' '}
+        on the left
+      </li>
+      <li>
+        If you want to use your printer to make things for people start by adding your device under{' '}
+        <Link to="/devices">
+          <b>Devices</b>
+        </Link>{' '}
+        Then check out{' '}
+        <Link to="find">
+          <b>Find a Job</b>
+        </Link>{' '}
+        to start placing Bids
+      </li>
+    </ul>
   </BodyCard>
 );
 

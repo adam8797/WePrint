@@ -7,7 +7,7 @@ export default class PrinterModel {
     this.xMax = 0;
     this.yMax = 0;
     this.zMax = 0;
-    this.printerType = PrinterType.SLA;
+    this.type = PrinterType.SLA;
     this.layerMin = 0;
   }
 
@@ -22,7 +22,7 @@ export default class PrinterModel {
       a.xMax === b.xMax &&
       a.yMax === b.yMax &&
       a.zMax === b.zMax &&
-      a.printerType === b.printerType &&
+      a.type === b.type &&
       a.layerMin === b.layerMin
     );
   }

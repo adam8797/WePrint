@@ -284,6 +284,7 @@ namespace WePrint.Controllers
         /// <returns></returns>
         [HttpPost("{id}/files")]
         [SwaggerOperation(Tags = new []{ "Files" })]
+        [RequestSizeLimit(100 * 1_000_000)]
         public async Task<IActionResult> UploadFile(string id, IFormFile file)
         {
             var user = await CurrentUser;
@@ -306,7 +307,6 @@ namespace WePrint.Controllers
 
             if (file.Length >= maxSizeInBytes)
                 return BadRequest($"File too large. Max size is {maxSizeInBytes} bytes");
-
 
             var allowedExtensions = _configuration.GetSection("FileUploads:AllowedExtensions").Get<string[]>();
             if (allowedExtensions != null && !Path.GetExtension(file.FileName).In(allowedExtensions))
@@ -791,7 +791,7 @@ namespace WePrint.Controllers
                 if (user == null)
                     return false;
 
-                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id || job.Status > JobStatus.PendingOpen);
+                return job.CustomerId == user.Id || job.Bids.Any(x => x.BidderId == user.Id) || job.Status > JobStatus.PendingOpen;
             }
             catch
             {

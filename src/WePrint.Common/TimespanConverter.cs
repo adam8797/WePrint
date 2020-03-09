@@ -14,7 +14,7 @@ namespace WePrint.Common
         /// <summary>
         /// Format: Days.Hours:Minutes:Seconds:Milliseconds
         /// </summary>
-        public const string TimeSpanFormatString = @"d\.hh\:mm\:ss\:FFF";
+        public const string TimeSpanFormatString = @"hh\:mm\:ss";
 
         public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
         {

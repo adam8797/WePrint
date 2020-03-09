@@ -2,6 +2,6 @@
 {
     public abstract class DbModel: IDbModel
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
     }
 }

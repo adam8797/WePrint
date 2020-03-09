@@ -1,12 +1,12 @@
 @import '../../assets/styles/colors';
 @import '../../assets/styles/sizes';
+@import '../../assets/styles/effects';
 
-.wep-dropdown {
+.wep-number {
   border-radius: 10px;
   padding: ms(-4) ms(-2);
   outline: none;
   color: $grey-1;
-  background: $white;
   --border-color: #{$grey-3};
   border: 1px solid var(--border-color);
 

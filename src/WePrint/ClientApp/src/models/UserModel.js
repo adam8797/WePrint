@@ -4,5 +4,6 @@ export default class UserModel {
     this.lastName = '';
     this.bio = '';
     this.id = '';
+    this.userName = '';
   }
 }

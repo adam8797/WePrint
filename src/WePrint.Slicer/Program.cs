@@ -119,14 +119,20 @@ namespace WePrint.Slicer
 
                     Console.WriteLine("Starting Slice...");
 
-                    var files = slicejob.Files ?? session.Advanced.Attachments.GetNames(job).Select(x => x.Name);
+                    slicejob.Files ??= session.Advanced.Attachments.GetNames(job).Select(x => x.Name).ToList();
 
-                    foreach (var file in files)
+                    foreach (var file in slicejob.Files)
                     {
                         Console.WriteLine($"Slicing File {file}...");
 
                         Console.WriteLine("Retrieving file from database");
                         var attachment = session.Advanced.Attachments.Get(job, file);
+
+                        if (attachment == null)
+                        {
+                            Console.WriteLine("Unable to retrieve file");
+                            continue;
+                        }
 
                         Console.WriteLine("File Size: " + attachment.Details.Size);
 

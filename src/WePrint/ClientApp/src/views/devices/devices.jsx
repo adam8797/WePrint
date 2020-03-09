@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import PrinterApi from '../../api/PrinterApi';
-import { BodyCard, Table } from '../../components';
+import { Button, BodyCard, Table } from '../../components';
 
 class Devices extends Component {
   constructor(props) {
@@ -24,8 +25,22 @@ class Devices extends Component {
         accessor: 'dimensions',
       },
       {
-        Header: 'Model',
-        accessor: 'model',
+        Header: 'Min Layer Height',
+        accessor: 'layerMin',
+        Cell: ({ cell: { value } }) => `${value} mm`,
+      },
+      {
+        id: 'edit',
+        accessor: 'id',
+        // eslint-disable-next-line react/prop-types
+        Cell: ({ cell: { value: printerId } }) => (
+          <Button
+            icon="pen"
+            size={Button.Size.SMALL}
+            type={Button.Type.PRIMARY}
+            onClick={() => this.navToEditDevice(printerId)}
+          />
+        ),
       },
     ];
 
@@ -33,9 +48,7 @@ class Devices extends Component {
       {
         text: 'Add Device',
         key: 'addDevice',
-        action: () => {
-          console.log('adding device');
-        },
+        action: this.navToAddDevice,
       },
     ];
   }
@@ -50,10 +63,26 @@ class Devices extends Component {
     if (this.subscription) this.subscription.unsubscribe();
   }
 
+  navToAddDevice = () => {
+    this.setState({ toAddDevice: true });
+  };
+
+  navToEditDevice = printerId => {
+    this.setState({ toEditDevice: printerId });
+  };
+
   render() {
-    const { printers } = this.state;
+    const { printers, toAddDevice, toEditDevice } = this.state;
+
+    if (toAddDevice) {
+      return <Redirect to="/edit-device" push />;
+    }
+    if (toEditDevice) {
+      return <Redirect to={`/edit-device/${toEditDevice}`} push />;
+    }
+
     const printersWDimensions = printers.map(p => {
-      return { ...p, dimensions: `${p.XMax} x ${p.YMax} x ${p.ZMax} mm` };
+      return { ...p, dimensions: `${p.xMax} x ${p.yMax} x ${p.zMax} mm` };
     });
     return (
       <BodyCard>

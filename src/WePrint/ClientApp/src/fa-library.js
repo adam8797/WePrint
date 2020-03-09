@@ -14,6 +14,7 @@ import {
   faTh,
   faArrowLeft,
   faTrash,
+  faPen,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -41,5 +42,6 @@ library.add(
   faComments,
   faBuilding,
   faQuestionCircleOutline,
-  faTrash
+  faTrash,
+  faPen
 );

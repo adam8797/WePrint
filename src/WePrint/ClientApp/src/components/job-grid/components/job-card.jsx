@@ -6,7 +6,18 @@ import JobPlaceholder from '../../../assets/images/job.png';
 import './job-card.scss';
 
 function JobCard(props) {
-  const { image, name, jobId, user, source, externalId, parts, printTime, prints } = props;
+  const {
+    image,
+    name,
+    jobId,
+    customerUserName,
+    customerId,
+    source,
+    externalId,
+    parts,
+    printTime,
+    prints,
+  } = props;
   const history = useHistory();
 
   return (
@@ -23,7 +34,7 @@ function JobCard(props) {
         <div className="job-card__detail">
           <div>
             <span>{name}</span>
-            <span className="job-card__text--small">{user}</span>
+            <span className="job-card__text--small">{customerUserName}</span>
           </div>
           <div>
             <span>{source}</span>
@@ -53,7 +64,8 @@ JobCard.propTypes = {
   // required
   name: PropTypes.string.isRequired,
   jobId: PropTypes.string.isRequired,
-  user: PropTypes.string.isRequired,
+  customerUserName: PropTypes.string.isRequired,
+  customerId: PropTypes.string.isRequired,
   source: PropTypes.string,
   // optional
   image: PropTypes.string,
