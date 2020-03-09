@@ -37,13 +37,9 @@ export default class JobApi {
     return { input, output: JobApi.SearchJobsStream(input) };
   }
 
-
   // Probably most useful as a helper for BuildSearchStream();
   static SearchJobsStream(inputObservable) {
-    return inputObservable.pipe(
-      auditTime(1000),
-      switchMap(JobApi.SearchJobs)
-    );
+    return inputObservable.pipe(auditTime(1000), switchMap(JobApi.SearchJobs));
   }
 
   static SearchJobs(q) {

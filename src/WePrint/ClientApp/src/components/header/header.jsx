@@ -1,5 +1,6 @@
 import React from 'react';
 import NotifArea from './components/notif-area';
+import SearchBar from './components/search-bar';
 import './header.scss';
 
 const Header = () => {
@@ -7,13 +8,7 @@ const Header = () => {
     <header className="header">
       <div className="header__logo">WePrint</div>
       <div className="header__menu-bar">
-        <input
-          type="text"
-          name="search"
-          id="search "
-          className="header__search"
-          placeholder="Search for makers or jobs"
-        />
+        <SearchBar />
         <div className="header__notif-area">
           <NotifArea />
         </div>
