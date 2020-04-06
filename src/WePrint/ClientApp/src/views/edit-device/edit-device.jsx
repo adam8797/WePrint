@@ -131,7 +131,7 @@ function EditDevice() {
         <SectionTitle title="Device Details" />
         <div className="add-device-page__details">
           <div className="input-group">
-            <label htmlFor="x">Maximum Dimensions:</label>
+            <label htmlFor="x">Maximum Volume:</label>
             <div className="add-device-page__dimensions">
               <label htmlFor="x">x</label>
               <WepNumber
