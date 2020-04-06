@@ -33,7 +33,7 @@ class Job extends Component {
         accessor: 'size',
       },
       {
-        Header: 'Dimensions',
+        Header: 'Volume',
         accessor: 'dimensions',
       },
       {

@@ -21,7 +21,7 @@ class Devices extends Component {
         accessor: 'type',
       },
       {
-        Header: 'Dimensions',
+        Header: 'Volume',
         accessor: 'dimensions',
       },
       {
