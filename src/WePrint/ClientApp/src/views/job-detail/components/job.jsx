@@ -128,7 +128,7 @@ class Job extends Component {
 
   render() {
     const { job, error } = this.state;
-    if (error && false) {
+    if (error) {
       return (
         <div className="job__error">
           <span className="job__error-text">Could not load job with id {this.props.jobId}</span>
