@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import './search-bar.scss';
@@ -13,24 +14,27 @@ class SearchBar extends Component {
   }
 
   submit = e => {
-    this.props.history.push('/find', { query: this.state.query });
+    const { history } = this.props;
+    const { query } = this.state;
+    history.push('/find', { query });
     e.preventDefault();
   };
 
   textChange = e => {
     this.setState({
       query: e.target.value,
-      isButtonDisabled: e.target.value.length > 0 ? false : true,
+      isButtonDisabled: !e.target.value.length,
     });
   };
 
   render() {
+    const { query, isButtonDisabled } = this.state;
     return (
       <div className="search-bar">
         <input
           type="text"
           name="search"
-          value={this.state.query}
+          value={query}
           id="search"
           className="search-bar__input"
           placeholder="Search for makers or jobs"
@@ -39,7 +43,8 @@ class SearchBar extends Component {
         <button
           className="search-bar__submit"
           onClick={this.submit}
-          disabled={this.state.isButtonDisabled}
+          disabled={isButtonDisabled}
+          type="submit"
         >
           GO
         </button>
@@ -47,5 +52,11 @@ class SearchBar extends Component {
     );
   }
 }
+
+SearchBar.propTypes = {
+  history: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+  ).isRequired,
+};
 
 export default withRouter(SearchBar);

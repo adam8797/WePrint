@@ -128,10 +128,11 @@ class Job extends Component {
 
   render() {
     const { job, error } = this.state;
+    const { jobId } = this.props;
     if (error) {
       return (
         <div className="job__error">
-          <span className="job__error-text">Could not load job with id {this.props.jobId}</span>
+          <span className="job__error-text">Could not load job with id {jobId}</span>
           <FontAwesomeIcon icon={['far', 'frown']} />
         </div>
       );
