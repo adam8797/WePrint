@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import JobApi from '../../api/JobApi';
 import { JobStatus } from '../../models/Enums';
@@ -9,6 +11,7 @@ import StageInfo from './components/stage-info';
 import StageUpload from './components/stage-upload';
 import StageProcess from './components/stage-process';
 import StageSuccess from './components/stage-success';
+import { WepPrompt } from '../../components/wep-prompt/wep-prompt';
 import './post-job.scss';
 
 const ProgressColors = {
@@ -249,6 +252,7 @@ class PostJob extends Component {
       files,
       maxFiles,
     } = this.state;
+    const { history } = this.props;
 
     const stages = [
       { name: 'Job Type' },
@@ -307,9 +311,23 @@ class PostJob extends Component {
           />
         )}
         {currentStage > 3 && <StageSuccess jobId={jobId} />}
+        <WepPrompt
+          when={!!printerType}
+          navigate={path => history.push(path)}
+          messages={[
+            'If you navigate away from this page, your changes will not be saved.',
+            'Are you sure you wish to navigate away and lose your progress?',
+          ]}
+        />
       </>
     );
   }
 }
 
-export default PostJob;
+PostJob.propTypes = {
+  history: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+  ).isRequired,
+};
+
+export default withRouter(PostJob);
