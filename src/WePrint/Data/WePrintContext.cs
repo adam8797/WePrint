@@ -52,6 +52,8 @@ namespace WePrint.Data
 
         public DbSet<Job> Jobs { get; set; }
 
+        public DbSet<Printer> Printers { get; set; }
+
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<Project> Projects { get; set; }

@@ -5,11 +5,15 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WePrint.Data;
+using WePrint.ViewModels;
 
 namespace WePrint.Controllers
 {
@@ -18,27 +22,31 @@ namespace WePrint.Controllers
     [Authorize]
     public class DeviceController : ControllerBase
     {
-        public DeviceController(ILogger<DeviceController> log, UserManager<User> userManager, WePrintContext database) : base(log, userManager, database)
+
+        public DeviceController(IServiceProvider services) : base(services)
         {
         }
 
+
         // GET: /api/Device/
         [HttpGet]
-        public async Task<IActionResult> GetDevices()
+        public async Task<List<PrinterViewModel>> GetDevices()
         {
             var user = await CurrentUser;
-            return Ok(user.Printers);
+            var devices = await Database.Printers.Where(x => x.Owner == user).ProjectTo<PrinterViewModel>(Mapper.ConfigurationProvider).ToListAsync();
+            return devices;
         }
 
         // GET" /api/Device/id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDeviceById([FromRoute]Guid id)
+        public async Task<ActionResult<PrinterViewModel>> GetDeviceById([FromRoute]Guid id)
         {
             var user = await CurrentUser;
             var printer = user.Printers.FirstOrDefault(x => x.Id == id);
-            if (printer == null) return NotFound();
+            if (printer == null)
+                return NotFound();
 
-            return Ok(printer);
+            return Mapper.Map<PrinterViewModel>(printer);
         }
 
         // POST: /api/Device/

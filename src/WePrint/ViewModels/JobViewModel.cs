@@ -13,22 +13,28 @@ namespace WePrint.ViewModels
         [Key]
         public Guid Id { get; set; }
 
-        public string Customer { get; set; }
-        public string Maker { get; set; }
-        public Address Address { get; set; }
-        public JobStatus Status { get; set; }
+        [Required]
         public string Name { get; set; }
+
+
+        public Guid CustomerId { get; set; }
+
+        public Guid? MakerId { get; set; }
+
+        public JobStatus Status { get; set; }
+
         public string Description { get; set; }
-        public PrinterType PrinterType { get; set; }
-        public MaterialType MaterialType { get; set; }
-        public MaterialColor MaterialColor { get; set; }
-        public string Notes { get; set; }
-        public DateTime BidClose { get; set; }
 
-        public virtual IList<Bid> Bids { get; set; } = new List<Bid>();
+        public PrinterType? PrinterType { get; set; }
 
-        public virtual IList<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
+        public MaterialType? MaterialType { get; set; }
 
-        public virtual IList<AttachmentViewModel> Attachments { get; set; } = new List<AttachmentViewModel>();
+        public MaterialColor? MaterialColor { get; set; }
+
+        public string? Notes { get; set; }
+
+        public DateTimeOffset BidClose { get; set; }
+
+        public virtual Address Address { get; set; }
     }
 }

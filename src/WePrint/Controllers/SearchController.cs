@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WePrint.Data;
+using WePrint.ViewModels;
 
 namespace WePrint.Controllers
 {
@@ -14,7 +17,7 @@ namespace WePrint.Controllers
     [Route("api/search")]
     public class SearchController : ControllerBase
     {
-        public SearchController(ILogger<SearchController> log, UserManager<User> userManager, WePrintContext database) : base(log, userManager, database)
+        public SearchController(IServiceProvider services) : base(services)
         {
         }
 
@@ -23,7 +26,7 @@ namespace WePrint.Controllers
         /// Search for all jobs matching some string
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Job>>> SearchJob([FromQuery]string q)
+        public async Task<ActionResult<List<JobViewModel>>> SearchJob([FromQuery]string q)
         {
             IQueryable<Job> jobs = Database.Jobs;
 
@@ -32,7 +35,7 @@ namespace WePrint.Controllers
                 jobs = jobs.Where(x => x.Name.Contains(q) || x.Description.Contains(q));
             }
 
-            return Ok(await jobs.ToListAsync());
+            return await jobs.ProjectTo<JobViewModel>(Mapper.ConfigurationProvider).ToListAsync();
         }
 
     }

@@ -7,6 +7,6 @@ export default class UserApi {
   }
 
   static GetUser(id) {
-    return axios.get(BuildUrl('user', id)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl('user/by-id', id)).pipe(ErrorOnBadStatus);
   }
 }

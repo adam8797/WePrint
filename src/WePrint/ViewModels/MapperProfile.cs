@@ -11,8 +11,14 @@ namespace WePrint.ViewModels
     {
         public MapperProfile()
         {
+            CreateMap<User, UserViewModel>();
+
             CreateMap<Job, JobViewModel>()
-                .ForMember(x => x.Customer, x => x.MapFrom(y => y.Customer.UserName));
+                .ForMember(x => x.CustomerId, x => x.MapFrom(y => y.Customer.UserName))
+                .ForMember(x => x.MakerId, x => x.MapFrom(y => y.AcceptedBid.Bidder));
+
+            CreateMap<Printer, PrinterViewModel>()
+                .ForMember(x => x.OwnerId, x => x.MapFrom(y => y.Owner.Id));
         }
     }
 }

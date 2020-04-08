@@ -17,12 +17,7 @@ namespace WePrint.Controllers
     {
         private readonly SignInManager<User> _signInManager;
 
-        public AuthenticationController(
-            ILogger<AuthenticationController> log,
-            WePrintContext dbSession,
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
-            : base(log, userManager, dbSession)
+        public AuthenticationController(IServiceProvider services, SignInManager<User> signInManager) : base(services)
         {
             _signInManager = signInManager;
         }

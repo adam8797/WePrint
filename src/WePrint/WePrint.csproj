@@ -53,6 +53,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Util\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Controllers\JobController.cs" />
   </ItemGroup>
 

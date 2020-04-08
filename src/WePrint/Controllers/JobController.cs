@@ -28,12 +28,7 @@ namespace WePrint.Controllers
     {
         private readonly IConfiguration _configuration;
 
-        public JobController(
-            ILogger<JobController> logger, 
-            WePrintContext database, 
-            UserManager<User> userManager, 
-            IConfiguration configuration) 
-            : base(logger, userManager, database)
+        public JobController(IServiceProvider services, IConfiguration configuration) : base(services)
         {
             _configuration = configuration;
         }

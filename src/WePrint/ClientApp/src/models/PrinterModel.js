@@ -3,6 +3,7 @@ import { PrinterType } from './Enums';
 export default class PrinterModel {
   constructor() {
     this.id = undefined;
+    this.ownerId = null;
     this.name = null;
     this.xMax = 0;
     this.yMax = 0;
@@ -18,6 +19,7 @@ export default class PrinterModel {
   static AllPropsEquals(a, b) {
     return (
       PrinterModel.IdEquals(a, b) &&
+      a.ownerId === b.ownerId &&
       a.name === b.name &&
       a.xMax === b.xMax &&
       a.yMax === b.yMax &&
