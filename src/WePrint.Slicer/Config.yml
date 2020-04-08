@@ -1,12 +1,4 @@
 ﻿CleanupSliceJobs: false
 
-Services:
-  RavenDB:
-    DiscoveryName: ravendb
-    DatabaseName: WePrint_Testing
-
-  RabbitMQ:
-    DiscoveryName: rabbitmq
-    Username: user
-    Password: password
-    Queue: Slicer
+ConnectionStrings:
+  DefaultConnection: Data Source=localhost;Initial Catalog=Test;Integrated Security=True

@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  mssqlserver:
+    networks:
+      - sql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_Password: LetsPrintThings2020
+      MSSQL_PID: Standard
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - target: 1433
+        published: 1433
+        protocol: tcp
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.mssql==true"
+    volumes:
+      - mssql-server-linux-data:/var/opt/mssql/data
+
+volumes:
+  mssql-server-linux-data:
+
+networks:
+  sql:
+    external: true

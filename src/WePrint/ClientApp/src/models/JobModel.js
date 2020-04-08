@@ -4,7 +4,7 @@ import { JobStatus, PrinterType, MaterialType, MaterialColor } from './Enums';
 
 export default class JobModel {
   constructor() {
-    this.id = null;
+    this.id = undefined;
     this.name = null;
     this.customerId = null;
     this.makerId = null;

@@ -1,6 +1,1 @@
-﻿Services:
-  RavenDB:
-    DatabaseName: WePrint_Testing
-
-  RabbitMQ:
-    Queue: Slicer_Testing
+﻿

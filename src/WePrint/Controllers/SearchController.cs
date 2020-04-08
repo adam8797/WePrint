@@ -4,19 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Session;
-using WePrint.Common.Models;
+using WePrint.Data;
 
 namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/search")]
-    public class SearchController : WePrintController
+    public class SearchController : ControllerBase
     {
-        public SearchController(ILogger<SearchController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
+        public SearchController(ILogger<SearchController> log, UserManager<User> userManager, WePrintContext database) : base(log, userManager, database)
         {
         }
 
@@ -25,22 +23,16 @@ namespace WePrint.Controllers
         /// Search for all jobs matching some string
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobViewModel>>> SearchJob([FromQuery]string q)
+        public async Task<ActionResult<IEnumerable<Job>>> SearchJob([FromQuery]string q)
         {
-            var user = await CurrentUser;
-
-            IRavenQueryable<JobModel> jobs = Database.Query<JobModel>();
+            IQueryable<Job> jobs = Database.Jobs;
 
             if (!string.IsNullOrWhiteSpace(q))
             {
-                jobs = jobs
-                    .Search(j => j.Name, q)
-                    .Search(j => j.Description, q);
+                jobs = jobs.Where(x => x.Name.Contains(q) || x.Description.Contains(q));
             }
 
-            var allUsers = await GetUsers();
-            var result = (await jobs.ToListAsync()).Select(j => new JobViewModel(j, allUsers, (user?.Id)));
-            return Ok(result);
+            return Ok(await jobs.ToListAsync());
         }
 
     }

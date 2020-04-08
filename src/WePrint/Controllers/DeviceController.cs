@@ -5,23 +5,20 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Session;
-using WePrint.Common;
-using WePrint.Common.ServiceDiscovery;
-using WePrint.Common.Models;
+using WePrint.Data;
 
 namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/device")]
-    public class DeviceController : WePrintController
+    [Authorize]
+    public class DeviceController : ControllerBase
     {
-        public DeviceController(ILogger<DeviceController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
+        public DeviceController(ILogger<DeviceController> log, UserManager<User> userManager, WePrintContext database) : base(log, userManager, database)
         {
         }
 
@@ -30,24 +27,14 @@ namespace WePrint.Controllers
         public async Task<IActionResult> GetDevices()
         {
             var user = await CurrentUser;
-            if (user == null) 
-                return Unauthorized();
-
-            user.Printers ??= new List<PrinterModel>();
-            
             return Ok(user.Printers);
         }
 
         // GET" /api/Device/id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDeviceById([FromRoute]string id)
+        public async Task<IActionResult> GetDeviceById([FromRoute]Guid id)
         {
             var user = await CurrentUser;
-            if (user == null) 
-                return Unauthorized();
-
-            user.Printers ??= new List<PrinterModel>();
-
             var printer = user.Printers.FirstOrDefault(x => x.Id == id);
             if (printer == null) return NotFound();
 
@@ -56,39 +43,29 @@ namespace WePrint.Controllers
 
         // POST: /api/Device/
         [HttpPost]
-        public async Task<IActionResult> CreateDevice([FromBody]PrinterModel model)
+        public async Task<IActionResult> CreateDevice([FromBody]Printer model)
         {
             var user = await CurrentUser;
 
-            if (user == null)
-                return Unauthorized();
-
-            user.Printers ??= new List<PrinterModel>();
-            model.Id = Guid.NewGuid().ToString();
             user.Printers.Add(model);
 
             await Database.SaveChangesAsync();
 
-            return Created(Url.Action("GetDeviceByID", new {id = model.Id}), model);
+            return CreatedAtAction("GetDeviceByID", new {id = model.Id}, model);
         }
 
         // PUT: /api/Device/
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDevice([FromRoute]string id, [FromBody] PrinterUpdateModel model)
+        public async Task<IActionResult> UpdateDevice([FromRoute]Guid id, [FromBody] Printer model)
         {
             var user = await CurrentUser;
-
-            if (user == null)
-                return Unauthorized();
             
-            user.Printers ??= new List<PrinterModel>();
-
             var device = user.Printers.FirstOrDefault(p => p.Id == id);
 
             if (device == null)
                 return NotFound("Device " + id + " not found");
 
-            ReflectionHelper.CopyPropertiesTo(model, device);
+            ReflectionHelper.Update(model, device);
 
             await Database.SaveChangesAsync();
 
@@ -97,14 +74,9 @@ namespace WePrint.Controllers
 
         // DELETE: /api/Device/
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDevice([FromRoute] string id)
+        public async Task<IActionResult> DeleteDevice([FromRoute] Guid id)
         {
             var user = await CurrentUser;
-
-            if (user == null)
-                return Unauthorized();
-
-            user.Printers ??= new List<PrinterModel>();
 
             var device = user.Printers.FirstOrDefault(p => p.Id == id);
 

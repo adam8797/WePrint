@@ -2,7 +2,7 @@ import { PrinterType } from './Enums';
 
 export default class PrinterModel {
   constructor() {
-    this.id = null;
+    this.id = undefined;
     this.name = null;
     this.xMax = 0;
     this.yMax = 0;

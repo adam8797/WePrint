@@ -5,47 +5,41 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Session;
-using WePrint.Common.ServiceDiscovery;
-using WePrint.Common.Models;
+using WePrint.Data;
 
 namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/user")]
-    public class UserController : WePrintController
+    public class UserController : ControllerBase
     {
-        public UserController(ILogger<UserController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
+        public UserController(ILogger<UserController> log, UserManager<User> userManager, WePrintContext database) : base(log, userManager, database)
         {
         }
 
         // GET: /api/user/
         [HttpGet]
-        public async Task<IActionResult> GetCurrentUser()
+        public async Task<ActionResult<User>> GetCurrentUser()
         {
             var user = await CurrentUser;
             if (user == null)
                 return Unauthorized();
 
-            return Json(user.GetPublicModel());
+            return Ok(user);
         }
 
         // GET" /api/user/id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById([FromRoute]string id)
+        public async Task<ActionResult<User>> GetUserById([FromRoute]string id)
         {
-            var user = await CurrentUser;
-            if (user == null) return Unauthorized();
+            var targetUser = await Database.Users.FindAsync(id);
+            if (targetUser == null) return NotFound();
 
-            var tgtUser = await Database.LoadAsync<ApplicationUser>(id);
-            if (tgtUser == null) return NotFound();
-
-            return Json(tgtUser.GetPublicModel());
+            return Ok(targetUser);
         }
     }
 }

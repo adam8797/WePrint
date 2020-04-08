@@ -24,6 +24,7 @@
     <None Include="docker-compose.test.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
+    <None Include="mssql_stack.yml" />
     <None Include="rabbit_stack.yml" />
     <None Include="raven_stack.yml" />
     <None Include="traefik_stack.yml">
