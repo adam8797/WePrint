@@ -45,11 +45,12 @@ class PostJob extends Component {
       description: '',
       files: [],
       maxFiles: 5,
+      isDirty: false,
     };
   }
 
   setPrinterType = printerType => {
-    this.setState({ printerType });
+    this.setState({ printerType, isDirty: true });
   };
 
   removeFile = fileName => {
@@ -146,6 +147,7 @@ class PostJob extends Component {
     data.append('file', fileData);
 
     this.updateFileProgress(fileName, '0%', ProgressColors.PRIMARY, 0);
+    this.setState({ isDirty: true });
 
     JobApi.CreateFile(jobId, data, ProgressEvent => {
       const progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100);
@@ -156,6 +158,7 @@ class PostJob extends Component {
         console.error(err);
       },
       complete: () => {
+        this.setState({ isDirty: false });
         this.updateFileProgress(fileName, UploadStates.COMPLETE, ProgressColors.SUCCESS, 100);
       },
     });
@@ -163,7 +166,7 @@ class PostJob extends Component {
 
   handleFormChange = ev => {
     const { name, value } = ev.target;
-    this.setState({ [name]: value });
+    this.setState({ [name]: value, isDirty: true });
   };
 
   advanceStage() {
@@ -207,7 +210,10 @@ class PostJob extends Component {
         },
         error: console.error,
         complete: () => {
-          this.setState(prevState => ({ currentStage: prevState.currentStage + 1 }));
+          this.setState(prevState => ({
+            currentStage: prevState.currentStage + 1,
+            isDirty: false,
+          }));
         },
       });
     } else {
@@ -219,7 +225,10 @@ class PostJob extends Component {
         },
         error: console.error,
         complete: () => {
-          this.setState(prevState => ({ currentStage: prevState.currentStage + 1 }));
+          this.setState(prevState => ({
+            currentStage: prevState.currentStage + 1,
+            isDirty: false,
+          }));
         },
       });
     }
@@ -251,6 +260,7 @@ class PostJob extends Component {
       description,
       files,
       maxFiles,
+      isDirty,
     } = this.state;
     const { history } = this.props;
 
@@ -312,7 +322,7 @@ class PostJob extends Component {
         )}
         {currentStage > 3 && <StageSuccess jobId={jobId} />}
         <WepPrompt
-          when={!!printerType}
+          when={isDirty}
           navigate={path => history.push(path)}
           messages={[
             'If you navigate away from this page, your changes will not be saved.',
