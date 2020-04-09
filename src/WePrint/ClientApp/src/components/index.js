@@ -14,3 +14,4 @@ export { default as WepNumber } from './wep-number/wep-number';
 export { default as WepTextarea } from './wep-textarea/wep-textarea';
 export { default as WepDropdown } from './wep-dropdown/wep-dropdown';
 export { default as FileDrop } from './file-drop/file-drop';
+export { default as WepPrompt } from './wep-prompt/wep-prompt';
