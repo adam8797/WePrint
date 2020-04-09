@@ -23,7 +23,7 @@ class Job extends Component {
       // eslint-disable-next-line react/no-unused-state
       customer: {},
       user: null,
-      error: true,
+      error: false,
     };
     this.filesTableCols = [
       {

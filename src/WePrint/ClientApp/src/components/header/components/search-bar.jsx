@@ -55,7 +55,7 @@ class SearchBar extends Component {
 
 SearchBar.propTypes = {
   history: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.func])
   ).isRequired,
 };
 
