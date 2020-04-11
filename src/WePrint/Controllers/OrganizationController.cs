@@ -33,6 +33,8 @@ namespace WePrint.Controllers
         {
         }
 
+        #region REST implementation
+
         protected override DbSet<Organization> GetDbSet(WePrintContext database) => database.Organizations;
 
         protected override async ValueTask<bool> AllowCreate(User user, OrganizationCreateModel create)
@@ -46,5 +48,37 @@ namespace WePrint.Controllers
             org.Users.Add(await CurrentUser);
             return org;
         }
+
+        #endregion
+
+        #region Get Full Lists
+
+        [HttpGet("{id}/users")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(Guid id)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+
+            if (org == null)
+                return NotFound(id);
+
+            return Ok(org.Users);
+        }
+
+        [HttpGet("{id}/projects")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<User>>> GetProjects(Guid id)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+
+            if (org == null)
+                return NotFound(id);
+
+            return Ok(org.Projects);
+        }
+
+        #endregion
     }
 }

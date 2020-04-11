@@ -196,6 +196,8 @@ namespace WePrint.Controllers
         #region Updates
 
         [HttpGet("{id}/updates")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new []{"Updates"})]
         public async Task<ActionResult<IList<ProjectUpdate>>> ListUpdates(Guid id)
         {
@@ -208,6 +210,8 @@ namespace WePrint.Controllers
         }
 
         [HttpGet("{id}/updates/{updateId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new []{"Updates"})]
         public async Task<ActionResult<ProjectUpdate>> GetUpdate(Guid id, Guid updateId)
         {
@@ -221,10 +225,13 @@ namespace WePrint.Controllers
             if (update == null) 
                 return NotFound();
 
-            return update;
+            return Ok(update);
         }
 
         [HttpPost("{id}/updates")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new []{"Updates"})]
         public async Task<IActionResult> AddUpdate(Guid id, ProjectUpdate update)
         {
@@ -250,6 +257,9 @@ namespace WePrint.Controllers
         // I'm going to call things updateUpdate
         // if anyone has a problem with that I'm happy to duel over it
         [HttpPut("{id}/updates/{updateId}")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [SwaggerOperation(Tags = new []{"Updates"})]
         public async Task<IActionResult> AddOrUpdateUpdate(Guid id, Guid updateId, ProjectUpdate updateUpdate)
         {
@@ -282,6 +292,9 @@ namespace WePrint.Controllers
         }
 
         [HttpDelete("{id}/updates/{updateId}")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new []{"Updates"})]
         public async Task<IActionResult> DeleteComment(Guid id, Guid updateId)
         {
@@ -311,6 +324,8 @@ namespace WePrint.Controllers
         #region Pledges
 
         [HttpGet("{id}/pledges")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new[]{"Pledges"})]
         public async Task<ActionResult<IList<Pledge>>> ListPledges(Guid id)
         {
@@ -323,6 +338,8 @@ namespace WePrint.Controllers
         }
 
         [HttpGet("{id}/pledges/{pledgeId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new[]{"Pledges"})]
         public async Task<ActionResult<Bid>> GetPledge(Guid id, Guid pledgeId)
         {
@@ -340,6 +357,9 @@ namespace WePrint.Controllers
         }
 
         [HttpPost("{id}/pledges")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new[]{"Pledges"})]
         public async Task<IActionResult> AddPledge(Guid id, [FromBody] Pledge pledge)
         {
@@ -361,6 +381,9 @@ namespace WePrint.Controllers
         }
 
         [HttpPut("{id}/pledges/{pledgeId}")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [SwaggerOperation(Tags = new[]{"Pledges"})]
         public async Task<IActionResult> AddOrUpdatePledge(Guid id, Guid pledgeId, [FromBody] Pledge update)
         {
@@ -391,6 +414,9 @@ namespace WePrint.Controllers
         }
 
         [HttpPatch("{id}/pledges/{pledgeId}")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new[]{"Pledges"})]
         public async Task<ActionResult<Pledge>> PatchPledge(Guid id, Guid pledgeId, [FromBody] JsonPatchDocument patchDocument)
         {
@@ -412,10 +438,13 @@ namespace WePrint.Controllers
 
             await Database.SaveChangesAsync();
             
-            return pledge;
+            return Ok(pledge);
         }
 
         [HttpDelete("{id}/pledges/{pledgeId}")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Tags = new[]{"Pledges"})]
         public async Task<IActionResult> DeletePledge(Guid id, Guid pledgeId)
         {
