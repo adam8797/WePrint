@@ -5,11 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using WePrint.Models.Project;
+using WePrint.Models.User;
 
 namespace WePrint.Data
 {
     [Table("Updates")]
-    public class ProjectUpdate
+    public class ProjectUpdate : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }

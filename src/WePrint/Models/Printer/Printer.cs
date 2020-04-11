@@ -1,17 +1,17 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
+using WePrint.Data;
 
-namespace WePrint.Data
+namespace WePrint.Models.Printer
 {
-    public class Printer
+    public class Printer : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
-        public virtual User Owner { get; set; }
+        public virtual User.User Owner { get; set; }
         
         [Required]
         [MaxLength(50)]

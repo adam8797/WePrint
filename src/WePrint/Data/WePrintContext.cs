@@ -1,6 +1,11 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WePrint.Models.Job;
+using WePrint.Models.Organization;
+using WePrint.Models.Printer;
+using WePrint.Models.Project;
+using WePrint.Models.User;
 
 namespace WePrint.Data
 {
@@ -21,6 +26,7 @@ namespace WePrint.Data
             builder.Entity<Job>().OwnsOne(x => x.Address);
             builder.Entity<Job>().HasOne(x => x.Customer).WithMany(x => x.Jobs).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Job>().HasOne(x => x.AcceptedBid);
+            builder.Entity<Job>().OwnsMany(x => x.Attachments).HasOne(x => x.Owner);
 
             builder.Entity<User>().HasMany(x => x.Printers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<User>().HasMany(x => x.Reviews).WithOne(x => x.ReviewedUser).OnDelete(DeleteBehavior.NoAction);
@@ -43,6 +49,7 @@ namespace WePrint.Data
 
             builder.Entity<Project>().OwnsOne(x => x.Address);
             builder.Entity<Project>().HasMany(x => x.Updates).WithOne(x => x.Project).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Project>().OwnsMany(x => x.Attachments).HasOne(x => x.Owner);
 
             builder.Entity<ProjectUpdate>().HasOne(x => x.PostedBy);
 
@@ -57,8 +64,5 @@ namespace WePrint.Data
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<Project> Projects { get; set; }
-
-        [Obsolete("Dont you dare use this! Use IFileService instead!")]
-        public DbSet<File> Files { get; set; }
     }
 }

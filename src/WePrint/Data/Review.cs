@@ -1,10 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WePrint.Models.Job;
+using WePrint.Models.User;
 
 namespace WePrint.Data
 {
-    public class Review
+    public class Review : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }

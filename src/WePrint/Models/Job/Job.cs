@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
+using WePrint.Data;
 
-namespace WePrint.Data
+namespace WePrint.Models.Job
 {
-    public class Job
+    public class Job : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
@@ -29,7 +28,7 @@ namespace WePrint.Data
         public string? Notes { get; set; }
 
         [Required]
-        public virtual User Customer { get; set; }
+        public virtual User.User Customer { get; set; }
 
         [Required]
         public DateTimeOffset BidClose { get; set; }
@@ -39,5 +38,7 @@ namespace WePrint.Data
         public virtual Bid? AcceptedBid { get; set; }
         
         public virtual IList<Bid> Bids { get; set; }
+
+        public virtual IList<JobAttachment> Attachments { get; set; }
     }
 }

@@ -17,14 +17,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WePrint.Controllers.Base;
 using WePrint.Data;
+using WePrint.Models.Project;
+using WePrint.Models.User;
+using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {
     [ApiController]
-    [Route("api/project")]
+    [Route("api/projects")]
     [Authorize]
-    public class ProjectController : ControllerBase
+    public class ProjectController : RESTController<Project, ProjectViewModel, ProjectCreateModel, Guid>
     {
         private readonly IConfiguration _configuration;
 
@@ -32,116 +36,36 @@ namespace WePrint.Controllers
         {
             _configuration = configuration;
         }
+        protected override DbSet<Project> GetDbSet(WePrintContext database) => database.Projects;
 
-        #region Base Project Methods
+        #region REST Implementation
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        protected override async ValueTask<bool> AllowWrite(User user, Project entity)
         {
-            var projects = await Database.Projects.ToArrayAsync();
-            return projects;
+            return user.Organization == entity.Organization;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(Guid id)
+        protected override async ValueTask<Project> CreateDataModelAsync(ProjectCreateModel viewModel)
         {
-            var project = await Database.Projects.FindAsync(id);
-
-            return project;
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<Project>> CreateProject([FromBody] Project enteredProject)
-        {
-            var currentUser = await CurrentUser;
-            if (currentUser.Organization == null)
-                return Forbid();
-
-            enteredProject.Organization = currentUser.Organization;
-            Database.Projects.Add(enteredProject);
-            await Database.SaveChangesAsync();
-
-            return CreatedAtAction("GetProject", new {id = enteredProject.Id}, enteredProject);
-        }
-        
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Project>> UpdateProject(Guid id, [FromBody] Project update)
-        {
-            var currentUser = await CurrentUser;
-            var project = await Database.Projects.FindAsync(id);
-
-            if (project == null)
-            {
-                if (currentUser.Organization == null)
-                    return Forbid();
-
-                update.Id = id;
-                Database.Projects.Add(update);
-            }
-            else
-            {
-                if (currentUser.Organization.Id != project.Organization.Id)
-                    return Forbid();
-                
-                Database.Projects.Update(update);
-            }
-
-            await Database.SaveChangesAsync();
-            return project;
-        }
-
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<Project>> PatchProject(Guid id, [FromBody] JsonPatchDocument<Project> patchDocument)
-        {
+            var p = Mapper.Map<Project>(viewModel);
             var user = await CurrentUser;
-            var project = await Database.Projects.FindAsync(id);
-
-            if (project == null)
-                return NotFound(id);
-            
-            if (user.Organization.Id != project.Organization.Id)
-                return Forbid();
-
-            patchDocument.ApplyTo(project);
-
-            await Database.SaveChangesAsync();
-
-            return project;
+            if (user.Organization == null)
+                throw new InvalidOperationException($"Cannot create a project if user {user.UserName} is not a member of an organization");
+            p.Organization = user.Organization;
+            return p;
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject(Guid id)
+        protected override async ValueTask<bool> AllowCreate(User user, ProjectCreateModel create)
         {
-            var currentUser = await CurrentUser;
-            var project  = await Database.Projects.FindAsync(id);
-
-            if (project == null)
-                return NotFound(id);
-
-            if (currentUser.Organization.Id != project.Organization.Id)
-                return Forbid();
-
-            Database.Projects.Remove(project);
-            await Database.SaveChangesAsync();
-            return Ok();
+            return user.Organization != null;
         }
+
         #endregion
 
-        /*#region Files
-        [HttpGet("{id}/files")]
-        [SwaggerOperation(Tags = new[]{"Files"})]
-        public async Task<IActionResult> GetFiles(Guid id)
-        {
-            var project = await Database.Jobs.FindAsync(id);
-            if (project == null)
-                return NotFound(id);
-            
-            //return Ok(project.Attachments.Select());
-        }
 
-        #endregion*/
 
         #region Updates
+
         [HttpGet("{id}/updates")]
         [SwaggerOperation(Tags = new []{"Updates"})]
         public async Task<ActionResult<IList<ProjectUpdate>>> ListUpdates(Guid id)
@@ -388,5 +312,7 @@ namespace WePrint.Controllers
         }
 
         #endregion
+
+        
     }
 }

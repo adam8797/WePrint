@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WePrint.Data;
 using WePrint.Models;
+using WePrint.Models.Authentication;
+using WePrint.Models.User;
+using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {

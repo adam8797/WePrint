@@ -6,7 +6,7 @@ services:
       - sql
     environment:
       ACCEPT_EULA: "Y"
-      SA_Password: LetsPrintThings2020
+      SA_Password: LetsPrintThings2020!
       MSSQL_PID: Standard
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:

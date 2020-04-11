@@ -4,10 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using WePrint.Models.Project;
+using WePrint.Models.User;
 
 namespace WePrint.Data
 {
-    public class Pledge
+    public class Pledge : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }

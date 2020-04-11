@@ -21,7 +21,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
-using WePrint.FileService;
+using WePrint.Models.User;
 
 namespace WePrint
 {
@@ -76,8 +76,6 @@ namespace WePrint
             services.ConfigureApplicationCookie(options => { options.Cookie.Name = "WePrint.Auth"; });
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            services.AddScoped<IFileService, EntityFrameworkFileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

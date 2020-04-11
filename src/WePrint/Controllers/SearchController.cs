@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using WePrint.Data;
-using WePrint.ViewModels;
+using WePrint.Models.Job;
+using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {
@@ -21,7 +18,6 @@ namespace WePrint.Controllers
         {
         }
 
-        // GET: /api/job/search
         /// <summary>
         /// Search for all jobs matching some string
         /// </summary>

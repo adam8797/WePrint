@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace WePrint.ViewModels
+namespace WePrint.Models.User
 {
     public class UserViewModel
     {

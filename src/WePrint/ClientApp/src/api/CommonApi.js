@@ -1,9 +1,13 @@
 import { switchMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 
-
 // Root endpoint of the API. You can point this at different urls for development and whatnot
 const ROOT_ENDPOINT = './api/';
+
+export const bids_api_path = "bids";
+export const jobs_api_path = "jobs";
+export const users_api_path = "users";
+export const devices_api_path = "devices";
 
 export function BuildUrl(...components) {
     return ROOT_ENDPOINT + components.map(encodeURIComponent).join('/');

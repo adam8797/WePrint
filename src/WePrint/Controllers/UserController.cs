@@ -1,30 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Web;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using WePrint.Data;
-using WePrint.ViewModels;
+using WePrint.Models.User;
+using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {
     [ApiController]
-    [Route("api/user")]
+    [Route("api/users")]
     public class UserController : ControllerBase
     {
-
         public UserController(IServiceProvider services) : base(services)
         {
         }
 
-        // GET: /api/user/
+        // GET: /api/users/
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<UserViewModel>> GetCurrentUser()
@@ -33,7 +24,7 @@ namespace WePrint.Controllers
             return Ok(vm);
         }
 
-        // GET" /api/user/by-id/{id}
+        // GET" /api/users/by-id/{id}
         [HttpGet("by-id/{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<UserViewModel>> GetUserById([FromRoute]string id)
@@ -46,7 +37,7 @@ namespace WePrint.Controllers
             return vm;
         }
 
-        // GET" /api/user/by-name/{id}
+        // GET" /api/users/by-name/{id}
         [HttpGet("by-name/{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<UserViewModel>> GetUserByUsername([FromRoute]string id)

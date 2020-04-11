@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using WePrint.Data;
 
-namespace WePrint.ViewModels
+namespace WePrint.Models.Job
 {
-    public class JobViewModel
+    public class JobViewModel : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
         public string Name { get; set; }
-
 
         public Guid CustomerId { get; set; }
 
@@ -35,6 +29,6 @@ namespace WePrint.ViewModels
 
         public DateTimeOffset BidClose { get; set; }
 
-        public virtual Address Address { get; set; }
+        public Address Address { get; set; }
     }
 }

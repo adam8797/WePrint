@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using WePrint.Data;
 
-namespace WePrint.Data
+namespace WePrint.Models.Organization
 {
-
-    public class Organization
+    public class OrganizationCreateModel
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
@@ -23,11 +20,5 @@ namespace WePrint.Data
         [MaxLength(2000)]
         [Required]
         public string Description { get; set; }
-
-        public virtual IList<User> Users { get; set; }
-
-        public virtual IList<Project> Projects { get; set; }
-
-
     }
 }

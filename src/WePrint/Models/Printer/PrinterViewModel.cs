@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
-namespace WePrint.ViewModels
+namespace WePrint.Models.Printer
 {
     public class PrinterViewModel
     {
@@ -12,6 +8,21 @@ namespace WePrint.ViewModels
 
         public Guid OwnerId { get; set; }
 
+        public string Name { get; set; }
+
+        public PrinterType Type { get; set; }
+
+        public int XMax { get; set; } //mm
+
+        public int YMax { get; set; } //mm
+
+        public int ZMax { get; set; }  //mm
+
+        public decimal LayerMin { get; set; } //mm
+    }
+
+    public class PrinterCreateModel
+    {
         public string Name { get; set; }
 
         public PrinterType Type { get; set; }
