@@ -20,6 +20,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models.Organization;
+using WePrint.Models.User;
 
 namespace WePrint.Controllers
 {
@@ -33,6 +34,11 @@ namespace WePrint.Controllers
         }
 
         protected override DbSet<Organization> GetDbSet(WePrintContext database) => database.Organizations;
+
+        protected override async ValueTask<bool> AllowCreate(User user, OrganizationCreateModel create)
+        {
+            return user.Organization == null;
+        }
 
         protected override async ValueTask<Organization> CreateDataModelAsync(OrganizationCreateModel viewModel)
         {

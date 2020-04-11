@@ -21,7 +21,10 @@ using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models.Project;
 using WePrint.Models.User;
-using ControllerBase = WePrint.Controllers.Base.ControllerBase;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace WePrint.Controllers
 {
@@ -30,12 +33,10 @@ namespace WePrint.Controllers
     [Authorize]
     public class ProjectController : RESTController<Project, ProjectViewModel, ProjectCreateModel, Guid>
     {
-        private readonly IConfiguration _configuration;
-
         public ProjectController(IServiceProvider services, IConfiguration configuration) : base(services)
         {
-            _configuration = configuration;
         }
+
         protected override DbSet<Project> GetDbSet(WePrintContext database) => database.Projects;
 
         #region REST Implementation
@@ -62,7 +63,135 @@ namespace WePrint.Controllers
 
         #endregion
 
+        #region Files
 
+        [HttpGet("{id}/files")]
+        public async Task<ActionResult<List<(string Name, long Length)>>> GetFiles(Guid id)
+        {
+            var project = await Database.Projects.FindAsync(id);
+            if (project == null)
+                return NotFound(id);
+
+            if (!await AllowRead(await CurrentUser, project))
+                return Forbid();
+
+            var files = new List<(string Name, long Length)>();
+
+            var container = GetBlobContainer(project.Id.ToString("N"));
+            if (!await container.ExistsAsync())
+                return files;
+
+            var dir = container.GetDirectoryReference("files");
+            var resultSegment = await dir.ListBlobsSegmentedAsync(null);
+
+            foreach (var item in resultSegment.Results)
+            {
+                switch (item)
+                {
+                    case CloudBlockBlob blob:
+                        files.Add((blob.Name, 42069));
+                        break;
+
+                    case CloudPageBlob blob:
+                        files.Add((blob.Name, 42069));
+                        break;
+                }
+            }
+            return files;
+        }
+
+        [HttpGet("{id}/files/{filename}")]
+        public async Task<IActionResult> GetFile(Guid id, string filename)
+        {
+            var project = await Database.Projects.FindAsync(id);
+            if (project == null)
+                return NotFound(id);
+
+            if (!await AllowRead(await CurrentUser, project))
+                return Forbid();
+
+            var container = GetBlobContainer(project.Id.ToString("N"));
+            if (!await container.ExistsAsync())
+                return NotFound();
+
+            var dir = container.GetDirectoryReference("files");
+            var blobRef = dir.GetBlockBlobReference(filename);
+
+            if (!await blobRef.ExistsAsync())
+                return NotFound();
+
+            return File(await blobRef.OpenReadAsync(), blobRef.Metadata["MIME"], blobRef.Name);
+        }
+
+        [HttpPost("{id}/files")]
+        public async Task<IActionResult> UploadFile(Guid id, IFormFile file)
+        {
+            var project = await Database.Projects.FindAsync(id);
+            if (project == null)
+                return NotFound(id);
+
+            if (!await AllowWrite(await CurrentUser, project))
+                return Forbid();
+
+            if (file.Length <= 0)
+                return BadRequest("File Length <= 0");
+
+            var maxSizeInMegs = Configuration.GetValue("FileUploads:MaxSizeInMegabytes", 100.0);
+            var maxSizeInBytes = (int)(maxSizeInMegs * 1_000_000);
+
+            if (file.Length >= maxSizeInBytes)
+                return BadRequest($"File too large. Max size is {maxSizeInBytes} bytes");
+
+            var allowedExtensions = Configuration.GetSection("FileUploads:AllowedExtensions").Get<string[]>();
+            if (allowedExtensions != null && !allowedExtensions.Contains(Path.GetExtension(file.FileName)))
+                return BadRequest($"File Extension must be one of: {string.Join(", ", allowedExtensions)}");
+
+            var container = GetBlobContainer(project.Id.ToString("N"));
+            await container.CreateIfNotExistsAsync();
+
+            var dir = container.GetDirectoryReference("files");
+            var blobRef = dir.GetBlockBlobReference(file.FileName);
+
+            await blobRef.UploadFromStreamAsync(file.OpenReadStream());
+
+            blobRef.Metadata["MIME"] = file.ContentType;
+            await blobRef.SetMetadataAsync();
+
+            project.Attachments.Add(new ProjectAttachment()
+            {
+                SubmittedBy = await CurrentUser,
+                // using file.FileName could/probably-is dangerous and we should not use it
+                URL = Url.Action("GetFile", new { id, filename = file.FileName })
+            });
+
+            await Database.SaveChangesAsync();
+
+            return CreatedAtAction("GetFile", new { id, filename = file.FileName }, new { Name = file.FileName, Size = file.Length });
+        }
+
+        [HttpDelete("{id}/files/{filename}")]
+        public async Task<IActionResult> DeleteFile(Guid id, string filename)
+        {
+            var project = await Database.Projects.FindAsync(id);
+            if (project == null)
+                return NotFound(id);
+
+            if (!await AllowRead(await CurrentUser, project))
+                return Forbid();
+
+            var container = GetBlobContainer(project.Id.ToString("N"));
+            if (!await container.ExistsAsync())
+                return NotFound();
+
+            var dir = container.GetDirectoryReference("files");
+            var blobRef = dir.GetBlockBlobReference(filename);
+
+            await blobRef.DeleteIfExistsAsync();
+
+            return NoContent();
+        }
+
+        #endregion
 
         #region Updates
 
@@ -312,7 +441,5 @@ namespace WePrint.Controllers
         }
 
         #endregion
-
-        
     }
 }

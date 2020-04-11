@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
 using WePrint.Models.User;
+using Microsoft.Extensions.Azure;
 
 namespace WePrint
 {
@@ -76,6 +77,11 @@ namespace WePrint
             services.ConfigureApplicationCookie(options => { options.Cookie.Name = "WePrint.Auth"; });
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddBlobServiceClient(Configuration["ConnectionStrings:<ConnectionStringNamePlaceholder>"]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

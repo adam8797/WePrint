@@ -36,10 +36,10 @@ namespace WePrint.Models.Project
         [Required]
         public virtual Organization.Organization Organization { get; set; }
 
-        public virtual IList<Pledge> Pledges { get; set; }
+        public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
 
-        public virtual IList<ProjectUpdate> Updates { get; set; }
+        public virtual IList<ProjectUpdate> Updates { get; set; } = new List<ProjectUpdate>();
 
-        public virtual IList<ProjectAttachment> Attachments { get; set; }
+        public virtual IList<ProjectAttachment> Attachments { get; set; } = new List<ProjectAttachment>();
     }
 }

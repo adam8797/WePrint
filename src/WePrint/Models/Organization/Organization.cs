@@ -23,8 +23,8 @@ namespace WePrint.Models.Organization
         [Required]
         public string Description { get; set; }
 
-        public virtual IList<User.User> Users { get; set; }
+        public virtual IList<User.User> Users { get; set; } = new List<User.User>();
 
-        public virtual IList<Project.Project> Projects { get; set; }
+        public virtual IList<Project.Project> Projects { get; set; } = new List<Project.Project>();
     }
 }

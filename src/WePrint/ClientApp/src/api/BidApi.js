@@ -7,13 +7,13 @@ import BidModel from '../models/BidModel';
 export default class BidApi {
   // Returns an observable, which generates an array of all your bids
   static MyBids() {
-    return axios.get(BuildUrl(bid_api_path)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(bids_api_path)).pipe(ErrorOnBadStatus);
   }
 
   // Returns an observable, which returns a single bid matching the BidModel model.
   // If a bid is not found, the observable returns an error.
   static GetBid(id) {
-    return axios.get(BuildUrl(bid_api_path, id)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(bids_api_path, id)).pipe(ErrorOnBadStatus);
   }
 
   // Returns an observable, which returns an array of bids for all bids under a specified job.
@@ -38,19 +38,19 @@ export default class BidApi {
   // Returns an observable, which emits a bid Id when the bid is created.
   // If the creation fails, the observable returns an error.
   static CreateBid(bidModel, jobId) {
-    return axios.post(BuildUrl(jobs_api_path, jobId, bid_api_path), bidModel).pipe(ErrorOnBadStatus);
+    return axios.post(BuildUrl(jobs_api_path, jobId, bids_api_path), bidModel).pipe(ErrorOnBadStatus);
   }
 
   // Returns an observable, which emits a bid Id when the bid is updated.
   // If the update fails, the observable returns an error.
   static UpdateBid(id, bidModel) {
-    return axios.put(BuildUrl(bid_api_path, id), { params: bidModel }).pipe(ErrorOnBadStatus);
+    return axios.put(BuildUrl(bids_api_path, id), { params: bidModel }).pipe(ErrorOnBadStatus);
   }
 
   // Returns an observable, which completes when the bid is deleted.
   // If the deletion fails, the observable returns an error.
   static DeleteBid(id, bidModel) {
-    return axios.put(BuildUrl(bid_api_path, id), { params: bidModel }).pipe(ErrorOnBadStatus);
+    return axios.put(BuildUrl(bids_api_path, id), { params: bidModel }).pipe(ErrorOnBadStatus);
   }
 
   // Returns an observable which emits the same data as GetBid.

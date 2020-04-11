@@ -15,8 +15,7 @@ namespace WePrint.Controllers
     public class SearchController : ControllerBase
     {
         public SearchController(IServiceProvider services) : base(services)
-        {
-        }
+        { }
 
         /// <summary>
         /// Search for all jobs matching some string
