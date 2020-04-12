@@ -80,7 +80,7 @@ export class CommonApi
         return timer(0, pollInterval).pipe(
             ErrorOnBadStatus,
             exhaustMap(() => this.Get(id)),
-            distinctUntilChanged((a, b) => ArrayDeepEquals(a, b, this.itemEqualityComparer))
+            distinctUntilChanged(this.itemEqualityComparer)
         );
     }
 
@@ -91,7 +91,7 @@ export class CommonApi
         return timer(0, pollInterval).pipe(
             ErrorOnBadStatus,
             exhaustMap(() => this.GetAll()),
-            distinctUntilChanged(this.itemEqualityComparer)
+            distinctUntilChanged((a, b) => ArrayDeepEquals(a, b, this.itemEqualityComparer))
         );
     }
 }
