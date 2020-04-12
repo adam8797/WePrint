@@ -1,32 +1,32 @@
 import axios from 'axios-observable';
 import { timer, Subject } from 'rxjs';
 import { exhaustMap, distinctUntilChanged, switchMap, auditTime } from 'rxjs/operators';
-import { BuildUrl, ErrorOnBadStatus, ArrayDeepEquals, jobs_api_path } from './CommonApi';
+import { BuildUrl, ErrorOnBadStatus, ArrayDeepEquals, jobsApiPath } from './CommonApi';
 import JobModel from '../models/JobModel';
 
 // See BidApi for documentation, this works the same way that does.
 export default class JobApi {
   static MyJobs() {
-    return axios.get(BuildUrl(jobs_api_path)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(jobsApiPath)).pipe(ErrorOnBadStatus);
   }
 
   static TrackMyJobs(pollInterval) {
     return timer(0, pollInterval).pipe(
       exhaustMap(() => JobApi.MyJobs()),
-      distinctUntilChanged((a, b) => ArrayDeepEquals(a, b, JobModel.AllPropsEquals))
+      distinctUntilChanged((a, b) => ArrayDeepEquals(a, b, JobModel.AllPropsEqual))
     );
   }
 
   static GetJob(id) {
-    return axios.get(BuildUrl(jobs_api_path, id)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(jobsApiPath, id)).pipe(ErrorOnBadStatus);
   }
 
   static CreateJob(jobModel) {
-    return axios.post(BuildUrl(jobs_api_path), jobModel).pipe(ErrorOnBadStatus);
+    return axios.post(BuildUrl(jobsApiPath), jobModel).pipe(ErrorOnBadStatus);
   }
 
   static UpdateJob(id, jobModel) {
-    return axios.put(BuildUrl(jobs_api_path, id), jobModel).pipe(ErrorOnBadStatus);
+    return axios.put(BuildUrl(jobsApiPath, id), jobModel).pipe(ErrorOnBadStatus);
   }
 
   // Returns an input object and output object. Subscribe to the output object to get search results.
@@ -50,7 +50,7 @@ export default class JobApi {
   static TrackJob(id, pollInterval) {
     return timer(0, pollInterval).pipe(
       exhaustMap(() => JobApi.GetJob(id)),
-      distinctUntilChanged(JobModel.AllPropsEquals)
+      distinctUntilChanged(JobModel.AllPropsEqual)
     );
   }
 
@@ -59,22 +59,22 @@ export default class JobApi {
   //
 
   static GetJobFiles(jobId) {
-    return axios.get(BuildUrl(jobs_api_path, jobId, 'files')).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(jobsApiPath, jobId, 'files')).pipe(ErrorOnBadStatus);
   }
 
   static GetFile(jobId, fileName) {
-    return axios.get(BuildUrl(jobs_api_path, jobId, 'files', fileName)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(jobsApiPath, jobId, 'files', fileName)).pipe(ErrorOnBadStatus);
   }
 
   static CreateFile(jobId, file, onUploadProgress) {
     return axios
-      .post(BuildUrl(jobs_api_path, jobId, 'files'), file, {
+      .post(BuildUrl(jobsApiPath, jobId, 'files'), file, {
         onUploadProgress: ProgressEvent => onUploadProgress(ProgressEvent, file),
       })
       .pipe(ErrorOnBadStatus);
   }
 
   static DeleteFile(jobId, fileName) {
-    return axios.delete(BuildUrl(jobs_api_path, jobId, 'files', fileName)).pipe(ErrorOnBadStatus);
+    return axios.delete(BuildUrl(jobsApiPath, jobId, 'files', fileName)).pipe(ErrorOnBadStatus);
   }
 }
