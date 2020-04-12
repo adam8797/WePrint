@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WePrint.Data;
 
-namespace WePrint.Models.Organization
+namespace WePrint.Models
 {
 
     public class Organization : IIdentifiable<Guid>
@@ -23,8 +23,8 @@ namespace WePrint.Models.Organization
         [Required]
         public string Description { get; set; }
 
-        public virtual IList<User.User> Users { get; set; } = new List<User.User>();
+        public virtual IList<User> Users { get; set; } = new List<User>();
 
-        public virtual IList<Project.Project> Projects { get; set; } = new List<Project.Project>();
+        public virtual IList<Project> Projects { get; set; } = new List<Project>();
     }
 }

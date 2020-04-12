@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WePrint.Data;
 
-namespace WePrint.Models.Project
+namespace WePrint.Models
 {
     public class ProjectViewModel
     {

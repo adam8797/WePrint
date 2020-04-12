@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
-using WePrint.Models.Job;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Data
 {

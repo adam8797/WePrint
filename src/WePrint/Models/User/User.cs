@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using WePrint.Data;
 
-namespace WePrint.Models.User
+namespace WePrint.Models
 {
     public class User : IdentityUser<Guid>, IIdentifiable<Guid>
     {
@@ -16,12 +16,12 @@ namespace WePrint.Models.User
         
         public string? Bio { get; set; }
 
-        public virtual Organization.Organization? Organization { get; set; }
+        public virtual Organization? Organization { get; set; }
 
-        public virtual IList<Printer.Printer> Printers { get; set; } = new List<Printer.Printer>();
+        public virtual IList<Printer> Printers { get; set; } = new List<Printer>();
         public virtual IList<Review> Reviews { get; set; } = new List<Review>();
         public virtual IList<Bid> Bids { get; set; } = new List<Bid>();
-        public virtual IList<Job.Job> Jobs { get; set; } = new List<Job.Job>();
+        public virtual IList<Job> Jobs { get; set; } = new List<Job>();
         public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
     }
 }

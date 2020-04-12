@@ -39,7 +39,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -62,7 +62,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -85,7 +85,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -100,7 +100,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -121,7 +121,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("WePrint.Data.Bid", b =>
@@ -209,43 +209,6 @@ namespace WePrint.Data.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("WePrint.Data.Pledge", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Anonymous")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<long>("DeliveryEstimateTicks")
-                        .HasColumnName("DeliveryEstimate")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("MakerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MakerId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Pledge");
-                });
-
             modelBuilder.Entity("WePrint.Data.ProjectUpdate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -254,7 +217,8 @@ namespace WePrint.Data.Migrations
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(4000)")
+                        .HasMaxLength(4000);
 
                     b.Property<Guid>("PostedById")
                         .HasColumnType("uniqueidentifier");
@@ -276,7 +240,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Updates");
+                    b.ToTable("ProjectUpdates");
                 });
 
             modelBuilder.Entity("WePrint.Data.Review", b =>
@@ -341,10 +305,10 @@ namespace WePrint.Data.Migrations
                         .HasName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("WePrint.Models.Job.Job", b =>
+            modelBuilder.Entity("WePrint.Models.Job", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -391,7 +355,7 @@ namespace WePrint.Data.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("WePrint.Models.Organization.Organization", b =>
+            modelBuilder.Entity("WePrint.Models.Organization", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -416,7 +380,43 @@ namespace WePrint.Data.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("WePrint.Models.Printer.Printer", b =>
+            modelBuilder.Entity("WePrint.Models.Pledge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Anonymous")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DeliveryDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("MakerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MakerId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Pledge");
+                });
+
+            modelBuilder.Entity("WePrint.Models.Printer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -452,7 +452,7 @@ namespace WePrint.Data.Migrations
                     b.ToTable("Printers");
                 });
 
-            modelBuilder.Entity("WePrint.Models.Project.Project", b =>
+            modelBuilder.Entity("WePrint.Models.Project", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -463,7 +463,8 @@ namespace WePrint.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(4000)")
+                        .HasMaxLength(4000);
 
                     b.Property<int>("Goal")
                         .HasColumnType("int");
@@ -475,10 +476,12 @@ namespace WePrint.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PrintingInstructions")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(4000)")
+                        .HasMaxLength(4000);
 
                     b.Property<string>("ShippingInstructions")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(4000)")
+                        .HasMaxLength(4000);
 
                     b.Property<string>("Thumbnail")
                         .HasColumnType("nvarchar(2000)")
@@ -491,7 +494,7 @@ namespace WePrint.Data.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("WePrint.Models.User.User", b =>
+            modelBuilder.Entity("WePrint.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -570,7 +573,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -584,7 +587,7 @@ namespace WePrint.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("WePrint.Models.User.User", null)
+                    b.HasOne("WePrint.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -593,7 +596,7 @@ namespace WePrint.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("WePrint.Models.User.User", null)
+                    b.HasOne("WePrint.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -608,7 +611,7 @@ namespace WePrint.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WePrint.Models.User.User", null)
+                    b.HasOne("WePrint.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -617,7 +620,7 @@ namespace WePrint.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("WePrint.Models.User.User", null)
+                    b.HasOne("WePrint.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -626,13 +629,13 @@ namespace WePrint.Data.Migrations
 
             modelBuilder.Entity("WePrint.Data.Bid", b =>
                 {
-                    b.HasOne("WePrint.Models.User.User", "Bidder")
+                    b.HasOne("WePrint.Models.User", "Bidder")
                         .WithMany("Bids")
                         .HasForeignKey("BidderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("WePrint.Models.Job.Job", "Job")
+                    b.HasOne("WePrint.Models.Job", "Job")
                         .WithMany("Bids")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -645,37 +648,22 @@ namespace WePrint.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ParentId");
 
-                    b.HasOne("WePrint.Models.User.User", "User")
+                    b.HasOne("WePrint.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WePrint.Data.Pledge", b =>
-                {
-                    b.HasOne("WePrint.Models.User.User", "Maker")
-                        .WithMany("Pledges")
-                        .HasForeignKey("MakerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("WePrint.Models.Project.Project", "Project")
-                        .WithMany("Pledges")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("WePrint.Data.ProjectUpdate", b =>
                 {
-                    b.HasOne("WePrint.Models.User.User", "PostedBy")
+                    b.HasOne("WePrint.Models.User", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WePrint.Models.Project.Project", "Project")
+                    b.HasOne("WePrint.Models.Project", "Project")
                         .WithMany("Updates")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -684,32 +672,32 @@ namespace WePrint.Data.Migrations
 
             modelBuilder.Entity("WePrint.Data.Review", b =>
                 {
-                    b.HasOne("WePrint.Models.Job.Job", "Job")
+                    b.HasOne("WePrint.Models.Job", "Job")
                         .WithMany()
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WePrint.Models.User.User", "ReviewedUser")
+                    b.HasOne("WePrint.Models.User", "ReviewedUser")
                         .WithMany("Reviews")
                         .HasForeignKey("ReviewedUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("WePrint.Models.User.User", "Reviewer")
+                    b.HasOne("WePrint.Models.User", "Reviewer")
                         .WithMany()
                         .HasForeignKey("ReviewerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WePrint.Models.Job.Job", b =>
+            modelBuilder.Entity("WePrint.Models.Job", b =>
                 {
                     b.HasOne("WePrint.Data.Bid", "AcceptedBid")
                         .WithMany()
                         .HasForeignKey("AcceptedBidId");
 
-                    b.HasOne("WePrint.Models.User.User", "Customer")
+                    b.HasOne("WePrint.Models.User", "Customer")
                         .WithMany("Jobs")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -755,92 +743,39 @@ namespace WePrint.Data.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("JobId");
                         });
-
-                    b.OwnsMany("WePrint.Data.JobAttachment", "Attachments", b1 =>
-                        {
-                            b1.Property<Guid>("OwnerId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<Guid>("SubmittedById")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("URL")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(2000)")
-                                .HasMaxLength(2000);
-
-                            b1.HasKey("OwnerId", "Id");
-
-                            b1.HasIndex("SubmittedById");
-
-                            b1.ToTable("JobAttachment");
-
-                            b1.WithOwner("Owner")
-                                .HasForeignKey("OwnerId");
-
-                            b1.HasOne("WePrint.Models.User.User", "SubmittedBy")
-                                .WithMany()
-                                .HasForeignKey("SubmittedById")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-                        });
                 });
 
-            modelBuilder.Entity("WePrint.Models.Printer.Printer", b =>
+            modelBuilder.Entity("WePrint.Models.Pledge", b =>
                 {
-                    b.HasOne("WePrint.Models.User.User", "Owner")
+                    b.HasOne("WePrint.Models.User", "Maker")
+                        .WithMany("Pledges")
+                        .HasForeignKey("MakerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("WePrint.Models.Project", "Project")
+                        .WithMany("Pledges")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WePrint.Models.Printer", b =>
+                {
+                    b.HasOne("WePrint.Models.User", "Owner")
                         .WithMany("Printers")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WePrint.Models.Project.Project", b =>
+            modelBuilder.Entity("WePrint.Models.Project", b =>
                 {
-                    b.HasOne("WePrint.Models.Organization.Organization", "Organization")
+                    b.HasOne("WePrint.Models.Organization", "Organization")
                         .WithMany("Projects")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.OwnsMany("WePrint.Data.ProjectAttachment", "Attachments", b1 =>
-                        {
-                            b1.Property<Guid>("OwnerId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<Guid>("SubmittedById")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("URL")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(2000)")
-                                .HasMaxLength(2000);
-
-                            b1.HasKey("OwnerId", "Id");
-
-                            b1.HasIndex("SubmittedById");
-
-                            b1.ToTable("ProjectAttachment");
-
-                            b1.WithOwner("Owner")
-                                .HasForeignKey("OwnerId");
-
-                            b1.HasOne("WePrint.Models.User.User", "SubmittedBy")
-                                .WithMany()
-                                .HasForeignKey("SubmittedById")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-                        });
 
                     b.OwnsOne("WePrint.Data.Address", "Address", b1 =>
                         {
@@ -884,9 +819,9 @@ namespace WePrint.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WePrint.Models.User.User", b =>
+            modelBuilder.Entity("WePrint.Models.User", b =>
                 {
-                    b.HasOne("WePrint.Models.Organization.Organization", "Organization")
+                    b.HasOne("WePrint.Models.Organization", "Organization")
                         .WithMany("Users")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.NoAction);

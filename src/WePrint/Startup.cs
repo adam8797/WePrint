@@ -18,7 +18,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
-using WePrint.Models.User;
+using WePrint.Models;
+using WePrint.Permissions;
 
 namespace WePrint
 {
@@ -93,13 +94,23 @@ namespace WePrint
                 };
             });
 
-            services.AddAutoMapper((serviceProvider, automapper) => { automapper.AddCollectionMappers(); },
-                typeof(WePrintContext).Assembly);
+            services.AddAutoMapper((serviceProvider, mapper) =>
+                {
+                    mapper.AddCollectionMappers();
+                    
+                    // Data/View/Create
+                    mapper.AddProfile<AutoProfile<Project, ProjectViewModel, ProjectCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Job, JobViewModel, JobCreateModel, Guid>>();
 
-            services.AddAzureClients(builder =>
-            {
-                builder.AddBlobServiceClient(Configuration["ConnectionStrings:<ConnectionStringNamePlaceholder>"]);
-            });
+                    // Data/View
+                    mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
+                }, new Assembly[0]);
+
+            services.RegisterPermissions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

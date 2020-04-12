@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage.Blob;
 using WePrint.Data;
 using WePrint.Models;
@@ -44,7 +45,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await AllowRead(await CurrentUser, entity))
+            if (!await Permissions.AllowRead(await CurrentUser, entity))
                 return Forbid();
 
             var files = new List<FileEntry>();
@@ -91,7 +92,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await AllowRead(await CurrentUser, entity))
+            if (!await Permissions.AllowRead(await CurrentUser, entity))
                 return Forbid();
 
             var container = GetBlobContainer(GetContainerId(entity));
@@ -125,7 +126,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
             if (file.Length <= 0)
@@ -177,7 +178,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
             var container = GetBlobContainer(GetContainerId(entity));

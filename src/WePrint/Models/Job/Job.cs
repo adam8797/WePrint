@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WePrint.Data;
 
-namespace WePrint.Models.Job
+namespace WePrint.Models
 {
     public class Job : IIdentifiable<Guid>
     {
@@ -28,7 +28,7 @@ namespace WePrint.Models.Job
         public string? Notes { get; set; }
 
         [Required]
-        public virtual User.User Customer { get; set; }
+        public virtual User Customer { get; set; }
 
         [Required]
         public DateTimeOffset BidClose { get; set; }

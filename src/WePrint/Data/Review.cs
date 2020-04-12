@@ -1,8 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using WePrint.Models.Job;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Data
 {

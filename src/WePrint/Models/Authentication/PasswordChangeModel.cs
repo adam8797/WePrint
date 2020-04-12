@@ -1,4 +1,4 @@
-﻿namespace WePrint.Models.Authentication
+﻿namespace WePrint.Models
 {
     public class PasswordChangeModel
     {

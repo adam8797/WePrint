@@ -7,11 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WePrint.Controllers.Base;
 using WePrint.Data;
-using WePrint.Models.Organization;
-using WePrint.Models.Project;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Controllers
 {
@@ -27,14 +26,7 @@ namespace WePrint.Controllers
         }
 
         #region REST implementation
-
-        protected override DbSet<Organization> GetDbSet(WePrintContext database) => database.Organizations;
-
-        protected override async ValueTask<bool> AllowCreate(User user, OrganizationCreateModel create)
-        {
-            return user.Organization == null;
-        }
-
+        
         protected override async ValueTask<Organization> CreateDataModelAsync(OrganizationCreateModel viewModel)
         {
             var org = Mapper.Map<Organization>(viewModel);

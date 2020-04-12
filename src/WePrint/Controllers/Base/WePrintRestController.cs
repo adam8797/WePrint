@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WePrint.Data;
-using WePrint.Models.User;
+using WePrint.Models;
+using WePrint.Permissions;
 
 namespace WePrint.Controllers.Base
 {
@@ -23,15 +24,13 @@ namespace WePrint.Controllers.Base
         where TCreateModel: class
         where TKey: struct
     {
+        protected readonly IPermissionProvider<TData, TCreateModel> Permissions;
+
         protected WePrintRestController(IServiceProvider services) : base(services)
         {
+            Permissions = services.GetService<IPermissionProvider<TData, TCreateModel>>() ??
+                                  new DefaultPermissionProvider<TData, TCreateModel>();
         }
-
-        #region Abstract Functions
-
-        protected abstract DbSet<TData> GetDbSet(WePrintContext database);
-
-        #endregion
 
         #region Virtual Functions
 
@@ -88,25 +87,6 @@ namespace WePrint.Controllers.Base
             return Mapper.Map(viewModel, dataModel);
         }
 
-        /// <summary>
-        /// Is a user allowed to write to a particular entity? Used by PATCH and DELETE
-        /// </summary>
-        /// <param name="user">The user requesting write access</param>
-        /// <param name="entity">Entity being referenced</param>
-        /// <returns></returns>
-        protected virtual async ValueTask<bool> AllowWrite(User user, TData entity) => true;
-
-
-        /// <summary>
-        /// Is a user allowed to read a particular entity? Used by GET
-        /// </summary>
-        /// <param name="user">The user requesting write access</param>
-        /// <param name="entity">Entity being referenced</param>
-        /// <returns></returns>
-        protected virtual async ValueTask<bool> AllowRead(User user, TData entity) => true;
-
-        protected virtual async ValueTask<bool> AllowCreate(User user, TCreateModel create) => true;
-
         #endregion
 
         #region HTTP Verbs
@@ -118,9 +98,9 @@ namespace WePrint.Controllers.Base
         {
             var valid = new List<TViewModel>();
             var user = await CurrentUser;
-            foreach (var entity in Filter(GetDbSet(Database), user))
+            foreach (var entity in Filter(Database.Set<TData>(), user))
             {
-                if (await AllowRead(user, entity))
+                if (await Permissions.AllowRead(user, entity))
                     valid.Add(await CreateViewModelAsync(entity));
             }
             return valid;
@@ -134,12 +114,12 @@ namespace WePrint.Controllers.Base
         // GET /api/[controller]/{id}
         public virtual async Task<ActionResult<TViewModel>> Get(TKey id)
         {
-            var entity = await GetDbSet(Database).FindAsync(id);
+            var entity = await Database.Set<TData>().FindAsync(id);
 
             if (entity == null)
                 return NotFound(id);
 
-            if (await AllowRead(await CurrentUser, entity))
+            if (await Permissions.AllowRead(await CurrentUser, entity))
                 return await CreateViewModelAsync(entity);
 
             return Forbid();
@@ -155,12 +135,12 @@ namespace WePrint.Controllers.Base
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await AllowCreate(await CurrentUser, body))
+            if (!await Permissions.AllowCreate(await CurrentUser, body))
                 return Forbid();
 
             var dataModel = await CreateDataModelAsync(body);
 
-            GetDbSet(Database).Add(dataModel);
+            Database.Set<TData>().Add(dataModel);
             await Database.SaveChangesAsync();
 
             return CreatedAtAction("Get", new { id = dataModel.Id }, await CreateViewModelAsync(dataModel));
@@ -173,13 +153,13 @@ namespace WePrint.Controllers.Base
         // PUT /api/[controller]/{id}
         public virtual async Task<ActionResult<TViewModel>> Put(TKey id, [FromBody] TCreateModel create)
         {
-            var set = GetDbSet(Database);
+            var set = Database.Set<TData>();
             var entity = await set.FindAsync(id);
 
             if (entity == null)
                 return NotFound();
 
-            if (!await AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
             
             await UpdateDataModelAsync(entity, create);
@@ -195,12 +175,12 @@ namespace WePrint.Controllers.Base
         // PATCH /api/[controller]/{id}
         public virtual async Task<ActionResult<TViewModel>> Patch(TKey id, [FromBody] JsonPatchDocument<TViewModel> patch)
         {
-            var entity = await GetDbSet(Database).FindAsync(id);
+            var entity = await Database.Set<TData>().FindAsync(id);
 
             if (entity == null)
                 return NotFound(id);
 
-            if (!await AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
             var dto = await CreateViewModelAsync(entity);
@@ -218,36 +198,19 @@ namespace WePrint.Controllers.Base
         // DELETE /api/[controller]/{id}
         public virtual async Task<IActionResult> Delete(TKey id)
         {
-            var entity = await GetDbSet(Database).FindAsync(id);
+            var entity = await Database.Set<TData>().FindAsync(id);
 
             if (entity == null)
                 return NotFound();
 
-            if (!await AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            GetDbSet(Database).Remove(entity);
+            Database.Set<TData>().Remove(entity);
             await Database.SaveChangesAsync();
             return Ok();
         }
 
         #endregion HTTP Verbs
-    }
-
-    public abstract class WePrintRestController<T, TKey> : WePrintRestController<T, T, T, TKey> where T: class, IIdentifiable<TKey> where TKey : struct
-    {
-        public WePrintRestController(IServiceProvider services) : base(services)
-        {
-        }
-
-        protected override async ValueTask<T> CreateViewModelAsync(T data)
-        {
-            return data;
-        }
-
-        protected override async ValueTask<T> CreateDataModelAsync(T data)
-        {
-            return data;
-        }
     }
 }

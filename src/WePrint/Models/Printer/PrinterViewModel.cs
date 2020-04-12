@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WePrint.Models.Printer
+namespace WePrint.Models
 {
     public class PrinterViewModel
     {
