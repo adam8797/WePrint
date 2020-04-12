@@ -58,6 +58,56 @@ namespace WePrint.Controllers
             return users;
         }
 
+        [HttpPost("{id}/users/{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> AddUser(Guid id, Guid userId)
+        {
+            var currentUser = await CurrentUser;
+
+            var organization = await Database.Organizations.FindAsync(id);
+            if (organization == null)
+                return NotFound(id);
+
+            var targetUser = await Database.Users.FindAsync(userId);
+            if (targetUser == null)
+                return NotFound(userId);
+
+            if (!organization.Users.Contains(currentUser))
+                return Forbid();
+
+            organization.Users.Add(targetUser);
+
+            await Database.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id}/users/{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> RemoveUser(Guid id, Guid userId)
+        {
+            var currentUser = await CurrentUser;
+            var organization = await Database.Organizations.FindAsync(id);
+
+            if (organization == null)
+                return NotFound(id);
+
+            if (!organization.Users.Contains(currentUser))
+                return Forbid();
+
+            var targetUser = organization.Users.SingleOrDefault(user => user.Id == userId);
+            if (targetUser == null)
+                return NotFound();
+
+            organization.Users.Remove(targetUser);
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpGet("{id}/projects")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
