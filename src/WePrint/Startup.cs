@@ -37,7 +37,7 @@ namespace WePrint
         {
             services.AddDbContext<WePrintContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("WePrint")));
 
             services.AddDefaultIdentity<User>()
                 .AddEntityFrameworkStores<WePrintContext>();
