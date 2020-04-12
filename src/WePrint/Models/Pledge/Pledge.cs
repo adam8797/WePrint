@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using WePrint.Models.Project;
-using WePrint.Models.User;
+using WePrint.Data;
 
-namespace WePrint.Data
+namespace WePrint.Models
 {
     public class Pledge : IIdentifiable<Guid>
     {
@@ -15,15 +10,7 @@ namespace WePrint.Data
         public Guid Id { get; set; }
 
         [Required]
-        [Column("DeliveryEstimate")]
-        public long DeliveryEstimateTicks { get; set; }
-
-        [NotMapped]
-        public TimeSpan DeliveryEstimate
-        {
-            get => TimeSpan.FromTicks(DeliveryEstimateTicks);
-            set => DeliveryEstimateTicks = value.Ticks;
-        }
+        public DateTimeOffset DeliveryDate { get; set; }
 
         [Required]
         public DateTimeOffset Created { get; set; }

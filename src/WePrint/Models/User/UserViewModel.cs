@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WePrint.Models.User
+namespace WePrint.Models
 {
     public class UserViewModel
     {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WePrint.Data;
 
-namespace WePrint.Models.Printer
+namespace WePrint.Models
 {
     public class Printer : IIdentifiable<Guid>
     {
@@ -11,7 +11,7 @@ namespace WePrint.Models.Printer
         public Guid Id { get; set; }
 
         [Required]
-        public virtual User.User Owner { get; set; }
+        public virtual User Owner { get; set; }
         
         [Required]
         [MaxLength(50)]

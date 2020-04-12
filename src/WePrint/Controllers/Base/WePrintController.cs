@@ -11,7 +11,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Nito.AsyncEx;
 using WePrint.Data;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Controllers.Base
 {

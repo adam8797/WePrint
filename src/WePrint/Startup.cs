@@ -18,7 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint
 {
@@ -93,7 +93,20 @@ namespace WePrint
                 };
             });
 
-            services.AddAutoMapper((serviceProvider, automapper) => { automapper.AddCollectionMappers(); },
+            services.AddAutoMapper((serviceProvider, automapper) =>
+                {
+                    automapper.AddCollectionMappers();
+                    
+                    // Data/View/Create
+                    automapper.AddProfile<AutoProfile<Project, ProjectViewModel, ProjectViewModel, Guid>>();
+                    automapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
+                    automapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
+                    automapper.AddProfile<AutoProfile<Job, JobViewModel, JobCreateModel, Guid>>();
+
+                    // Data/View
+                    automapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
+                    automapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
+                },
                 typeof(WePrintContext).Assembly);
 
             services.AddAzureClients(builder =>

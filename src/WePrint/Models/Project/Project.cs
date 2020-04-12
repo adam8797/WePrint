@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WePrint.Data;
 
-namespace WePrint.Models.Project
+namespace WePrint.Models
 {
     public class Project : IIdentifiable<Guid>
     {
@@ -11,13 +11,16 @@ namespace WePrint.Models.Project
         public Guid Id { get; set; }
 
         [Required]
+        [MaxLength(4000)]
         public string Description { get; set; }
 
         [Required]
         public int Goal { get; set; }
 
+        [MaxLength(4000)]
         public string? ShippingInstructions { get; set; }
 
+        [MaxLength(4000)]
         public string? PrintingInstructions { get; set; }
 
         [MaxLength(2000)]
@@ -34,7 +37,7 @@ namespace WePrint.Models.Project
         public bool OpenGoal { get; set; }
 
         [Required]
-        public virtual Organization.Organization Organization { get; set; }
+        public virtual Organization Organization { get; set; }
 
         public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
 

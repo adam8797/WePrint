@@ -11,6 +11,8 @@ In this directory, you'll find the following folder structure:
 /ModelName/ModelNameProfile.cs
 ```
 
+The `/ModelName/` directory *shall not* be a namespace provider. This can be set in the folder's properties
+
 ## ModelName.cs
 
 This is the Database Entity model. It *should* be annotated with as many attributes as possible, in order to correctly define the table. We don't like `nvarchar(MAX)` columns in our tables!
@@ -41,6 +43,8 @@ All Navigation properties *shall* be virtual to enable lazy loading. EF will thr
 
 This is the view model, it is what will be presented to the API as response objects, and will generally be what the API client interacts with.
 
+In general, the View Model *should not* contain attributes like `[Required]` or `[MaxLength]`
+
 It *shall* contain the Id property that matches its DB Model
 
 It *should* change all navigation properties to their keys. For example, a `User` property would change to a `Guid` property, and an `IList<User>` would become an `IList<Guid>`
@@ -53,9 +57,17 @@ Items that are automatically assigned, *should* be omitted from this.
 
 The class *shall not* contain an Id field.
 
+The create model *should* contain attributes, that the `ModelBinder` will evaluate upon receiving the request.
+
+The default `ModelState` implementation is used to validate posted models
+
 ## ModelNameProfile.cs
 
 This is the AutoMapper profile that configures the mapping between all three above classes.
+
+It *may* be implemented if special features are required. 
+
+The class `AutoProfile<>` is available for use. To use it, add a line to the AutoMapper setup function in `Startup.cs`, or derive from it in your own profile. It takes care of all this below implementation.
 
 The following mappings *shall* be implemented:
 
@@ -76,7 +88,7 @@ using System;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 
-namespace WePrint.Models.ModelName
+namespace WePrint.Models
 {
     public class ModelNameProfile : Profile
     {

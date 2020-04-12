@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using WePrint.Data;
 
-namespace WePrint.Models.Job
+namespace WePrint.Models
 {
     public class JobViewModel : IIdentifiable<Guid>
     {

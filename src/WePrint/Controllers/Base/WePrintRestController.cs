@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WePrint.Data;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Controllers.Base
 {

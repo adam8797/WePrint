@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WePrint.Controllers.Base;
 using WePrint.Data;
-using WePrint.Models.Printer;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Controllers
 {

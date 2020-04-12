@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WePrint.Controllers.Base;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Controllers
 {

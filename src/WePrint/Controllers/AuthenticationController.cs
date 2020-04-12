@@ -9,8 +9,6 @@ using Microsoft.Extensions.Logging;
 using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models;
-using WePrint.Models.Authentication;
-using WePrint.Models.User;
 
 namespace WePrint.Controllers
 {

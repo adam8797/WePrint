@@ -9,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WePrint.Controllers.Base;
 using WePrint.Data;
-using WePrint.Models.Organization;
-using WePrint.Models.Project;
-using WePrint.Models.User;
+using WePrint.Models;
 
 namespace WePrint.Controllers
 {

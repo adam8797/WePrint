@@ -6,7 +6,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WePrint.Controllers.Base;
-using WePrint.Models.Job;
+using WePrint.Models;
 
 namespace WePrint.Controllers
 {

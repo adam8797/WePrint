@@ -19,12 +19,11 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WePrint.Controllers.Base;
 using WePrint.Data;
-using WePrint.Models.Project;
-using WePrint.Models.User;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using WePrint.Models;
 using WePrint.Utilities;
 
 namespace WePrint.Controllers
