@@ -31,30 +31,4 @@ namespace WePrint.Data
         [Required]
         public virtual Project Project { get; set; }
     }
-
-    public class ProjectUpdateViewModel
-    {
-        public Guid Id { get; set; }
-
-        public DateTimeOffset Timestamp { get; set; }
-
-        public string Body { get; set; }
-
-        public string Title { get; set; }
-
-        public virtual User PostedBy { get; set; }
-
-        public virtual Project Project { get; set; }
-    }
-
-    public class ProjectUpdateCreateModel
-    {
-        [Required]
-        [MaxLength(4000)]
-        public string Body { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string Title { get; set; }
-    }
 }

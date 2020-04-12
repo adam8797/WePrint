@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WePrint.Controllers.Base;
 using WePrint.Models;
 
@@ -15,7 +16,8 @@ namespace WePrint.Controllers
     public class SearchController : WePrintController
     {
         public SearchController(IServiceProvider services) : base(services)
-        { }
+        {
+        }
 
         /// <summary>
         /// Search for all jobs matching some string
@@ -32,6 +34,5 @@ namespace WePrint.Controllers
 
             return await jobs.ProjectTo<JobViewModel>(Mapper.ConfigurationProvider).ToListAsync();
         }
-
     }
 }

@@ -116,5 +116,9 @@ namespace WePrint.Data
         public DbSet<Organization> Organizations { get; set; }
 
         public DbSet<Project> Projects { get; set; }
+
+        public DbSet<ProjectUpdate> ProjectUpdates { get; set; }
+
+        public DbSet<Pledge> Pledges { get; set; }
     }
 }

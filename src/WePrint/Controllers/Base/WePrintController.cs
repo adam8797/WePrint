@@ -32,6 +32,7 @@ namespace WePrint.Controllers.Base
             Database = services.GetRequiredService<WePrintContext>();
             Mapper = services.GetRequiredService<IMapper>();
             Configuration = services.GetRequiredService<IConfiguration>();
+
             CurrentUser = new AsyncLazy<User>(async () => await UserManager.GetUserAsync(HttpContext.User));
         }
 

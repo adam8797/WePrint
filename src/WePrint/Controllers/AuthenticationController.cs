@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WePrint.Controllers.Base;
 using WePrint.Data;
@@ -18,7 +19,7 @@ namespace WePrint.Controllers
     {
         private readonly SignInManager<User> _signInManager;
 
-        public AuthenticationController(IServiceProvider services, SignInManager<User> signInManager) : base(services)
+        public AuthenticationController(SignInManager<User> signInManager, IServiceProvider services) : base(services)
         {
             _signInManager = signInManager;
         }

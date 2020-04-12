@@ -7,7 +7,7 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class AutoProfile<TData, TViewModel, TCreateModel, TKey> : Profile
+    public sealed class AutoProfile<TData, TViewModel, TCreateModel, TKey> : Profile
         where TData : class, IIdentifiable<TKey>
         where TKey : struct
         where TViewModel : class
@@ -23,7 +23,7 @@ namespace WePrint.Models
         }
     }
 
-    public class AutoProfile<TData, TViewModel, TKey> : Profile
+    public sealed class AutoProfile<TData, TViewModel, TKey> : Profile
         where TData : class, IIdentifiable<TKey>
         where TKey : struct
         where TViewModel : class

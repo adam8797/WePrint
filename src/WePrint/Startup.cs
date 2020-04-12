@@ -19,6 +19,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
 using WePrint.Models;
+using WePrint.Permissions;
 
 namespace WePrint
 {
@@ -93,26 +94,23 @@ namespace WePrint
                 };
             });
 
-            services.AddAutoMapper((serviceProvider, automapper) =>
+            services.AddAutoMapper((serviceProvider, mapper) =>
                 {
-                    automapper.AddCollectionMappers();
+                    mapper.AddCollectionMappers();
                     
                     // Data/View/Create
-                    automapper.AddProfile<AutoProfile<Project, ProjectViewModel, ProjectViewModel, Guid>>();
-                    automapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
-                    automapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
-                    automapper.AddProfile<AutoProfile<Job, JobViewModel, JobCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Project, ProjectViewModel, ProjectCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Job, JobViewModel, JobCreateModel, Guid>>();
 
                     // Data/View
-                    automapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
-                    automapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
-                },
-                typeof(WePrintContext).Assembly);
+                    mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
+                }, new Assembly[0]);
 
-            services.AddAzureClients(builder =>
-            {
-                builder.AddBlobServiceClient(Configuration["ConnectionStrings:<ConnectionStringNamePlaceholder>"]);
-            });
+            services.RegisterPermissions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
