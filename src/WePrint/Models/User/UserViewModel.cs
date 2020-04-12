@@ -5,6 +5,8 @@ namespace WePrint.Models.User
 {
     public class UserViewModel
     {
+        public Guid Id { get; set; }
+
         [MaxLength(150)]
         public string? FirstName { get; set; }
 
@@ -14,7 +16,5 @@ namespace WePrint.Models.User
         public string? Bio { get; set; }
 
         public string Username { get; set; }
-
-        public Guid Id { get; set; }
     }
 }

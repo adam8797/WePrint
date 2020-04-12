@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WePrint.Controllers.Base;
 using WePrint.Models.User;
-using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UserController : ControllerBase
+    public class UserController : WePrintController
     {
         public UserController(IServiceProvider services) : base(services)
         {

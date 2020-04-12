@@ -6,7 +6,7 @@ using WePrint.Data;
 
 namespace WePrint.Models.User
 {
-    public class User : IdentityUser<Guid>
+    public class User : IdentityUser<Guid>, IIdentifiable<Guid>
     {
         [MaxLength(150)]
         public string? FirstName { get; set; }

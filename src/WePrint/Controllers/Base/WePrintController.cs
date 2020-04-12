@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +15,7 @@ using WePrint.Models.User;
 
 namespace WePrint.Controllers.Base
 {
-    public abstract class ControllerBase : Controller
+    public abstract class WePrintController : ControllerBase
     {
         protected readonly ILogger Log;
         protected readonly UserManager<User> UserManager;
@@ -22,7 +24,8 @@ namespace WePrint.Controllers.Base
         protected readonly IConfiguration Configuration;
         protected readonly AsyncLazy<User> CurrentUser;
 
-        protected ControllerBase(IServiceProvider services)
+
+        protected WePrintController(IServiceProvider services)
         {
             Log = (ILogger)services.GetRequiredService(typeof(ILogger<>).MakeGenericType(GetType()));
             UserManager = services.GetRequiredService<UserManager<User>>();
@@ -38,5 +41,8 @@ namespace WePrint.Controllers.Base
             var blobClient = storageAccount.CreateCloudBlobClient();
             return blobClient.GetContainerReference(containerName);
         }
+
+        
+        
     }
 }

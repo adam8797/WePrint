@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WePrint.Controllers.Base;
 using WePrint.Models.Job;
-using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/search")]
-    public class SearchController : ControllerBase
+    public class SearchController : WePrintController
     {
         public SearchController(IServiceProvider services) : base(services)
         { }

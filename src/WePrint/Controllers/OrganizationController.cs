@@ -1,33 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models.Organization;
+using WePrint.Models.Project;
 using WePrint.Models.User;
 
 namespace WePrint.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/organizations")]
-    [Authorize]
-    public class OrganizationController : RESTController<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>
+    [ProducesResponseType(typeof(object), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status403Forbidden)]
+    public class OrganizationController : WePrintRestController<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>
     {
         public OrganizationController(IServiceProvider services) : base(services)
         {
@@ -56,27 +49,26 @@ namespace WePrint.Controllers
         [HttpGet("{id}/users")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers(Guid id)
+        public async Task<ActionResult<List<UserViewModel>>> GetUsers(Guid id)
         {
-            var org = await Database.Organizations.FindAsync(id);
-
-            if (org == null)
-                return NotFound(id);
-
-            return Ok(org.Users);
+            var users = await Database.Users
+                .Where(x => x.Organization.Id == id)
+                .ProjectTo<UserViewModel>(Mapper.ConfigurationProvider)
+                .ToListAsync();
+            return users;
         }
 
         [HttpGet("{id}/projects")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<User>>> GetProjects(Guid id)
+        public async Task<ActionResult<List<ProjectViewModel>>> GetProjects(Guid id)
         {
-            var org = await Database.Organizations.FindAsync(id);
+            var projects = await Database.Projects
+                .Where(x => x.Organization.Id == id)
+                .ProjectTo<ProjectViewModel>(Mapper.ConfigurationProvider)
+                .ToListAsync();
 
-            if (org == null)
-                return NotFound(id);
-
-            return Ok(org.Projects);
+            return projects;
         }
 
         #endregion

@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models;
 using WePrint.Models.Authentication;
 using WePrint.Models.User;
-using ControllerBase = WePrint.Controllers.Base.ControllerBase;
 
 namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/auth")]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : WePrintController
     {
         private readonly SignInManager<User> _signInManager;
 

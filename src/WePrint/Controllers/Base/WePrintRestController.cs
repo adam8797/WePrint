@@ -17,12 +17,13 @@ namespace WePrint.Controllers.Base
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class RESTController<TData, TViewModel, TCreateModel, TKey> : ControllerBase 
+    public abstract class WePrintRestController<TData, TViewModel, TCreateModel, TKey> : WePrintController 
         where TData: class, IIdentifiable<TKey>
-        where TViewModel: class where TKey: struct
+        where TViewModel: class 
         where TCreateModel: class
+        where TKey: struct
     {
-        protected RESTController(IServiceProvider services) : base(services)
+        protected WePrintRestController(IServiceProvider services) : base(services)
         {
         }
 
@@ -72,6 +73,17 @@ namespace WePrint.Controllers.Base
         /// <param name="viewModel">PUT'ed model</param>
         /// <returns></returns>
         protected virtual async ValueTask<TData> UpdateDataModelAsync(TData dataModel, TCreateModel viewModel)
+        {
+            return Mapper.Map(viewModel, dataModel);
+        }
+
+        /// <summary>
+        /// Update a given DB model with a view model. Defaults to running AutoMapper
+        /// </summary>
+        /// <param name="dataModel">DB Model to update</param>
+        /// <param name="viewModel">Updated view model</param>
+        /// <returns></returns>
+        protected virtual async ValueTask<TData> UpdateDataModelAsync(TData dataModel, TViewModel viewModel)
         {
             return Mapper.Map(viewModel, dataModel);
         }
@@ -136,7 +148,7 @@ namespace WePrint.Controllers.Base
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         // POST /api/[controller]
         public virtual async Task<ActionResult<TViewModel>> Post([FromBody] TCreateModel body)
         {
@@ -152,18 +164,6 @@ namespace WePrint.Controllers.Base
             await Database.SaveChangesAsync();
 
             return CreatedAtAction("Get", new { id = dataModel.Id }, await CreateViewModelAsync(dataModel));
-        }
-
-        [HttpPost("{id}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        // POST /api/[controller]/{id}
-        public virtual async Task<ActionResult<TViewModel>> Post(TKey id, [FromBody] TCreateModel body)
-        {
-            var entity = await GetDbSet(Database).FindAsync(id);
-            if (entity != null)
-                return Conflict();
-            return NotFound();
         }
 
         [HttpPut("{id}")]
@@ -193,7 +193,7 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // PATCH /api/[controller]/{id}
-        public virtual async Task<ActionResult<TViewModel>> Patch(TKey id, [FromBody] JsonPatchDocument<TData> patch)
+        public virtual async Task<ActionResult<TViewModel>> Patch(TKey id, [FromBody] JsonPatchDocument<TViewModel> patch)
         {
             var entity = await GetDbSet(Database).FindAsync(id);
 
@@ -203,7 +203,10 @@ namespace WePrint.Controllers.Base
             if (!await AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            patch.ApplyTo(entity);
+            var dto = await CreateViewModelAsync(entity);
+            patch.ApplyTo(dto);
+            await UpdateDataModelAsync(entity, dto);
+
             await Database.SaveChangesAsync();
             return Ok(await CreateViewModelAsync(entity));
         }
@@ -231,9 +234,9 @@ namespace WePrint.Controllers.Base
         #endregion HTTP Verbs
     }
 
-    public abstract class RESTController<T, TKey> : RESTController<T, T, T, TKey> where T: class, IIdentifiable<TKey> where TKey : struct
+    public abstract class WePrintRestController<T, TKey> : WePrintRestController<T, T, T, TKey> where T: class, IIdentifiable<TKey> where TKey : struct
     {
-        public RESTController(IServiceProvider services) : base(services)
+        public WePrintRestController(IServiceProvider services) : base(services)
         {
         }
 

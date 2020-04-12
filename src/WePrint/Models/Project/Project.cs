@@ -39,7 +39,5 @@ namespace WePrint.Models.Project
         public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
 
         public virtual IList<ProjectUpdate> Updates { get; set; } = new List<ProjectUpdate>();
-
-        public virtual IList<ProjectAttachment> Attachments { get; set; } = new List<ProjectAttachment>();
     }
 }

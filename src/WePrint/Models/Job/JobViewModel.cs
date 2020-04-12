@@ -11,9 +11,9 @@ namespace WePrint.Models.Job
 
         public string Name { get; set; }
 
-        public Guid CustomerId { get; set; }
+        public Guid Customer { get; set; }
 
-        public Guid? MakerId { get; set; }
+        public Guid? Maker { get; set; }
 
         public JobStatus Status { get; set; }
 

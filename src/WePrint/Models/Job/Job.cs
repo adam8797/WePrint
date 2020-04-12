@@ -38,7 +38,5 @@ namespace WePrint.Models.Job
         public virtual Bid? AcceptedBid { get; set; }
         
         public virtual IList<Bid> Bids { get; set; } = new List<Bid>();
-
-        public virtual IList<JobAttachment> Attachments { get; set; } = new List<JobAttachment>();
     }
 }

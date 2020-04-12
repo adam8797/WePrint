@@ -14,7 +14,7 @@ namespace WePrint.Controllers
     [Authorize]
     [ApiController]
     [Route("api/devices")]
-    public class DeviceController : RESTController<Printer, PrinterViewModel, PrinterCreateModel, Guid>
+    public class DeviceController : WePrintRestController<Printer, PrinterViewModel, PrinterCreateModel, Guid>
     {
         public DeviceController(IServiceProvider services) : base(services)
         {

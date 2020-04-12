@@ -11,6 +11,11 @@ namespace WePrint.Data
 {
     public class WePrintContext : IdentityDbContext<User, Role, Guid>
     {
+        public WePrintContext()
+        {
+
+        }
+
         public WePrintContext(DbContextOptions options) : base(options)
         {
         }
@@ -26,7 +31,6 @@ namespace WePrint.Data
             builder.Entity<Job>().OwnsOne(x => x.Address);
             builder.Entity<Job>().HasOne(x => x.Customer).WithMany(x => x.Jobs).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Job>().HasOne(x => x.AcceptedBid);
-            builder.Entity<Job>().OwnsMany(x => x.Attachments).HasOne(x => x.Owner);
 
             builder.Entity<User>().HasMany(x => x.Printers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<User>().HasMany(x => x.Reviews).WithOne(x => x.ReviewedUser).OnDelete(DeleteBehavior.NoAction);
@@ -49,7 +53,6 @@ namespace WePrint.Data
 
             builder.Entity<Project>().OwnsOne(x => x.Address);
             builder.Entity<Project>().HasMany(x => x.Updates).WithOne(x => x.Project).OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Project>().OwnsMany(x => x.Attachments).HasOne(x => x.Owner);
 
             builder.Entity<ProjectUpdate>().HasOne(x => x.PostedBy);
 

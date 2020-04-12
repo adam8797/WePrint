@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
+using AutoMapper.EquivalencyExpression;
 
 namespace WePrint.Models.Project
 {
@@ -7,13 +9,11 @@ namespace WePrint.Models.Project
     {
         public ProjectProfile()
         {
-            CreateMap<Project, ProjectViewModel>()
-                .ForMember(x => x.Organization, x => x.MapFrom(y => y.Organization.Id))
-                .ForMember(x => x.Pledges, x => x.MapFrom(y => y.Pledges.Select(z => z.Id).ToList()))
-                .ForMember(x => x.Updates, x => x.MapFrom(y => y.Updates.Select(z => z.Id).ToList()))
-                .ForMember(x => x.Attachments, x => x.MapFrom(y => y.Attachments.Select(z => z.URL).ToList()));
-
+            CreateMap<Project, ProjectViewModel>();
+            CreateMap<ProjectViewModel, Project>();
             CreateMap<ProjectCreateModel, Project>();
+            CreateMap<Guid, Project>().ConvertUsing<EntityConverter<Guid, Project>>();
+            CreateMap<Project, Guid>().ConvertUsing(x => x.Id);
         }
     }
 }

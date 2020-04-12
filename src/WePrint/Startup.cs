@@ -1,20 +1,17 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.EquivalencyExpression;
 using ClacksMiddleware.Extensions;
-using EasyNetQ;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +19,6 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
 using WePrint.Models.User;
-using Microsoft.Extensions.Azure;
 
 namespace WePrint
 {
@@ -55,7 +51,7 @@ namespace WePrint
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WePrint", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "WePrint", Version = "v1"});
                 c.EnableAnnotations();
 
                 // Set the comments path for the Swagger JSON and UI.
@@ -65,18 +61,40 @@ namespace WePrint
             });
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo("./Secrets"))
                 .SetApplicationName("WePrint");
 
-            services.ConfigureApplicationCookie(options => { options.Cookie.Name = "WePrint.Auth"; });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "WePrint.Auth";
+                options.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                        }
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 403;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddAutoMapper((serviceProvider, automapper) => { automapper.AddCollectionMappers(); },
+                typeof(WePrintContext).Assembly);
 
             services.AddAzureClients(builder =>
             {
@@ -112,8 +130,8 @@ namespace WePrint
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    "default",
+                    "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 
@@ -121,19 +139,13 @@ namespace WePrint
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
 
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
+                if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
             });
         }
     }

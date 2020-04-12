@@ -14,7 +14,7 @@ namespace WePrint.Controllers
     [Authorize]
     [ApiController]
     [Route("api/jobs")]
-    public class JobController : RESTController<Job, JobViewModel, JobCreateModel, Guid>
+    public class JobController : WePrintRestController<Job, JobViewModel, JobCreateModel, Guid>
     {
         public JobController(IServiceProvider services) : base(services)
         {
