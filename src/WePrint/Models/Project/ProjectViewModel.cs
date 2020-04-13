@@ -8,6 +8,8 @@ namespace WePrint.Models
     {
         public Guid Id { get; set; }
 
+        public string Title { get; set; }
+
         public string Description { get; set; }
 
         public int Goal { get; set; }
@@ -31,5 +33,7 @@ namespace WePrint.Models
         public IList<Guid> Updates { get; set; }
 
         public IList<string> Attachments { get; set; }
+        
+        public Address Address { get; set; }
     }
 }

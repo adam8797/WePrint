@@ -62,6 +62,7 @@ namespace WePrint
         NotStarted,
         InProgress,
         Shipped,
-        Finished
+        Finished,
+        Canceled
     }
 }

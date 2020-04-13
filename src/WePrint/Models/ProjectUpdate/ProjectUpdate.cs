@@ -17,6 +17,8 @@ namespace WePrint.Data
         [Required]
         public DateTimeOffset Timestamp { get; set; }
 
+        public DateTimeOffset EditTimestamp { get; set; }
+
         [Required]
         [MaxLength(4000)]
         public string Body { get; set; }
@@ -27,6 +29,8 @@ namespace WePrint.Data
 
         [Required]
         public virtual User PostedBy { get; set; }
+
+        public virtual User EditedBy { get; set; }
 
         [Required]
         public virtual Project Project { get; set; }

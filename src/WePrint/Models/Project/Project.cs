@@ -11,6 +11,10 @@ namespace WePrint.Models
         public Guid Id { get; set; }
 
         [Required]
+        [MaxLength(150)]
+        public string Title { get; set; }
+
+        [Required]
         [MaxLength(4000)]
         public string Description { get; set; }
 

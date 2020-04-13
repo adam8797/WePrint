@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WePrint.Data;
 
 namespace WePrint.Models
 {
@@ -17,5 +18,6 @@ namespace WePrint.Models
 
         public List<Guid> Projects { get; set; }
 
+        public Address? Address { get; set; }
     }
 }

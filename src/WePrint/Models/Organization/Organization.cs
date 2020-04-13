@@ -19,12 +19,14 @@ namespace WePrint.Models
         [MaxLength(2000)]
         public string? Logo { get; set; }
 
-        [MaxLength(2000)]
+        [MaxLength(4000)]
         [Required]
         public string Description { get; set; }
 
         public virtual IList<User> Users { get; set; } = new List<User>();
 
         public virtual IList<Project> Projects { get; set; } = new List<Project>();
+
+        public virtual Address Address { get; set; }
     }
 }

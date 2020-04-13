@@ -31,6 +31,22 @@ namespace WePrint.Controllers
             return update;
         }
 
+        protected override async ValueTask<ProjectUpdate> UpdateDataModelAsync(ProjectUpdate project, ProjectUpdateCreateModel createModel)
+        {
+            var update = Mapper.Map<ProjectUpdate>(createModel);
+            update.EditedBy = await CurrentUser;
+            update.EditTimestamp = DateTimeOffset.Now;
+            return update;
+        }
+
+        protected override async ValueTask<ProjectUpdate> UpdateDataModelAsync(ProjectUpdate project, ProjectUpdateViewModel viewModel)
+        {
+            var update = Mapper.Map<ProjectUpdate>(viewModel);
+            update.EditedBy = await CurrentUser;
+            update.EditTimestamp = DateTimeOffset.Now;
+            return update;
+        }
+
         protected override IQueryable<ProjectUpdate> Filter(IQueryable<ProjectUpdate> data, Project parent, User user)
         {
             return Database.ProjectUpdates.Where(x => x.Project == parent);

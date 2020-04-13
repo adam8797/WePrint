@@ -8,11 +8,15 @@ namespace WePrint.Data
 
         public DateTimeOffset Timestamp { get; set; }
 
+        public DateTimeOffset EditTimestamp { get; set; }
+
         public string Body { get; set; }
 
         public string Title { get; set; }
 
         public Guid PostedBy { get; set; }
+
+        public Guid EditedBy { get; set; }
 
         public Guid Project { get; set; }
     }

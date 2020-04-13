@@ -46,6 +46,7 @@ namespace WePrint.Controllers
             if (user.Organization == null)
                 throw new InvalidOperationException($"Cannot create a project if user {user.UserName} is not a member of an organization");
             p.Organization = user.Organization;
+            p.Address = viewModel.Address != null ? viewModel.Address : user.Organization.Address;
             return p;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WePrint.Data;
 
 namespace WePrint.Models
 {
@@ -15,5 +16,7 @@ namespace WePrint.Models
         [MaxLength(2000)]
         [Required]
         public string Description { get; set; }
+
+        public Address? Address { get; set; }
     }
 }
