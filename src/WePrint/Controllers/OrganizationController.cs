@@ -106,6 +106,7 @@ namespace WePrint.Controllers
         public async Task<ActionResult<List<ProjectViewModel>>> GetProjects(Guid id)
         {
             var projects = await Database.Projects
+                .AsNoTracking()
                 .Where(x => x.Organization.Id == id)
                 .ProjectTo<ProjectViewModel>(Mapper.ConfigurationProvider)
                 .ToListAsync();
