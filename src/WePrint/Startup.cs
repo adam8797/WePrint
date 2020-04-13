@@ -108,7 +108,10 @@ namespace WePrint
                     // Data/View
                     mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
-                }, new Assembly[0]);
+                }, 
+                // Auto-Finding profiles has been disabled, because it kept trying to add the AutoProfile.
+                // You'll need to add new profiles here 
+                new Assembly[0]);
 
             services.RegisterPermissions();
         }

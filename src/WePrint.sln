@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "..\docker\docker-compose.dcproj", "{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WePrint", "WePrint\WePrint.csproj", "{93A0AC6C-2384-45EF-921F-2BB8D087732A}"
 EndProject
 Global
@@ -16,16 +14,6 @@ Global
 		Testing|Any CPU = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Development|Any CPU.ActiveCfg = Debug|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Development|Any CPU.Build.0 = Debug|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Production|Any CPU.ActiveCfg = Release|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Production|Any CPU.Build.0 = Release|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
-		{C47A9E9A-60C6-4989-B8AC-0314B97CC33A}.Testing|Any CPU.Build.0 = Debug|Any CPU
 		{93A0AC6C-2384-45EF-921F-2BB8D087732A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93A0AC6C-2384-45EF-921F-2BB8D087732A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93A0AC6C-2384-45EF-921F-2BB8D087732A}.Development|Any CPU.ActiveCfg = Debug|Any CPU

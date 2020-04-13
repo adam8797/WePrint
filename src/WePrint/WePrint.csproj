@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="1.0.1" />
-    <PackageReference Include="AutoMapper.Collection.LinqToSQL" Version="6.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.4.1" />
     <PackageReference Include="Azure.Storage.Files.Shares" Version="12.2.0" />

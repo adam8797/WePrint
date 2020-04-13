@@ -1,4 +1,0 @@
-﻿CleanupSliceJobs: false
-
-ConnectionStrings:
-  DefaultConnection: Data Source=localhost;Initial Catalog=Test;Integrated Security=True
