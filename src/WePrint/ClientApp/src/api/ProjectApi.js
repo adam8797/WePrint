@@ -9,9 +9,9 @@ class ProjectApi extends CommonApi {
         super("projects", ProjectModel.AllPropsEqual);
 
         // Used to get/add/remove pledges from a project
-        this.Pledges = new NestedApi("projects", "pledges", "pledges", PledgeModel.AllPropsEqual);
+        this.pledges = new NestedApi("projects", "pledges", "pledges", PledgeModel.AllPropsEqual);
         // Used to get/add/remove updates from a project
-        this.Updates = new NestedApi("projects", "updates", "updates", UpdateModel.AllPropsEqual);
+        this.updates = new NestedApi("projects", "updates", "updates", UpdateModel.AllPropsEqual);
     }
 }
 

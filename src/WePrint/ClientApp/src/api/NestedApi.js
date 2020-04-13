@@ -13,15 +13,15 @@ export default class NestedApi {
         return BuildUrl(this.apiPathBeforeId, id, this.apiPathAfterId, ...path);
     }
 
-    GetAll (id) {
+    getAll (id) {
         return axios.get(this.BuildSubUrl(id)).pipe(ErrorOnBadStatus);
     }
     
-    Get (id, subId) {
+    get (id, subId) {
         return axios.get(this.BuildSubUrl(id, subId)).pipe(ErrorOnBadStatus);
     }
     
-    Add (id, subItem) {
+    add (id, subItem) {
         const patch = { op: 'add', path: `/${this.objPropertyName}/-`, value: subItem };
         return axios.patch(BuildUrl(this.apiPathBeforeId, id), patch).pipe(ErrorOnBadStatus);
     }

@@ -33,47 +33,47 @@ export class CommonApi
     }
 
     // Returns an observable, which generates an array of all items at this endpoint
-    GetAll() {
+    getAll() {
         return axios.get(BuildUrl(this.apiPath)).pipe(ErrorOnBadStatus);
     }
 
     // Returns an observable, which returns a single object.
     // If an id is not found, the observable returns an error.
-    Get(id) {
+    get(id) {
         return axios.get(BuildUrl(this.apiPath, id)).pipe(ErrorOnBadStatus);
     }
 
     // Create the given item on the server, returning an observable which emits the whole saved object
-    Create(item) {
+    create(item) {
         return axios.post(BuildUrl(this.apiPath), item).pipe(ErrorOnBadStatus);
     }
 
     // HTTP-PUT, replace the item with the given id with the provided item in its entirety.
-    Replace(id, item) {
+    replace(id, item) {
         return axios.put(BuildUrl(this.apiPath, id), item).pipe(ErrorOnBadStatus);
     }
     
     // PUT/PATCH hybrid, take a list of fields, and patch the object with the provdied id with the values of these fields.
     // For example, given an object: { foo: 'someFoo', bar: 'someBar' }, if you correct with { foo: 'newValue' }, you get { foo: 'newValue', bar: 'someBar' }
     // Note that this does not support adding new fields, nor removing existing fields, only updating fields with new values.
-    Correct(id, itemUpdates) {
+    correct(id, itemUpdates) {
         return axios.patch(BuildUrl(this.apiPath, id), ObjectToPatch(itemUpdates)).pipe(ErrorOnBadStatus);
     }
 
     // HTTP-PATCH, takes a JSON-PATCH object and applies it to the given object.
-    Patch(id, patchInstructions) {
+    patch(id, patchInstructions) {
         return axios.patch(BuildUrl(this.apiPath, id), patchInstructions).pipe(ErrorOnBadStatus);
     }
 
     // Delete the item with the given ID.
-    Delete(id) {
+    delete(id) {
         return axios.delete(BuildUrl(this.apiPath), id).pipe(ErrorOnBadStatus);
     }
 
     // Returns an observable which emits the same data as Get(id).
     // Any time the result of Get(id) changes, the observable will emit the new values, at most every pollInterval.
     // Note: THIS IS A POLLING CALL. Remember to unsubscribe when you're done with it, or it might just keep making network requests in the background forever.
-    Track(id, pollInterval) {
+    track(id, pollInterval) {
         return timer(0, pollInterval).pipe(
             ErrorOnBadStatus,
             exhaustMap(() => this.Get(id)),
@@ -84,7 +84,7 @@ export class CommonApi
     // Returns an observable which emits the same data as GetAll().
     // Any time the result of GetAll() changes, the observable will emit the new values, at most every pollInterval.
     // Note: THIS IS A POLLING CALL. Remember to unsubscribe when you're done with it, or it might just keep making network requests in the background forever.
-    TrackAll(pollInterval) {
+    trackAll(pollInterval) {
         return timer(0, pollInterval).pipe(
             ErrorOnBadStatus,
             exhaustMap(() => this.GetAll()),
