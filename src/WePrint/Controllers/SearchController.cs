@@ -23,16 +23,9 @@ namespace WePrint.Controllers
         /// Search for all jobs matching some string
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<JobViewModel>>> SearchJob([FromQuery]string q)
+        public async Task<ActionResult<List<SearchViewModel>>> SearchJob([FromQuery]string q)
         {
-            IQueryable<Job> jobs = Database.Jobs;
-
-            if (!string.IsNullOrWhiteSpace(q))
-            {
-                jobs = jobs.Where(x => x.Name.Contains(q) || x.Description.Contains(q));
-            }
-
-            return await jobs.ProjectTo<JobViewModel>(Mapper.ConfigurationProvider).ToListAsync();
+            return await Database.Projects.Where(x => x.Title.Contains(q)).ProjectTo<SearchViewModel>(Mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

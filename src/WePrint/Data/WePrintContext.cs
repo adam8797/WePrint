@@ -27,16 +27,9 @@ namespace WePrint.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Job>(e =>
-            {
-                e.HasOne(x => x.Customer).WithMany(x => x.Jobs).OnDelete(DeleteBehavior.NoAction);
-                e.HasOne(x => x.AcceptedBid);
-            });
-
             builder.Entity<User>(e =>
             {
                 e.HasMany(x => x.Printers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.NoAction);
-                e.HasMany(x => x.Reviews).WithOne(x => x.ReviewedUser).OnDelete(DeleteBehavior.NoAction);
                 e.ToTable("Users");
             });
 
@@ -44,25 +37,6 @@ namespace WePrint.Data
             {
                 e.HasMany(x => x.Users).WithOne(x => x.Organization).OnDelete(DeleteBehavior.NoAction);
                 e.HasMany(x => x.Projects).WithOne(x => x.Organization).OnDelete(DeleteBehavior.NoAction);
-            });
-
-            builder.Entity<Bid>(e =>
-            {
-                e.HasOne(x => x.Bidder).WithMany(x => x.Bids).OnDelete(DeleteBehavior.NoAction);
-                e.HasOne(x => x.Job).WithMany(x => x.Bids).OnDelete(DeleteBehavior.NoAction);
-            });
-
-            builder.Entity<Comment>(e =>
-            {
-                e.HasOne(x => x.User);
-                e.HasOne(x => x.Parent);
-            });
-
-            builder.Entity<Review>(e =>
-            {
-                e.HasOne(x => x.Job);
-                e.HasOne(x => x.Reviewer);
-                e.HasOne(x => x.ReviewedUser);
             });
 
             builder.Entity<Pledge>(e =>
@@ -108,9 +82,6 @@ namespace WePrint.Data
                 e.ToTable("UserTokens");
             });
         }
-
-
-        public DbSet<Job> Jobs { get; set; }
 
         public DbSet<Printer> Printers { get; set; }
 

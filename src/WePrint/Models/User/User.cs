@@ -19,9 +19,8 @@ namespace WePrint.Models
         public virtual Organization? Organization { get; set; }
 
         public virtual IList<Printer> Printers { get; set; } = new List<Printer>();
-        public virtual IList<Review> Reviews { get; set; } = new List<Review>();
-        public virtual IList<Bid> Bids { get; set; } = new List<Bid>();
-        public virtual IList<Job> Jobs { get; set; } = new List<Job>();
+
+
         public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
     }
 }

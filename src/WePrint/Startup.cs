@@ -19,6 +19,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
 using WePrint.Models;
+using WePrint.Models.Search;
 using WePrint.Permissions;
 
 namespace WePrint
@@ -103,11 +104,13 @@ namespace WePrint
                     mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
-                    mapper.AddProfile<AutoProfile<Job, JobViewModel, JobCreateModel, Guid>>();
-
+                    
                     // Data/View
                     mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
+
+                    // Other
+                    mapper.AddProfile<SearchProfile>();
                 }, 
                 // Auto-Finding profiles has been disabled, because it kept trying to add the AutoProfile.
                 // You'll need to add new profiles here 
