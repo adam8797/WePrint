@@ -20,11 +20,6 @@ namespace WePrint
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureAppConfiguration((context, builder) =>
-                    {
-                        builder.AddYamlFile("appsettings.yml", optional: false);
-                        builder.AddYamlFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.yml", false);
-                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

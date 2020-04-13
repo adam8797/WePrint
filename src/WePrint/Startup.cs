@@ -1,32 +1,25 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.EquivalencyExpression;
 using ClacksMiddleware.Extensions;
-using EasyNetQ;
-using IdentityServer4.Stores;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Raven.Client.Documents;
-using Raven.DependencyInjection;
-using WePrint.Common.ServiceDiscovery;
-using Raven.Identity;
-using WePrint.Common.Models;
-using WePrint.Common.Slicer.Impl;
-using WePrint.Common.Slicer.Interface;
-using WePrint.Raven;
-using IdentityRole = Raven.Identity.IdentityRole;
+using Newtonsoft.Json;
+using WePrint.Data;
+using WePrint.Models;
+using WePrint.Permissions;
 
 namespace WePrint
 {
@@ -42,66 +35,24 @@ namespace WePrint
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IServiceDiscovery>(x => new DNSServiceDiscovery(Configuration));
+            services.AddDbContext<WePrintContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("WePrint")));
 
-            services.AddRavenDbDocStore(x =>
-                {
-                    var discovery = new DNSServiceDiscovery(Configuration);
-                    discovery.DiscoverToAsync(x, "RavenDB",
-                            (ravenOptions, urls) =>
-                                ravenOptions.Settings.Urls = urls.Select(url => "http://" + url + ":8080").ToArray(),
-                            (ravenOptions, config) => config.Bind(ravenOptions.Settings))
-                        .Wait();
+            services.AddDefaultIdentity<User>()
+                .AddEntityFrameworkStores<WePrintContext>();
 
-                    //x.BeforeInitializeDocStore = store =>
-                    //{
-                    //    store.Conventions.IdentityPartsSeparator = "-";
-                    //};
-                })
-                .AddRavenDbAsyncSession()
-                .AddRavenDbSession();
+            services.AddAuthentication();
 
-
-            //ToDo: Load this from config
-            services.RegisterEasyNetQ("host=localhost;username=user;password=password");
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-                services.AddSingleton<ISlicerService>(x => new RabbitMQSlicerService(x.GetRequiredService<IBus>(), "Slicer", x.GetRequiredService<IDocumentStore>()));
-            else
-                services.AddSingleton<ISlicerService>(x => new RabbitMQSlicerService(x.GetRequiredService<IBus>(), "Slicer_Testing", x.GetRequiredService<IDocumentStore>()));
-
-            services.AddSingleton<RavenPersistedGrantStore>();
-
-            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
-                {
-                    opts.Password.RequireDigit = false;
-                    opts.Password.RequireLowercase = false;
-                    opts.Password.RequireNonAlphanumeric = false;
-                    opts.Password.RequiredLength = 1;
-                    opts.Password.RequireUppercase = false;
-                })
-                .AddRavenDbIdentityStores<ApplicationUser>()
-                .AddDefaultUI()
-                .AddDefaultTokenProviders();
-
-            services.AddIdentityServer()
-                .AddIdentityResources()
-                .AddPersistedGrantStore<RavenPersistedGrantStore>()
-                .AddApiResources()
-                .AddClients()
-                .AddSigningCredentials()
-                .AddAspNetIdentity<ApplicationUser>();
-
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
-
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson();
-
+            services.AddControllersWithViews().AddNewtonsoftJson(x =>
+            {
+                x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             services.AddRazorPages();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WePrint", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "WePrint", Version = "v1"});
                 c.EnableAnnotations();
 
                 // Set the comments path for the Swagger JSON and UI.
@@ -111,18 +62,64 @@ namespace WePrint
             });
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo("./Secrets"))
+                .SetApplicationName("WePrint");
+
+            services.ConfigureApplicationCookie(options =>
             {
-                configuration.RootPath = "ClientApp/build";
+                options.Cookie.Name = "WePrint.Auth";
+                options.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 403;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
+
+            services.AddAutoMapper((serviceProvider, mapper) =>
+                {
+                    mapper.AddCollectionMappers();
+                    
+                    // Data/View/Create
+                    mapper.AddProfile<AutoProfile<Project, ProjectViewModel, ProjectCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Job, JobViewModel, JobCreateModel, Guid>>();
+
+                    // Data/View
+                    mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
+                }, 
+                // Auto-Finding profiles has been disabled, because it kept trying to add the AutoProfile.
+                // You'll need to add new profiles here 
+                new Assembly[0]);
+
+            services.RegisterPermissions();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDocumentStore store)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WePrintContext dbContext)
         {
-            store.SetupApplicationDependencies();
-
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsStaging())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -143,13 +140,12 @@ namespace WePrint
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    "default",
+                    "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 
@@ -157,19 +153,13 @@ namespace WePrint
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
 
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
+                if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
             });
         }
     }
