@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import JobApi from '../../api/JobApi';
 import { JobStatus } from '../../models/Enums';
@@ -9,6 +11,7 @@ import StageInfo from './components/stage-info';
 import StageUpload from './components/stage-upload';
 import StageProcess from './components/stage-process';
 import StageSuccess from './components/stage-success';
+import { WepPrompt } from '../../components/wep-prompt/wep-prompt';
 import './post-job.scss';
 
 const ProgressColors = {
@@ -42,11 +45,12 @@ class PostJob extends Component {
       description: '',
       files: [],
       maxFiles: 5,
+      isDirty: false,
     };
   }
 
   setPrinterType = printerType => {
-    this.setState({ printerType });
+    this.setState({ printerType, isDirty: true });
   };
 
   removeFile = fileName => {
@@ -143,6 +147,7 @@ class PostJob extends Component {
     data.append('file', fileData);
 
     this.updateFileProgress(fileName, '0%', ProgressColors.PRIMARY, 0);
+    this.setState({ isDirty: true });
 
     JobApi.CreateFile(jobId, data, ProgressEvent => {
       const progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100);
@@ -153,6 +158,7 @@ class PostJob extends Component {
         console.error(err);
       },
       complete: () => {
+        this.setState({ isDirty: false });
         this.updateFileProgress(fileName, UploadStates.COMPLETE, ProgressColors.SUCCESS, 100);
       },
     });
@@ -160,7 +166,7 @@ class PostJob extends Component {
 
   handleFormChange = ev => {
     const { name, value } = ev.target;
-    this.setState({ [name]: value });
+    this.setState({ [name]: value, isDirty: true });
   };
 
   advanceStage() {
@@ -204,7 +210,10 @@ class PostJob extends Component {
         },
         error: console.error,
         complete: () => {
-          this.setState(prevState => ({ currentStage: prevState.currentStage + 1 }));
+          this.setState(prevState => ({
+            currentStage: prevState.currentStage + 1,
+            isDirty: false,
+          }));
         },
       });
     } else {
@@ -216,7 +225,10 @@ class PostJob extends Component {
         },
         error: console.error,
         complete: () => {
-          this.setState(prevState => ({ currentStage: prevState.currentStage + 1 }));
+          this.setState(prevState => ({
+            currentStage: prevState.currentStage + 1,
+            isDirty: false,
+          }));
         },
       });
     }
@@ -248,7 +260,9 @@ class PostJob extends Component {
       description,
       files,
       maxFiles,
+      isDirty,
     } = this.state;
+    const { history } = this.props;
 
     const stages = [
       { name: 'Job Type' },
@@ -307,9 +321,23 @@ class PostJob extends Component {
           />
         )}
         {currentStage > 3 && <StageSuccess jobId={jobId} />}
+        <WepPrompt
+          when={isDirty}
+          navigate={path => history.push(path)}
+          messages={[
+            'If you navigate away from this page, your changes will not be saved.',
+            'Are you sure you wish to navigate away and lose your progress?',
+          ]}
+        />
       </>
     );
   }
 }
 
-export default PostJob;
+PostJob.propTypes = {
+  history: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+  ).isRequired,
+};
+
+export default withRouter(PostJob);

@@ -11,7 +11,6 @@ function JobCard(props) {
     name,
     jobId,
     customerUserName,
-    customerId,
     source,
     externalId,
     parts,
@@ -65,7 +64,6 @@ JobCard.propTypes = {
   name: PropTypes.string.isRequired,
   jobId: PropTypes.string.isRequired,
   customerUserName: PropTypes.string.isRequired,
-  customerId: PropTypes.string.isRequired,
   source: PropTypes.string,
   // optional
   image: PropTypes.string,

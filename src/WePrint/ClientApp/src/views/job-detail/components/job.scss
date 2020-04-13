@@ -61,3 +61,18 @@
 .job__status--closed {
   color: $red;
 }
+
+.job__loading,
+.job__error {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-medium;
+  flex-direction: column;
+}
+
+.job__loading-text,
+.job__error-text {
+  padding-bottom: 10px;
+}

@@ -6,13 +6,12 @@ import { switchMap, exhaustMap, distinctUntilChanged } from 'rxjs/operators';
 export const ROOT_ENDPOINT = './api/';
 
 export function BuildUrl(...components) {
-    return ROOT_ENDPOINT + components.map(encodeURIComponent).join('/');
+  return ROOT_ENDPOINT + components.map(encodeURIComponent).join('/');
 }
 
-export const ErrorOnBadStatus = switchMap(res => 
-    res.status >= 200 && res.status < 300 ? 
-    of(res.data) :
-    throwError(res.status));
+export const ErrorOnBadStatus = switchMap(res =>
+  res.status >= 200 && res.status < 300 ? of(res.data) : throwError(res.status)
+);
 
 export function ObjectToPatch(obj) {
     const keys = Object.keys(obj);
@@ -20,12 +19,10 @@ export function ObjectToPatch(obj) {
 }
 
 export function ArrayDeepEquals(a, b, elementComparer) {
-    if(a.length !== b.length) return false;
-    for(let i = 0; i < a.length; i++)
-        if(!elementComparer(a[i], b[i])) 
-            return false;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (!elementComparer(a[i], b[i])) return false;
 
-    return true;
+  return true;
 }
 
 export class CommonApi

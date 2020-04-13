@@ -21,7 +21,7 @@ class Help extends Component {
   }
 
   setDetailView = detail => {
-    const title = detail ? find(this.cards, { detail: detail }).text : null;
+    const title = detail ? find(this.cards, { detail }).text : null;
     this.setState({ detail, title });
   };
 
@@ -32,7 +32,11 @@ class Help extends Component {
           <div className="help__content">
             <p>
               If you have questions, please contact us directly via our{' '}
-              <span className="help__link" onClick={() => this.setDetailView('contact')}>
+              <span
+                className="help__link"
+                onClick={() => this.setDetailView('contact')}
+                onKeyDown={() => this.setDetailView('contact')}
+              >
                 Contact Us
               </span>{' '}
               page!
@@ -54,7 +58,7 @@ class Help extends Component {
           </div>
         );
       default:
-        return <div></div>;
+        return <div />;
     }
   };
 
@@ -64,7 +68,11 @@ class Help extends Component {
       <div className="help">
         {detail && (
           <BodyCard>
-            <div className="help__link" onClick={() => this.setDetailView(null)}>
+            <div
+              className="help__link"
+              onClick={() => this.setDetailView(null)}
+              onKeyDown={() => this.setDetailView(null)}
+            >
               <FontAwesomeIcon icon="arrow-left" /> Back
             </div>
             <SectionTitle title={title} />

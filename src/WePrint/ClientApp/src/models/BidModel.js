@@ -21,7 +21,7 @@ export default class BidModel {
   }
 
   static IdEquals(a, b) {
-      return a.id === b.id;
+    return a.id === b.id;
   }
 
   static AllPropertiesEqual(a, b) {
