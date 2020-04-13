@@ -1,64 +1,34 @@
-name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
 - master
-- develop
-- feature/*
-- arch/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
-  primaryCompose: './docker/docker-compose.yml'
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
 steps:
-- task: CmdLine@2
-  inputs:
-    script: 'env'
-- task: DockerCompose@0
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    projectName: 
-    qualifyImageNames: false
-    action: 'Build services'
-    includeLatestTag: true
-    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(Build.Configuration)'
+- task: NuGetToolInstaller@1
 
-- task: DockerCompose@0
+- task: NuGetCommand@2
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    projectName: 
-    qualifyImageNames: false
-    action: 'Push services'
-    includeLatestTag: true
+    restoreSolution: '$(solution)'
 
-- task: DockerCompose@0
+- task: VSBuild@1
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    additionalDockerComposeFiles: 'docker-compose.test.yml'
-    qualifyImageNames: false
-    action: 'Combine configuration'
-    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/weprint.test.yml'
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
-- task: DockerCompose@0
+- task: VSTest@2
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    additionalDockerComposeFiles: 'docker-compose.prod.yml'
-    qualifyImageNames: false
-    action: 'Combine configuration'
-    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/weprint.prod.yml'
-    
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
