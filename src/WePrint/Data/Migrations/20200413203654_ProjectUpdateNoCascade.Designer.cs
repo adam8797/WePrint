@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WePrint.Data;
 
 namespace WePrint.Data.Migrations
 {
     [DbContext(typeof(WePrintContext))]
-    partial class WePrintContextModelSnapshot : ModelSnapshot
+    [Migration("20200413203654_ProjectUpdateNoCascade")]
+    partial class ProjectUpdateNoCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -722,16 +724,16 @@ namespace WePrint.Data.Migrations
                             b1.Property<Guid>("JobId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("AddressLine1")
+                            b1.Property<string>("AddressLine2")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
-                            b1.Property<string>("AddressLine2")
+                            b1.Property<string>("AddressLine3")
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
-                            b1.Property<string>("AddressLine3")
+                            b1.Property<string>("AddressLine4")
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
@@ -771,16 +773,16 @@ namespace WePrint.Data.Migrations
                             b1.Property<Guid>("OrganizationId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("AddressLine1")
+                            b1.Property<string>("AddressLine2")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
-                            b1.Property<string>("AddressLine2")
+                            b1.Property<string>("AddressLine3")
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
-                            b1.Property<string>("AddressLine3")
+                            b1.Property<string>("AddressLine4")
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
@@ -850,16 +852,16 @@ namespace WePrint.Data.Migrations
                             b1.Property<Guid>("ProjectId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("AddressLine1")
+                            b1.Property<string>("AddressLine2")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
-                            b1.Property<string>("AddressLine2")
+                            b1.Property<string>("AddressLine3")
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 
-                            b1.Property<string>("AddressLine3")
+                            b1.Property<string>("AddressLine4")
                                 .HasColumnType("nvarchar(150)")
                                 .HasMaxLength(150);
 

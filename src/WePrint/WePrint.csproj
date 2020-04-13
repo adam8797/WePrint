@@ -52,6 +52,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20200413202612_AddressAttention.cs" />
+    <Compile Remove="Data\Migrations\20200413202612_AddressAttention.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413203241_ProjectUpdateNoCascade.cs" />
+    <Compile Remove="Data\Migrations\20200413203241_ProjectUpdateNoCascade.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413203524_ProjectUpdateNoCascade.cs" />
+    <Compile Remove="Data\Migrations\20200413203524_ProjectUpdateNoCascade.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413203943_AddressLineTwoNullable.cs" />
+    <Compile Remove="Data\Migrations\20200413203943_AddressLineTwoNullable.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 

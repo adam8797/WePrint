@@ -12,7 +12,11 @@ namespace WePrint.Data
     {
         [MaxLength(150)]
         [Required]
-        public string AddressLine1 { get; set; }
+        public string Attention { get; set; }
+
+        [MaxLength(150)]
+        [Required]
+        public string? AddressLine1 { get; set; }
 
         [MaxLength(150)]
         public string? AddressLine2 { get; set; }
