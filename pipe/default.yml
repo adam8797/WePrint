@@ -15,20 +15,21 @@ jobs:
 - job: Build
   steps:
   - task: DotNetCoreCLI@2
+    displayName: Restore NuGet Packages
     inputs:
       command: 'restore'
       projects: '$(solution)'
       feedsToUse: 'select'
 
   - task: DotNetCoreCLI@2
+    displayName: Build Project
     inputs:
       command: 'build'
       projects: '**/*.csproj'
       arguments: '--configuration $(buildConfiguration)'
 
-- job: Publish
-  steps:
   - task: DotNetCoreCLI@2
+    displayName: Publish Project
     inputs:
       command: 'publish'
       publishWebProjects: True
@@ -36,6 +37,7 @@ jobs:
       zipAfterPublish: True
 
   - task: DotNetCoreCLI@2
+    displayName: Install Entity Framework Tools (optional)
     continueOnError: true
     inputs:
       command: 'custom'
@@ -43,12 +45,14 @@ jobs:
       arguments: 'install dotnet-ef'
 
   - task: DotNetCoreCLI@2
+    displayName: Generate Migration Script
     inputs:
       command: 'custom'
       custom: 'ef'
       arguments: 'migrations script --project src/WePrint/WePrint.csproj --output $(Build.ArtifactStagingDirectory)\SQL\migration.sql --context WePrintContext --idempotent'
 
   - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifacts"
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
       artifactName: 'WePrint'
