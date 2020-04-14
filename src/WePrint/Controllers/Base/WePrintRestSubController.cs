@@ -107,9 +107,9 @@ namespace WePrint.Controllers.Base
             if (parent == null)
                 return NotFound();
 
-            foreach (var entity in Filter(Database.Set<TData>(), parent, user))
+            foreach (var entity in Filter(Database.Set<TData>(), parent, user).Where(e => !e.Deleted))
             {
-                if (await Permissions.AllowRead(user, entity) && !entity.Deleted)
+                if (await Permissions.AllowRead(user, entity))
                     valid.Add(await CreateViewModelAsync(entity));
             }
             return valid;

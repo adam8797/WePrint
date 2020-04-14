@@ -98,9 +98,9 @@ namespace WePrint.Controllers.Base
         {
             var valid = new List<TViewModel>();
             var user = await CurrentUser;
-            foreach (var entity in Filter(Database.Set<TData>(), user))
+            foreach (var entity in Filter(Database.Set<TData>(), user).Where(e => !e.Deleted))
             {
-                if (await Permissions.AllowRead(user, entity) && !entity.Deleted)
+                if (await Permissions.AllowRead(user, entity))
                     valid.Add(await CreateViewModelAsync(entity));
             }
             return valid;
