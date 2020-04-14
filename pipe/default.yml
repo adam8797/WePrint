@@ -31,8 +31,14 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(BuildConfiguration) --output'
     zipAfterPublish: True
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'ef'
+    arguments: 'migrations script --output $(Build.ArtifactStagingDirectory)\SQL\migration.sql --context WePrintContext --idempotent'
 
 - task: PublishBuildArtifacts@1
   inputs:
