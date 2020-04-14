@@ -32,5 +32,7 @@ namespace WePrint.Models
         [Column(TypeName = "decimal(6,3)")]
         [Required]
         public decimal LayerMin { get; set; } //mm
+
+        public bool Deleted { get; set; }
     }
 }

@@ -109,7 +109,7 @@ namespace WePrint.Controllers.Base
 
             foreach (var entity in Filter(Database.Set<TData>(), parent, user))
             {
-                if (await Permissions.AllowRead(user, entity))
+                if (await Permissions.AllowRead(user, entity) && !entity.Deleted)
                     valid.Add(await CreateViewModelAsync(entity));
             }
             return valid;
@@ -152,6 +152,7 @@ namespace WePrint.Controllers.Base
                 return Forbid();
 
             var dataModel = await CreateDataModelAsync(parent, body);
+            dataModel.Deleted = false;
 
             Database.Set<TData>().Add(dataModel);
             await Database.SaveChangesAsync();
@@ -175,6 +176,7 @@ namespace WePrint.Controllers.Base
             if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
+            entity.Deleted = false;
             await UpdateDataModelAsync(entity, create);
             await Database.SaveChangesAsync();
             return await CreateViewModelAsync(entity);
@@ -198,6 +200,7 @@ namespace WePrint.Controllers.Base
 
             var dto = await CreateViewModelAsync(entity);
             patch.ApplyTo(dto);
+            entity.Deleted = false;
             await UpdateDataModelAsync(entity, dto);
 
             await Database.SaveChangesAsync();
@@ -212,14 +215,17 @@ namespace WePrint.Controllers.Base
         public virtual async Task<IActionResult> Delete(TKey parentId, TKey id)
         {
             var entity = await Database.Set<TData>().FindAsync(id);
-
             if (entity == null)
+                return NotFound();
+
+            var parent = await Database.FindAsync<TParent>(parentId);
+            if (parent == null)
                 return NotFound();
 
             if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            Database.Set<TData>().Remove(entity);
+            entity.Deleted = true;
             await Database.SaveChangesAsync();
             return Ok();
         }

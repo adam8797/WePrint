@@ -34,5 +34,7 @@ namespace WePrint.Data
 
         [Required]
         public virtual Project Project { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }
