@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import JobGrid from '../job-grid/job-grid';
 import SectionTitle from '../section-title/section-title';
@@ -53,6 +54,7 @@ class ToggleableDisplay extends Component {
 
   render() {
     const { showGrid } = this.state;
+    const { title, data } = this.props;
     const actions = [
       {
         key: 'grid',
@@ -70,15 +72,18 @@ class ToggleableDisplay extends Component {
 
     return (
       <div>
-        <SectionTitle title={this.props.title} actions={actions} />
-        {showGrid ? (
-          <JobGrid jobs={this.props.data} />
-        ) : (
-          <Table columns={this.columns} data={this.props.data} />
-        )}
+        <SectionTitle title={title} actions={actions} />
+        {showGrid ? <JobGrid jobs={data} /> : <Table columns={this.columns} data={data} />}
       </div>
     );
   }
 }
+
+ToggleableDisplay.propTypes = {
+  title: PropTypes.string.isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]))
+  ).isRequired,
+};
 
 export default ToggleableDisplay;

@@ -1,51 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Web;
-using Microsoft.AspNetCore.Identity;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Session;
-using WePrint.Common.ServiceDiscovery;
-using WePrint.Common.Models;
+using Microsoft.Extensions.DependencyInjection;
+using WePrint.Controllers.Base;
+using WePrint.Models;
 
 namespace WePrint.Controllers
 {
     [ApiController]
-    [Route("api/user")]
+    [Route("api/users")]
     public class UserController : WePrintController
     {
-        public UserController(ILogger<UserController> log, UserManager<ApplicationUser> userManager, IAsyncDocumentSession database) : base(log, userManager, database)
+        public UserController(IServiceProvider services) : base(services)
         {
         }
 
-        // GET: /api/user/
+        // GET: /api/users/
         [HttpGet]
-        public async Task<IActionResult> GetCurrentUser()
+        [Authorize]
+        public async Task<ActionResult<UserViewModel>> GetCurrentUser()
         {
-            var user = await CurrentUser;
-            if (user == null)
-                return Unauthorized();
-
-            return Json(user.GetPublicModel());
+            var vm = Mapper.Map<UserViewModel>(await CurrentUser);
+            return Ok(vm);
         }
 
-        // GET" /api/user/id
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById([FromRoute]string id)
+        // GET" /api/users/by-id/{id}
+        [HttpGet("by-id/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserViewModel>> GetUserById([FromRoute]string id)
         {
-            var user = await CurrentUser;
-            if (user == null) return Unauthorized();
+            var targetUser = await UserManager.FindByIdAsync(id);
+            if (targetUser == null)
+                return NotFound();
 
-            var tgtUser = await Database.LoadAsync<ApplicationUser>(id);
-            if (tgtUser == null) return NotFound();
+            var vm = Mapper.Map<UserViewModel>(targetUser);
+            return vm;
+        }
 
-            return Json(tgtUser.GetPublicModel());
+        // GET" /api/users/by-name/{id}
+        [HttpGet("by-name/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserViewModel>> GetUserByUsername([FromRoute]string id)
+        {
+            var targetUser = await UserManager.FindByNameAsync(id);
+            if (targetUser == null)
+                return NotFound();
+
+            var vm = Mapper.Map<UserViewModel>(targetUser);
+            return vm;
         }
     }
 }

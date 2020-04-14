@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import moment from 'moment';
 import { find } from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Table } from '../../../components';
 import JobApi from '../../../api/JobApi';
@@ -22,6 +23,7 @@ class Job extends Component {
       // eslint-disable-next-line react/no-unused-state
       customer: {},
       user: null,
+      error: false,
     };
     this.filesTableCols = [
       {
@@ -33,7 +35,7 @@ class Job extends Component {
         accessor: 'size',
       },
       {
-        Header: 'Dimensions',
+        Header: 'Volume',
         accessor: 'dimensions',
       },
       {
@@ -85,13 +87,19 @@ class Job extends Component {
 
   componentDidMount() {
     const { jobId } = this.props;
-    this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(job => {
-      UserApi.GetUser(job.customerId).subscribe(customer => {
-        // TODO: review if this state is needed
-        // eslint-disable-next-line react/no-unused-state
-        this.setState({ job, customer });
-      });
-    }, console.error);
+    this.subscription = JobApi.TrackJob(jobId, 1000).subscribe(
+      job => {
+        UserApi.GetUser(job.customerId).subscribe(customer => {
+          // TODO: review if this state is needed
+          // eslint-disable-next-line react/no-unused-state
+          this.setState({ job, customer });
+        });
+      },
+      error => {
+        console.error(error);
+        this.setState({ error: true });
+      }
+    );
     UserApi.CurrentUser().subscribe(user => {
       this.setState({ user });
     });
@@ -119,9 +127,24 @@ class Job extends Component {
   };
 
   render() {
-    const { job } = this.state;
+    const { job, error } = this.state;
+    const { jobId } = this.props;
+    if (error) {
+      return (
+        <div className="job__error">
+          <span className="job__error-text">Could not load job with id {jobId}</span>
+          <FontAwesomeIcon icon={['far', 'frown']} />
+        </div>
+      );
+    }
+
     if (!Object.keys(job).length) {
-      return <div>Job Loading...</div>;
+      return (
+        <div className="job__loading">
+          <span className="job__loading-text">Job Loading...</span>
+          <FontAwesomeIcon icon="sync" spin />
+        </div>
+      );
     }
     let timeLeft;
     let bidDeadlineStyle;
@@ -152,7 +175,7 @@ class Job extends Component {
       }
     }
 
-    const status = job.status === JobStatus.PendingOpen ? 'OPEN' : 'CLOSED';
+    const status = job.status === JobStatus.BiddingOpen ? 'OPEN' : 'CLOSED';
     return (
       <div className="job">
         <div className="job__header">

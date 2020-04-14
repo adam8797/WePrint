@@ -3,7 +3,7 @@ import { MaterialType, MaterialColor, FinishType } from './Enums';
 
 export default class BidModel {
   constructor() {
-    this.id = null;
+    this.id = undefined;
     this.bidderId = null;
     this.jobId = null;
     this.price = 0;
@@ -21,7 +21,7 @@ export default class BidModel {
   }
 
   static IdEquals(a, b) {
-      return a.id === b.id;
+    return a.id === b.id;
   }
 
   static AllPropertiesEqual(a, b) {

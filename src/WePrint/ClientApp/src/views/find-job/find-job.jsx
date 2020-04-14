@@ -1,10 +1,10 @@
 import React from 'react';
-import { BodyCard } from '../../components';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
+
+import { BodyCard } from '../../components';
 import ToggleableDisplay from '../../components/toggleable-display/toggleable-display';
 import JobApi from '../../api/JobApi';
-import { JobStatus } from '../../models/Enums';
 
 class FindJob extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class FindJob extends React.Component {
 
     // if the query string has changed...
     if (this.query !== q) {
-      //we need to add remove the old subscription and add a new one
+      // we need to add remove the old subscription and add a new one
       JobApi.SearchJobs(q).subscribe(jobResults => {
         this.setState({
           jobResults,

@@ -6,7 +6,7 @@ export default class AddressModel {
     this.zipCode = zipCode;
   }
 
-  static Equals(a, b) {
+  static AllPropsEqual(a, b) {
     if (a === b && a === null) return true;
     if (a !== null || b !== null) return false;
     if (a === b && a === undefined) return true;

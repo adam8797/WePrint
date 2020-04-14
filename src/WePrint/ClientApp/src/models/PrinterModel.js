@@ -1,29 +1,26 @@
-import { PrinterType } from './Enums';
 
 export default class PrinterModel {
-  constructor() {
-    this.id = null;
-    this.name = null;
-    this.xMax = 0;
-    this.yMax = 0;
-    this.zMax = 0;
-    this.type = PrinterType.SLA;
-    this.layerMin = 0;
-  }
+	constructor() {
+		this.id = "";
+		this.ownerId = "";
+		this.name = "";
+		this.type = "";
+		this.xMax = "";
+		this.yMax = "";
+		this.zMax = "";
+		this.layerMin = "";
+	}
 
-  static IdEquals(a, b) {
-    return a.id === b.id;
-  }
-
-  static AllPropsEquals(a, b) {
-    return (
-      PrinterModel.IdEquals(a, b) &&
-      a.name === b.name &&
-      a.xMax === b.xMax &&
-      a.yMax === b.yMax &&
-      a.zMax === b.zMax &&
-      a.type === b.type &&
-      a.layerMin === b.layerMin
-    );
-  }
+	static AllPropsEqual(a, b) {
+		return (
+			a.id === b.id &&
+			a.ownerId === b.ownerId &&
+			a.name === b.name &&
+			a.type === b.type &&
+			a.xMax === b.xMax &&
+			a.yMax === b.yMax &&
+			a.zMax === b.zMax &&
+			a.layerMin === b.layerMin
+		);
+	}
 }

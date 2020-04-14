@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Raven.Client.Documents.Session;
-using WePrint.Common.Models;
+using WePrint.Controllers.Base;
+using WePrint.Data;
 using WePrint.Models;
 
 namespace WePrint.Controllers
@@ -16,14 +17,9 @@ namespace WePrint.Controllers
     [Route("api/auth")]
     public class AuthenticationController : WePrintController
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AuthenticationController(
-            ILogger<AuthenticationController> log,
-            IAsyncDocumentSession dbSession,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
-            : base(log, userManager, dbSession)
+        public AuthenticationController(SignInManager<User> signInManager, IServiceProvider services) : base(services)
         {
             _signInManager = signInManager;
         }
@@ -31,7 +27,7 @@ namespace WePrint.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            var user = new ApplicationUser()
+            var user = new User()
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,

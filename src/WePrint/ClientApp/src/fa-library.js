@@ -15,12 +15,14 @@ import {
   faArrowLeft,
   faTrash,
   faPen,
+  faSync,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
   faComments,
   faBuilding,
   faQuestionCircle as faQuestionCircleOutline,
+  faFrown,
 } from '@fortawesome/free-regular-svg-icons';
 
 // fonts should be added to the library here once so we're
@@ -43,5 +45,7 @@ library.add(
   faBuilding,
   faQuestionCircleOutline,
   faTrash,
-  faPen
+  faPen,
+  faFrown,
+  faSync
 );

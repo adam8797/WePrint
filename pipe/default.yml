@@ -1,64 +1,40 @@
-name: $(Year:yyyy).$(Month).$(DayOfMonth).$(BuildID)
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
 - master
-- develop
-- feature/*
-- arch/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
-  primaryCompose: './docker/docker-compose.yml'
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
 steps:
-- task: CmdLine@2
+- task: DotNetCoreCLI@2
   inputs:
-    script: 'env'
-- task: DockerCompose@0
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    projectName: 
-    qualifyImageNames: false
-    action: 'Build services'
-    includeLatestTag: true
-    arguments: '--build-arg app_version=$(Build.BuildNumber) --build-arg configuration=$(Build.Configuration)'
+    command: 'restore'
+    projects: '$(solution)'
+    feedsToUse: 'select'
 
-- task: DockerCompose@0
+- task: DotNetCoreCLI@2
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    projectName: 
-    qualifyImageNames: false
-    action: 'Push services'
-    includeLatestTag: true
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
 
-- task: DockerCompose@0
+- task: DotNetCoreCLI@2
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    additionalDockerComposeFiles: 'docker-compose.test.yml'
-    qualifyImageNames: false
-    action: 'Combine configuration'
-    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/weprint.test.yml'
+    command: 'publish'
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
 
-- task: DockerCompose@0
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerComposeFile: '$(primaryCompose)'
-    additionalDockerComposeFiles: 'docker-compose.prod.yml'
-    qualifyImageNames: false
-    action: 'Combine configuration'
-    outputDockerComposeFile: '$(Build.ArtifactStagingDirectory)/weprint.prod.yml'
-    
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'WePrint'
