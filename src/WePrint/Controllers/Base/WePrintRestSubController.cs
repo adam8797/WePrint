@@ -173,10 +173,9 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound();
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
 
-            entity.Deleted = false;
             await UpdateDataModelAsync(entity, create);
             await Database.SaveChangesAsync();
             return await CreateViewModelAsync(entity);
@@ -195,12 +194,11 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
 
             var dto = await CreateViewModelAsync(entity);
             patch.ApplyTo(dto);
-            entity.Deleted = false;
             await UpdateDataModelAsync(entity, dto);
 
             await Database.SaveChangesAsync();
