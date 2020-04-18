@@ -15,7 +15,7 @@ namespace WePrint.Models
 
         public int Goal { get; set; }
 
-        public double Progress { get; set; }
+        public Dictionary<PledgeStatus, double> Progress { get; set; }
 
         public string? ShippingInstructions { get; set; }
 
