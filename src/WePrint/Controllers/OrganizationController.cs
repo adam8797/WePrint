@@ -46,7 +46,7 @@ namespace WePrint.Controllers
             var users = await Database.Users
                 .Where(x => x.Organization.Id == id)
                 .ProjectTo<UserViewModel>(Mapper.ConfigurationProvider)
-                .ToListAsync();
+                .ToListAsync(); 
             return users;
         }
 

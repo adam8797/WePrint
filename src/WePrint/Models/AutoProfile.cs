@@ -31,7 +31,7 @@ namespace WePrint.Models
         public AutoProfile()
         {
             CreateMap<TData, TViewModel>();
-            CreateMap<TViewModel, TData>();
+            CreateMap<TViewModel, TData>().ForMember(x => x.Deleted, y => y.Ignore());
             CreateMap<TKey, TData>().ConvertUsing<EntityConverter<TKey, TData>>();
             CreateMap<TData, TKey>().ConvertUsing(x => x.Id);
         }

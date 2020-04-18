@@ -29,5 +29,7 @@ namespace WePrint.Models
 
         [Required]
         public virtual User Maker { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

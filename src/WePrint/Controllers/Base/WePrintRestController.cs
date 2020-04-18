@@ -98,7 +98,7 @@ namespace WePrint.Controllers.Base
         {
             var valid = new List<TViewModel>();
             var user = await CurrentUser;
-            foreach (var entity in Filter(Database.Set<TData>(), user))
+            foreach (var entity in Filter(Database.Set<TData>(), user).Where(e => !e.Deleted))
             {
                 if (await Permissions.AllowRead(user, entity))
                     valid.Add(await CreateViewModelAsync(entity));
@@ -139,6 +139,7 @@ namespace WePrint.Controllers.Base
                 return Forbid();
 
             var dataModel = await CreateDataModelAsync(body);
+            dataModel.Deleted = false;
 
             Database.Set<TData>().Add(dataModel);
             await Database.SaveChangesAsync();
@@ -159,9 +160,9 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound();
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
-            
+
             await UpdateDataModelAsync(entity, create);
             await Database.SaveChangesAsync();
             return await CreateViewModelAsync(entity);
@@ -180,7 +181,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
 
             var dto = await CreateViewModelAsync(entity);
@@ -206,7 +207,7 @@ namespace WePrint.Controllers.Base
             if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            Database.Set<TData>().Remove(entity);
+            entity.Deleted = true;
             await Database.SaveChangesAsync();
             return Ok();
         }

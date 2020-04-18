@@ -16,5 +16,7 @@ namespace WePrint.Models
         public string? Bio { get; set; }
 
         public string Username { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

@@ -36,5 +36,7 @@ namespace WePrint.Models
         public IList<Guid> Updates { get; set; }
 
         public IList<string> Attachments { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

@@ -28,5 +28,7 @@ namespace WePrint.Models
         public virtual IList<Project> Projects { get; set; } = new List<Project>();
 
         public virtual Address Address { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

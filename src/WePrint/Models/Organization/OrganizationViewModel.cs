@@ -19,5 +19,7 @@ namespace WePrint.Models
         public List<Guid> Projects { get; set; }
 
         public Address? Address { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

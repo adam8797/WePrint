@@ -8,5 +8,7 @@ namespace WePrint.Data
     public interface IIdentifiable<T> where T : struct
     {
         T Id { get; set; }
+
+        bool Deleted { get; set; }
     }
 }

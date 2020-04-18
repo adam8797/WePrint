@@ -19,6 +19,8 @@ namespace WePrint.Models
         public int ZMax { get; set; }  //mm
 
         public decimal LayerMin { get; set; } //mm
+
+        public bool Deleted { get; set; }
     }
 
     public class PrinterCreateModel

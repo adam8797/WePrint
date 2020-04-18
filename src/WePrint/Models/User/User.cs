@@ -20,7 +20,8 @@ namespace WePrint.Models
 
         public virtual IList<Printer> Printers { get; set; } = new List<Printer>();
 
-
         public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
+
+        public bool Deleted { get; set; }
     }
 }

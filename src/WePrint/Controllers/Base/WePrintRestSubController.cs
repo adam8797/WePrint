@@ -107,7 +107,7 @@ namespace WePrint.Controllers.Base
             if (parent == null)
                 return NotFound();
 
-            foreach (var entity in Filter(Database.Set<TData>(), parent, user))
+            foreach (var entity in Filter(Database.Set<TData>(), parent, user).Where(e => !e.Deleted))
             {
                 if (await Permissions.AllowRead(user, entity))
                     valid.Add(await CreateViewModelAsync(entity));
@@ -152,6 +152,7 @@ namespace WePrint.Controllers.Base
                 return Forbid();
 
             var dataModel = await CreateDataModelAsync(parent, body);
+            dataModel.Deleted = false;
 
             Database.Set<TData>().Add(dataModel);
             await Database.SaveChangesAsync();
@@ -172,7 +173,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound();
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
 
             await UpdateDataModelAsync(entity, create);
@@ -193,7 +194,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
 
             var dto = await CreateViewModelAsync(entity);
@@ -212,14 +213,17 @@ namespace WePrint.Controllers.Base
         public virtual async Task<IActionResult> Delete(TKey parentId, TKey id)
         {
             var entity = await Database.Set<TData>().FindAsync(id);
-
             if (entity == null)
+                return NotFound();
+
+            var parent = await Database.FindAsync<TParent>(parentId);
+            if (parent == null)
                 return NotFound();
 
             if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            Database.Set<TData>().Remove(entity);
+            entity.Deleted = true;
             await Database.SaveChangesAsync();
             return Ok();
         }
