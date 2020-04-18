@@ -11,7 +11,7 @@ namespace WePrint.Models
         {
             CreateMap<Project, ProjectViewModel>()
                 .ForMember(dest => dest.Progress, opt => opt.MapFrom((s, d) =>
-                                s.Pledges.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Select(i => i.Quantity).Sum() / (double)s.Goal * 100)));
+                                s.Pledges.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Select(i => i.Quantity).Sum())));
             CreateMap<ProjectViewModel, Project>();
             CreateMap<ProjectCreateModel, Project>();
             CreateMap<Guid, Project>().ConvertUsing<EntityConverter<Guid, Project>>();
