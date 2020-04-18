@@ -98,9 +98,9 @@ namespace WePrint
             services.AddAutoMapper((serviceProvider, mapper) =>
                 {
                     mapper.AddCollectionMappers();
-                    
+
                     // Data/View/Create
-                    mapper.AddProfile<AutoProfile<Project, ProjectViewModel, ProjectCreateModel, Guid>>();
+                    mapper.AddProfile<ProjectProfile>();
                     mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();

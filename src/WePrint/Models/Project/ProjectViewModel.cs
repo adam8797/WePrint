@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WePrint.Data;
+using System.Linq;
 
 namespace WePrint.Models
 {
@@ -13,6 +14,8 @@ namespace WePrint.Models
         public string Description { get; set; }
 
         public int Goal { get; set; }
+
+        public Dictionary<PledgeStatus, int> Progress { get; set; }
 
         public string? ShippingInstructions { get; set; }
 
