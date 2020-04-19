@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models;
+using WePrint.Utilities;
 
 namespace WePrint.Controllers
 {
@@ -21,8 +22,11 @@ namespace WePrint.Controllers
     [ProducesResponseType(typeof(object), StatusCodes.Status403Forbidden)]
     public class OrganizationController : WePrintRestController<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>
     {
-        public OrganizationController(IServiceProvider services) : base(services)
+        private readonly IAvatarProvider _avatar;
+
+        public OrganizationController(IServiceProvider services, IAvatarProvider avatar) : base(services)
         {
+            _avatar = avatar;
         }
 
         #region REST implementation
@@ -35,6 +39,43 @@ namespace WePrint.Controllers
         }
 
         #endregion
+
+        #region Avatars
+
+        [AllowAnonymous]
+        [HttpGet("{id}/avatar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetOrgAvatar(Guid id)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+            if (org == null)
+                return NotFound();
+
+            return await _avatar.GetAvatarResult(org);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("{id}/avatar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetOrgAvatar(Guid id, IFormFile upload)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+            if (org == null)
+                return NotFound();
+
+            if (!await Permissions.AllowWrite(await CurrentUser, org))
+                return Forbid();
+
+            return await _avatar.SetAvatarResult(org, upload);
+        }
+
+        
+        #endregion
+
 
         #region Get Full Lists
 

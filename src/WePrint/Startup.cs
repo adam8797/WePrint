@@ -21,6 +21,7 @@ using WePrint.Data;
 using WePrint.Models;
 using WePrint.Models.Search;
 using WePrint.Permissions;
+using WePrint.Utilities;
 
 namespace WePrint
 {
@@ -120,6 +121,9 @@ namespace WePrint
             services.RegisterPermissions();
 
             services.AddApplicationInsightsTelemetry();
+
+            services.AddTransient<IBlobContainerProvider, BlobContainerProvider>();
+            services.AddScoped<IAvatarProvider, AvatarProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Nito.AsyncEx;
 using WePrint.Data;
 using WePrint.Models;
+using WePrint.Utilities;
 
 namespace WePrint.Controllers.Base
 {
@@ -23,26 +24,17 @@ namespace WePrint.Controllers.Base
         protected readonly IMapper Mapper;
         protected readonly IConfiguration Configuration;
         protected readonly AsyncLazy<User> CurrentUser;
-
+        protected readonly IBlobContainerProvider BlobContainerProvider;
 
         protected WePrintController(IServiceProvider services)
         {
-            Log = (ILogger)services.GetRequiredService(typeof(ILogger<>).MakeGenericType(GetType()));
+            Log = (ILogger) services.GetRequiredService(typeof(ILogger<>).MakeGenericType(GetType()));
             UserManager = services.GetRequiredService<UserManager<User>>();
             Database = services.GetRequiredService<WePrintContext>();
             Mapper = services.GetRequiredService<IMapper>();
             Configuration = services.GetRequiredService<IConfiguration>();
             CurrentUser = new AsyncLazy<User>(async () => await UserManager.GetUserAsync(HttpContext.User));
+            BlobContainerProvider = services.GetRequiredService<IBlobContainerProvider>();
         }
-
-        protected CloudBlobContainer GetBlobContainer(string containerName)
-        {
-            var storageAccount = CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureStorage"));
-            var blobClient = storageAccount.CreateCloudBlobClient();
-            return blobClient.GetContainerReference(containerName);
-        }
-
-        
-        
     }
 }
