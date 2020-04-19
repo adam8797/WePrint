@@ -44,7 +44,22 @@ namespace WePrint
             services.AddDefaultIdentity<User>()
                 .AddEntityFrameworkStores<WePrintContext>();
 
-            services.AddAuthentication();
+            services.AddAuthentication()
+                .AddGoogle(x =>
+                {
+                    x.ClientId = Configuration["Authentication:Google:ClientId"];
+                    x.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                })
+                .AddFacebook(x =>
+                {
+                    x.AppId = Configuration["Authentication:Facebook:AppId"];
+                    x.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                })
+                .AddTwitter(x =>
+                {
+                    x.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                    x.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                });
 
             services.AddControllersWithViews().AddNewtonsoftJson(x =>
             {
