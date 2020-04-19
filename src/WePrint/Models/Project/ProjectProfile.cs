@@ -10,8 +10,13 @@ namespace WePrint.Models
         public ProjectProfile()
         {
             CreateMap<Project, ProjectViewModel>()
-                .ForMember(dest => dest.Progress, opt => opt.MapFrom((s, d) =>
-                                s.Pledges.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.Select(i => i.Quantity).Sum())));
+                .ForMember(dest => dest.Progress, opt => opt.MapFrom(s =>
+                    s.Pledges
+                        .GroupBy(p => p.Status)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.Sum(y => y.Quantity))
+                ));
             CreateMap<ProjectViewModel, Project>();
             CreateMap<ProjectCreateModel, Project>();
             CreateMap<Guid, Project>().ConvertUsing<EntityConverter<Guid, Project>>();

@@ -146,13 +146,13 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ProjectViewModel>>> GetProjects(Guid id)
         {
+            // This is ugly, but for some reason this needs to be evaluated client side.
             var projects = await Database.Projects
-                .AsNoTracking()
                 .Where(x => x.Organization.Id == id)
-                .ProjectTo<ProjectViewModel>(Mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return projects;
+            var viewModels = Mapper.Map<List<ProjectViewModel>>(projects);
+            return viewModels;
         }
 
         #endregion
