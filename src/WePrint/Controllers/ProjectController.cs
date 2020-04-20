@@ -24,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using WePrint.Models;
+using WePrint.Permissions;
 using WePrint.Utilities;
 
 namespace WePrint.Controllers
@@ -33,8 +34,13 @@ namespace WePrint.Controllers
     [Authorize]
     public class ProjectController : WePrintFileRestController<Project, ProjectViewModel, ProjectCreateModel, Guid>
     {
-        public ProjectController(IServiceProvider services) : base(services)
+        private readonly IAvatarProvider _avatar;
+        private readonly IPermissionProvider<Project, ProjectCreateModel> _permission;
+
+        public ProjectController(IServiceProvider services, IAvatarProvider avatar, IPermissionProvider<Project, ProjectCreateModel> permission) : base(services)
         {
+            _avatar = avatar;
+            _permission = permission;
         }
 
         #region REST Implementation
@@ -51,5 +57,30 @@ namespace WePrint.Controllers
         }
 
         #endregion
+
+        [HttpGet("{id}/thumbnail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetThumbnail(Guid id)
+        {
+            var project = await Database.Projects.FindAsync(id);
+            return await _avatar.GetAvatarResult(project);
+        }
+
+        [HttpPost("{id}/thumbnail")]
+        [RequestSizeLimit(5 * 1_000_000)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetAvatar(Guid id, IFormFile postedImage)
+        {
+            var project = await Database.Projects.FindAsync(id);
+
+            if (await _permission.AllowWrite(await CurrentUser, project))
+                return await _avatar.SetAvatarResult(project, postedImage);
+
+            return Forbid();
+        }
     }
 }

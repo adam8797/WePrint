@@ -15,7 +15,7 @@ namespace WePrint.Models.Search
             new SearchViewModel()
                 {
                     Description = project.Description,
-                    ImageUrl = project.Thumbnail,
+                    ImageUrl = "",
                     Id = project.Id,
                     Title = project.Title,
                     Type = "Project"

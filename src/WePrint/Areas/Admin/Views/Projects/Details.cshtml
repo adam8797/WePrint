@@ -11,7 +11,7 @@
     </style>
 }
 
-<a asp-action="Index">Back to List</a>
+<a href="#" onclick="window.history.back()">Go Back</a>
 <hr />
 
 <dl>
@@ -23,7 +23,7 @@
 
     <dt>Thumbnail</dt>
     <dd>
-        <img class="avatar" src="@Url.Action("GetThumbnail", "Project", new { id = Model.Id })" />
+        <img class="avatar" src="@Url.Action("GetThumbnail", "Project", new { Area = "", id = Model.Id })" />
     </dd>
 
     <dt>Description</dt>
@@ -60,7 +60,7 @@
         @foreach (var pledge in Model.Pledges)
         {
             <li>
-                @pledge.Quantity Units by <a href="#">@pledge.Maker.UserName</a>. Status: @pledge.Status
+                @pledge.Quantity Units by <a asp-action="Details" asp-controller="Users" asp-route-id="@pledge.Maker.Id">@pledge.Maker.UserName</a>. Status: @pledge.Status
             </li>
         }
         </ul>
@@ -71,12 +71,12 @@
         <ul>
         @foreach (var user in Model.Pledges.Select(x => x.Maker).Distinct())
         {
-            <li><a href="#">@user.UserName</a></li>
+            <li><a asp-action="Details" asp-controller="Users" asp-route-id="@user.Id">@user.UserName</a></li>
         }
         </ul>
     </dd>
 
-    <dt>Projects</dt>
+    <dt>Updates</dt>
     <dd>
         <ul>
             @foreach (var update in Model.Updates)
