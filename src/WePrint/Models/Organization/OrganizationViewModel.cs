@@ -21,5 +21,9 @@ namespace WePrint.Models
         public Address? Address { get; set; }
 
         public bool Deleted { get; set; }
+
+        public bool ShouldSerializeDeleted() => Deleted;
     }
+
+
 }

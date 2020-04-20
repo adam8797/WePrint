@@ -1,0 +1,71 @@
+﻿@using Westwind.AspNetCore.Markdown
+@model Organization
+
+@section Head
+{
+    <style>
+        img.avatar {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+}
+
+<a asp-action="Index">Back to List</a>
+<hr />
+
+<dl>
+    <dt>Id</dt>
+    <dd>@Model.Id</dd>
+
+    <dt>Name</dt>
+    <dd>@Model.Name</dd>
+
+    <dt>Avatar</dt>
+    <dd>
+        <img class="avatar" src="@Url.Action("GetOrgAvatar", "Organization", new { id = Model.Id })" />
+    </dd>
+
+    <dt>Description</dt>
+    <dd>
+        @Markdown.ParseHtmlString(Model.Description)
+    </dd>
+
+    <dt>Address</dt>
+    <dd>
+        @Html.Lines(Model.Address ?? "(none given)")
+    </dd>
+
+    <dt>Users</dt>
+    <dd>
+        <ul>
+            @foreach (var user in Model.Users)
+            {
+                <li><a asp-action="Details" asp-controller="Users" asp-route-id="@user.Id">@user.UserName</a></li>
+            }
+        </ul>
+    </dd>
+
+    <dt>Projects</dt>
+    <dd>
+        <ul>
+            @foreach (var project in Model.Projects)
+            {
+                <li><a asp-action="Details" asp-controller="Projects" asp-route-id="@project.Id">@project.ShortId()</a></li>
+            }
+        </ul>
+    </dd>
+</dl>
+
+<h3>Actions</h3>
+<ul>
+    @if (Model.Deleted)
+    {
+        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete Permanently</a></li>
+        <li><a asp-action="Restore" asp-route-id="@Model.Id">Restore</a></li>
+    }
+    else
+    {
+        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete Organization</a></li>
+    }
+</ul>

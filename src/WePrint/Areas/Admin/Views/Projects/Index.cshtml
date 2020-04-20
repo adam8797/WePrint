@@ -1,0 +1,61 @@
+﻿@using WePrint
+@model IQueryable<Project>
+
+
+<h3>Projects</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Organization</th>
+            <th scope="col">Goal</th>
+            <th scope="col">Progress</th>
+            <th scope="col">Pledges</th>
+            <th scope="col">Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var org in Model.Where(x => !x.Deleted))
+        {
+            <tr>
+                <th scope="row"><a asp-action="Details" asp-route-id="@org.Id">@org.ShortId()</a></th>
+                <td>@org.Title</td>
+                <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@org.Organization.Id">@org.Organization.Name</a></td>
+                <td>@org.Goal</td>
+                <td>@org.Pledges.Where(x => x.Status >= PledgeStatus.Shipped).Sum(x => x.Quantity)</td>
+                <td>@org.Pledges.Count</td>
+                <td>@org.Updates.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Deleted Organizations</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Title</th>
+        <th scope="col">Organization</th>
+        <th scope="col">Goal</th>
+        <th scope="col">Progress</th>
+        <th scope="col">Pledges</th>
+        <th scope="col">Updates</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var org in Model.Where(x => x.Deleted))
+    {
+        <tr>
+            <th scope="row"><a asp-action="Details" asp-route-id="@org.Id">@org.ShortId()</a></th>
+            <td>@org.Title</td>
+            <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@org.Organization.Id">@org.Organization.Name</a></td>
+            <td>@org.Goal</td>
+            <td>@org.Pledges.Where(x => x.Status >= PledgeStatus.Shipped).Sum(x => x.Quantity)</td>
+            <td>@org.Pledges.Count</td>
+            <td>@org.Updates.Count</td>
+        </tr>
+    }
+    </tbody>
+</table>
