@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using WePrint.Data;
 
 namespace WePrint.Utilities
 {
@@ -19,6 +21,16 @@ namespace WePrint.Utilities
             var noWhite = WhitespaceReplace.Replace(nameOnly, "_");
             var safe = FileNameReplace.Replace(noWhite, "");
             return safe;
+        }
+
+        public static IHtmlContent Lines<T>(this IHtmlHelper<T> helper, string? s)
+        {
+            return helper.Raw(s?.Replace("\n", "<br \\>"));
+        }
+
+        public static string ShortId(this IIdentifiable<Guid> entity)
+        {
+            return entity.Id.ToString().Substring(0, 8);
         }
     }
 }

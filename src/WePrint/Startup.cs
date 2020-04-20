@@ -166,11 +166,18 @@ namespace WePrint
 
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAreaControllerRoute(
+                    "admin",
+                    "Admin",
+                    "Admin/{controller=Dashboard}/{action=Index}/{id?}");
+
                 endpoints.MapControllerRoute(
                     "default",
                     "{controller}/{action=Index}/{id?}");
+
                 endpoints.MapRazorPages();
             });
 

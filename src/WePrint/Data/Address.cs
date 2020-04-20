@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -37,5 +38,16 @@ namespace WePrint.Data
         [Column(TypeName = "nchar(5)")]
         [MaxLength(5)]
         public string ZipCode { get; set; }
+
+        public override string ToString()
+        {
+            var lines = new[] {Attention, AddressLine1, AddressLine2, AddressLine3, $"{City}, {State} {ZipCode}"};
+            return string.Join('\n', lines.Where(x => !string.IsNullOrEmpty(x)));
+        }
+
+        public static implicit operator string?(Address? a)
+        {
+            return a?.ToString();
+        }
     }
 }

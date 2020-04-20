@@ -1,0 +1,52 @@
+﻿@model IQueryable<Organization>
+
+
+<h3>Organizations</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Users</th>
+            <th scope="col">Projects</th>
+            <th scope="col">Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var org in Model.Where(x => !x.Deleted))
+        {
+            <tr>
+                <th scope="row"><a asp-action="Details" asp-route-id="@org.Id">@org.ShortId()</a></th>
+                <td>@org.Name</td>
+                <td>@org.Users.Count()</td>
+                <td>@org.Projects.Count()</td>
+                <td>@Html.Lines(org.Address)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Deleted Organizations</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Users</th>
+            <th scope="col">Projects</th>
+            <th scope="col">Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var org in Model.Where(x => x.Deleted))
+        {
+            <tr>
+                <th scope="row"><a asp-action="Details" asp-route-id="@org.Id">@org.ShortId()</a></th>
+                <td>@org.Name</td>
+                <td>@org.Users.Count()</td>
+                <td>@org.Projects.Count()</td>
+                <td>@Html.Lines(org.Address)</td>
+            </tr>
+        }
+    </tbody>
+</table>
