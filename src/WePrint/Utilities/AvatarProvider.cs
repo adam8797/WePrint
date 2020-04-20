@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.WindowsAzure.Storage.Blob;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -28,11 +29,13 @@ namespace WePrint.Utilities
     {
         private readonly IConfiguration _configuration;
         private readonly IBlobContainerProvider _blobContainerProvider;
+        private readonly IHostEnvironment _hostEnvironment;
 
-        public AvatarProvider(IConfiguration configuration, IBlobContainerProvider blobContainerProvider)
+        public AvatarProvider(IConfiguration configuration, IBlobContainerProvider blobContainerProvider, IHostEnvironment hostEnvironment)
         {
             _configuration = configuration;
             _blobContainerProvider = blobContainerProvider;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<IActionResult> SetAvatarResult<T>(T entity, IFormFile uploadedFile) where T: IIdentifiable<Guid>
@@ -101,7 +104,17 @@ namespace WePrint.Utilities
 
             var avatar = await GetAvatarBlob(entity);
             if (!await avatar.ExistsAsync())
-                return new NotFoundResult();
+            {
+                if (_hostEnvironment.IsDevelopment())
+                {
+                    var section = _configuration.GetSection("Avatars");
+                    int width = section.GetValue<int>("Width");
+                    int height = section.GetValue<int>("Height");
+                    return new RedirectResult($"https://via.placeholder.com/{width}x{height}.png", false);
+                }
+                else
+                    return new NotFoundResult();
+            }
 
             return new FileStreamResult(await avatar.OpenReadAsync(), "image/png")
             {

@@ -1,1 +1,16 @@
-﻿Hello template!d
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<User> UserManager
+
+@if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Administrator"))
+{
+    <p>Welcome, you are an administrator</p>
+}
+else
+{
+    <p>You are <b>not</b> and Administrator, click below to be added to the group</p>
+
+    <form method="post" asp-action="Promote">
+        <input type="submit" value="Promote" />
+    </form>
+}

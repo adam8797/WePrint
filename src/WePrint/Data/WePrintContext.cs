@@ -60,6 +60,16 @@ namespace WePrint.Data
 
             builder.Entity<Role>(e => {
                 e.ToTable("Roles");
+                e.HasData(new Role[]
+                {
+                    new Role()
+                    {
+                        Id = Guid.NewGuid(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString(),
+                        Name = "Administrator",
+                        NormalizedName = "ADMINISTRATOR",
+                    }
+                });
             });
 
             builder.Entity<IdentityUserRole<Guid>>(e => {

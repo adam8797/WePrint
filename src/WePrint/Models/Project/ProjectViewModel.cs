@@ -21,8 +21,6 @@ namespace WePrint.Models
 
         public string? PrintingInstructions { get; set; }
 
-        public string? Thumbnail { get; set; }
-
         public Address Address { get; set; }
 
         public bool Closed { get; set; }

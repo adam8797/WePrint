@@ -42,6 +42,7 @@ namespace WePrint
                     Configuration.GetConnectionString("WePrint")));
 
             services.AddDefaultIdentity<User>()
+                .AddRoles<Role>()
                 .AddEntityFrameworkStores<WePrintContext>();
 
             services.AddAuthentication()
