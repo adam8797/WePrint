@@ -191,15 +191,6 @@ namespace WePrint.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9b4261aa-6a0b-4664-b076-1bc3dd0476a3"),
-                            ConcurrencyStamp = "97fe714d-b337-4044-8a83-3f92f444fe78",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        });
                 });
 
             modelBuilder.Entity("WePrint.Models.Organization", b =>

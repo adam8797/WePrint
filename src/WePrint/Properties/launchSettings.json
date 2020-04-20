@@ -19,14 +19,16 @@
     "WePrint (Staging)": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Staging"
+        "ASPNETCORE_ENVIRONMENT": "Staging",
+        "ASPNETCORE_RUN_NODE": "true" 
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
     "WePrint (Prod)": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "ASPNETCORE_RUN_NODE": "true"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }

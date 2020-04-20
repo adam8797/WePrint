@@ -192,7 +192,8 @@ namespace WePrint
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
+                if (env.IsDevelopment() || Environment.GetEnvironmentVariable("ASPNETCORE_RUN_NODE")?.ToUpper() == "TRUE")
+                    spa.UseReactDevelopmentServer("start");
             });
         }
     }
