@@ -55,7 +55,6 @@ namespace WePrint.Controllers
             return await _avatar.GetAvatarResult(org);
         }
 
-        [AllowAnonymous]
         [HttpPost("{id}/avatar")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -73,7 +72,24 @@ namespace WePrint.Controllers
             return await _avatar.SetAvatarResult(org, upload);
         }
 
-        
+        [HttpDelete("{id}/avatar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ClearOrgAvatar(Guid id)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+            if (org == null)
+                return NotFound();
+
+            if (!await Permissions.AllowWrite(await CurrentUser, org))
+                return Forbid();
+
+            return await _avatar.ClearAvatar(org);
+        }
+
+
         #endregion
 
 

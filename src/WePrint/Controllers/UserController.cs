@@ -45,12 +45,22 @@ namespace WePrint.Controllers
         }
 
         [HttpGet("avatar")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCurrentAvatar()
         {
             return await _avatar.GetAvatarResult(await CurrentUser);
+        }
+
+        [HttpDelete("avatar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ClearCurrentAvatar()
+        {
+            return await _avatar.ClearAvatar(await CurrentUser);
         }
 
         [HttpPost("avatar")]

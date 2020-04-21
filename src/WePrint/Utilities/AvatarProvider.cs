@@ -23,7 +23,8 @@ namespace WePrint.Utilities
     public interface IAvatarProvider
     {
         Task<IActionResult> SetAvatarResult<T>(T entity, IFormFile uploadedFile) where T: IIdentifiable<Guid>;
-        Task<IActionResult> GetAvatarResult<T>(T entity) where T: IIdentifiable<Guid>;
+        Task<IActionResult> GetAvatarResult<T>(T entity, bool useIdenticon = true) where T: IIdentifiable<Guid>;
+        Task<IActionResult> ClearAvatar<T>(T entity) where T : IIdentifiable<Guid>;
     }
 
     public class AvatarProvider : IAvatarProvider
@@ -98,7 +99,7 @@ namespace WePrint.Utilities
             return new NoContentResult();
         }
 
-        public async Task<IActionResult> GetAvatarResult<T>(T entity) where T: IIdentifiable<Guid> 
+        public async Task<IActionResult> GetAvatarResult<T>(T entity, bool useIdenticon = true) where T: IIdentifiable<Guid> 
         {
             if (entity == null)
                 return new NotFoundResult();
@@ -109,7 +110,7 @@ namespace WePrint.Utilities
             {
                 imageStream = await avatar.OpenReadAsync();
             }
-            else
+            else if (useIdenticon)
             {
                 imageStream = new MemoryStream();
                 await Identicon
@@ -117,11 +118,24 @@ namespace WePrint.Utilities
                     .SaveAsPngAsync(imageStream);
                 imageStream.Position = 0;
             }
+            else
+            {
+                return new NotFoundResult();
+            }
 
             return new FileStreamResult(imageStream, "image/png")
             {
                 FileDownloadName = entity.Id.ToString("D") + ".png"
             };
+        }
+
+        public async Task<IActionResult> ClearAvatar<T>(T entity) where T : IIdentifiable<Guid>
+        {
+            if (entity == null)
+                return new NotFoundResult();
+            var avatar = await GetAvatarBlob(entity);
+            await avatar.DeleteIfExistsAsync();
+            return new NoContentResult();
         }
 
 
