@@ -1,7 +1,7 @@
 import axios from 'axios-observable';
 import { BuildUrl, ErrorOnBadStatus, usersApiPath } from './CommonApi';
 
-export default class UserApi {
+class UserApi {
   static CurrentUser() {
     return axios.get(BuildUrl(usersApiPath)).pipe(ErrorOnBadStatus);
   }
@@ -10,7 +10,9 @@ export default class UserApi {
     return axios.get(BuildUrl(usersApiPath, 'by-id', id)).pipe(ErrorOnBadStatus);
   }
 
-    static GetUserByUsername(username) {
-        return axios.get(BuildUrl(usersApiPath, 'by-name', username)).pipe(ErrorOnBadStatus);
-    }
+  static GetUserByUsername(username) {
+    return axios.get(BuildUrl(usersApiPath, 'by-name', username)).pipe(ErrorOnBadStatus);
+  }
 }
+
+export default new UserApi();
