@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Jdenticon;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -103,20 +104,21 @@ namespace WePrint.Utilities
                 return new NotFoundResult();
 
             var avatar = await GetAvatarBlob(entity);
-            if (!await avatar.ExistsAsync())
+            Stream imageStream;
+            if (await avatar.ExistsAsync())
             {
-                if (_hostEnvironment.IsDevelopment())
-                {
-                    var section = _configuration.GetSection("Avatars");
-                    int width = section.GetValue<int>("Width");
-                    int height = section.GetValue<int>("Height");
-                    return new RedirectResult($"https://via.placeholder.com/{width}x{height}.png", false);
-                }
-                else
-                    return new NotFoundResult();
+                imageStream = await avatar.OpenReadAsync();
+            }
+            else
+            {
+                imageStream = new MemoryStream();
+                await Identicon
+                    .FromValue(entity.Id.ToString(), _configuration.GetSection("Avatars").GetValue<int>("Width"))
+                    .SaveAsPngAsync(imageStream);
+                imageStream.Position = 0;
             }
 
-            return new FileStreamResult(await avatar.OpenReadAsync(), "image/png")
+            return new FileStreamResult(imageStream, "image/png")
             {
                 FileDownloadName = entity.Id.ToString("D") + ".png"
             };
