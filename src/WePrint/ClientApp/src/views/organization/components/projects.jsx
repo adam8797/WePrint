@@ -1,5 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
+import ProjectApi from '../../../api/ProjectApi';
 import './projects.scss';
 
 function Projects(props) {
@@ -13,25 +16,26 @@ function Projects(props) {
     return <div>No Projects</div>;
   }
 
-  
   return (
     <div>
       {projects.map(project => (
         <div
-          className={
-            'project project' +
-            (project.closed ? '--inactive' : '--active')
-          }
+          className={`project project ${project.closed ? '--inactive' : '--active'}`}
           onClick={() => history.push(`/project/${project.id}`)}
+          onKeyDown={() => history.push(`/project/${project.id}`)}
         >
           <div className="project__info">
             <div className="project__icon-container">
-              <img className="project__icon" src={project.thumbnail} />
+              <img
+                className="project__icon"
+                src={ProjectApi.getDetailRoute(project.id, 'thumbnail')}
+                alt="Project Thumbnail"
+              />
             </div>
             <div className="project__icon-container">
               {
                 // we need to display the progress cube for projects!
-                //<img className="organization__project-icon" src={project.??} />
+                // <img className="organization__project-icon" src={project.??} />
               }
             </div>
           </div>
@@ -55,5 +59,11 @@ function Projects(props) {
     </div>
   );
 }
+
+Projects.propTypes = {
+  projects: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]))
+  ).isRequired,
+};
 
 export default Projects;

@@ -1,5 +1,8 @@
 import React from 'react';
 import Jdenticon from 'react-jdenticon';
+import PropTypes from 'prop-types';
+
+import UserApi from '../../../api/UserApi';
 
 import './users.scss';
 
@@ -18,7 +21,11 @@ function Users(props) {
         <div className="user">
           <div className="user__info">
             {user.avatar ? (
-              <img className="user__icon" src={user.avatar} />
+              <img
+                className="user__icon"
+                src={UserApi.getDetailRoute(user.id, 'avatar')}
+                alt="User Avatar"
+              />
             ) : (
               <Jdenticon className="user__icon" value={user.username} size="75" />
             )}
@@ -32,5 +39,11 @@ function Users(props) {
     </div>
   );
 }
+
+Users.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]))
+  ).isRequired,
+};
 
 export default Users;

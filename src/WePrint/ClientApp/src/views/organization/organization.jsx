@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactMarkdown from 'react-markdown';
 import { isEmpty } from 'lodash';
-import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import OrgApi from '../../api/OrganizationApi';
 import { BodyCard } from '../../components';
@@ -26,30 +26,35 @@ class Organization extends Component {
     };
   }
 
+  componentDidMount() {
+    this.fetchOrg();
+    UserApi.CurrentUser().subscribe(user => {
+      this.setState({ user });
+    });
+  }
+
   fetchOrg() {
-    const { orgId } = this.props.match.params;
+    const { match } = this.props;
+    const { orgId } = match.params;
     OrgApi.get(orgId).subscribe(
       organization => {
         this.setState({ organization, error: false });
-        OrgApi.users.getAll(orgId).subscribe(users => {
-          this.setState({ users });
-        }, console.error);
-        OrgApi.projects.getAll(orgId).subscribe(projects => {
-          this.setState({ projects });
-        }, console.error);
+        OrgApi.usersFor(orgId)
+          .getAll()
+          .subscribe(users => {
+            this.setState({ users });
+          }, console.error);
+        OrgApi.projectsFor(orgId)
+          .getAll()
+          .subscribe(projects => {
+            this.setState({ projects });
+          }, console.error);
       },
       err => {
         console.error(err);
         this.setState({ error: true });
       }
     );
-  }
-
-  componentDidMount() {
-    this.fetchOrg();
-    UserApi.CurrentUser().subscribe(user => {
-      this.setState({ user });
-    });
   }
 
   saveEdit() {
@@ -59,7 +64,8 @@ class Organization extends Component {
 
   render() {
     const { error, organization, user, users, projects, edit } = this.state;
-    const { orgId } = this.props.match.params;
+    const { match } = this.props;
+    const { orgId } = match.params;
     if (error) {
       return (
         <BodyCard>
@@ -84,16 +90,21 @@ class Organization extends Component {
     }
     const canEdit = user && organization.users.includes(user.id);
     // to be implemented when we implement editing orgs
-    // if (edit && canEdit) {
-    //   return (
-    //     <OrganizationEdit organization={organization} onSave={this.saveEdit}></OrganizationEdit>
-    //   );
-    // }
+    if (edit && canEdit) {
+      return (
+        // <OrganizationEdit organization={organization} onSave={this.saveEdit}></OrganizationEdit>
+        <div />
+      );
+    }
     return (
       <BodyCard>
         <div className="organization">
           <div className="organization__header">
-            <img className="organization__icon" src={organization.logo} alt="Organization Logo" />
+            <img
+              className="organization__icon"
+              src={OrgApi.getDetailRoute(orgId, 'avatar')}
+              alt="Organization Logo"
+            />
             <div className="organization__title">
               <div className="organization__name">{organization.name}</div>
               <div className="organization__location">
@@ -148,4 +159,8 @@ class Organization extends Component {
   }
 }
 
-export default withRouter(Organization);
+Organization.propTypes = {
+  match: PropTypes.objectsOf(PropTypes.string).isRequired,
+};
+
+export default Organization;

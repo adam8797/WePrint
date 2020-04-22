@@ -1,4 +1,4 @@
-import CommonApi from './CommonApi';
+import { CommonApi } from './CommonApi';
 import PrinterModel from '../models/PrinterModel';
 
 class PrinterApi extends CommonApi {

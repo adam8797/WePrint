@@ -2,6 +2,11 @@
 @import '../../../assets/styles/colors';
 
 .user {
+  padding: ms(-2);
+  margin-bottom: ms(-2);
+  border-radius: ms(-3);
+  background-color: $grey-7;
+
   &__info {
     align-items: center;
     display: flex;

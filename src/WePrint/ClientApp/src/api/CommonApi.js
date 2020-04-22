@@ -35,6 +35,10 @@ export class CommonApi {
     return observable.pipe(ErrorOnBadStatus);
   }
 
+  getDetailRoute(id, detail) {
+    return BuildUrl(this.apiPath, id, detail);
+  }
+
   // Returns an observable, which generates an array of all items at this endpoint
   getAll() {
     return axios.get(BuildUrl(this.apiPath)).pipe(ErrorOnBadStatus);
