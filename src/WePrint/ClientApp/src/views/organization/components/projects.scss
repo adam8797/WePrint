@@ -1,0 +1,46 @@
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.project {
+  cursor: pointer;
+  padding-top: ms(0);
+
+  &--active {
+    background-color: $blue-4;
+  }
+
+  hr {
+    border-color: $grey-5;
+  }
+
+  &__sub-info {
+    color: $grey-3;
+  }
+
+  &__icon-container {
+    width: 50%;
+    text-align: center;
+
+    &:last-child {
+      border-left: 1px solid $grey-5;
+    }
+  }
+
+  &__icon {
+    border-radius: ms(-8);
+    width: $image-size-standard;
+    height: $image-size-standard;
+  }
+
+  &__info {
+    display: flex;
+  }
+
+  &__detail {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding-left: ms(-1);
+    padding-bottom: ms(-1);
+  }
+}

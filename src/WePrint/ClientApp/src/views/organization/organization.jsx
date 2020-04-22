@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import ReactMarkdown from 'react-markdown';
-import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Jdenticon from 'react-jdenticon';
-import { withRouter } from 'react-router';
+import ReactMarkdown from 'react-markdown';
+import { isEmpty } from 'lodash';
+import { withRouter } from 'react-router-dom';
 
 import OrgApi from '../../api/OrganizationApi';
-import { isEmpty } from 'lodash';
 import { BodyCard } from '../../components';
 import Button from '../../components/button/button';
-import './organization.scss';
 import UserApi from '../../api/UserApi';
+import Users from './components/users';
+import Projects from './components/projects';
+
+import './organization.scss';
 
 class Organization extends Component {
   constructor(props) {
@@ -51,100 +52,13 @@ class Organization extends Component {
     });
   }
 
-  renderProjects(projects, isActive) {
-    if (!projects) {
-      return <div>Loading projects...</div>;
-    }
-    if (!projects.length) {
-      return <div>No Projects</div>;
-    }
-    const projectClasses = classNames('organization__item', 'organization__project', {
-      'organization__project--active': isActive,
-    });
-    const { history } = this.props;
-    console.log(projects);
-    return (
-      <div>
-        {projects.map(project => (
-          <div className={projectClasses} onClick={() => history.push(`/project/${project.id}`)}>
-            <div className="organization__project-info">
-              <div className="organization__project-icon-container">
-                <img className="organization__project-icon" src={project.thumbnail} />
-              </div>
-              <div className="organization__project-icon-container">
-                {
-                  // we need to display the progress cube for projects!
-                  //<img className="organization__project-icon" src={project.??} />
-                }
-              </div>
-            </div>
-            <hr />
-            <div className="organization__project-info">
-              <div className="organization__project-detail">
-                <span>{project.title}</span>
-                <span className="organization__sub-info">
-                  {project.address.city}, {project.address.state}
-                </span>
-              </div>
-              <div className="organization__project-detail">
-                <span>{project.closed ? 'Closed' : 'Open'}</span>
-                <span className="organization__sub-info">
-                  {Math.round((100 * (project.progress.Finished || 0)) / project.goal)}% Completed
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  renderPastProjects() {
-    const { projects } = this.state;
-    return this.renderProjects(projects && projects.filter(p => p.closed));
-  }
-
-  renderActiveProjects() {
-    const { projects } = this.state;
-    return this.renderProjects(projects && projects.filter(p => !p.closed), true);
-  }
-
-  renderUsers() {
-    const { users } = this.state;
-    if (!users) {
-      return <div>Loading users...</div>;
-    }
-    if (!users.length) {
-      return <div>No users...</div>;
-    }
-
-    return (
-      <div>
-        {users.map(user => (
-          <div className="organization__item organization__user">
-            <div className="organization__user-info">
-              {user.avatar ? (
-                <img className="organization__icon" src={user.avatar} />
-              ) : (
-                <Jdenticon className="organization__icon" value={user.username} size="75" />
-              )}
-              <div className="organization__user-name">
-                {user.firstName} {user.lastName}
-              </div>
-            </div>
-            <div className="organization__user-bio">{user.bio || <i>No user bio provided</i>}</div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   saveEdit() {
     this.setState({ organization: {}, edit: false });
     this.fetchOrg();
   }
+
   render() {
-    const { error, organization, user, edit } = this.state;
+    const { error, organization, user, users, projects, edit } = this.state;
     const { orgId } = this.props.match.params;
     if (error) {
       return (
@@ -214,17 +128,17 @@ class Organization extends Component {
               <div className="organization__projects">
                 <div className="organization__active-projects">
                   <div className="organization__section-title">Active Projects</div>
-                  {this.renderActiveProjects()}
+                  <Projects projects={projects && projects.filter(p => !p.closed)} />
                 </div>
                 <hr />
                 <div className="organization__past-projects">
                   <div className="organization__section-title">Past Projects</div>
-                  {this.renderPastProjects()}
+                  <Projects projects={projects && projects.filter(p => p.closed)} />
                 </div>
               </div>
               <div className="organization__users">
                 <div className="organization__section-title">The Team</div>
-                {this.renderUsers()}
+                <Users users={users} />
               </div>
             </div>
           </div>
