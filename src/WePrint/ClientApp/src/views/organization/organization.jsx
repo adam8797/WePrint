@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactMarkdown from 'react-markdown';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import OrgApi from '../../api/OrganizationApi';
 import { BodyCard } from '../../components';
@@ -160,7 +161,7 @@ class Organization extends Component {
 }
 
 Organization.propTypes = {
-  match: PropTypes.objectsOf(PropTypes.string).isRequired,
+  match: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-export default Organization;
+export default withRouter(Organization);
