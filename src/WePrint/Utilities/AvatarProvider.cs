@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Jdenticon;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,8 @@ namespace WePrint.Utilities
     public interface IAvatarProvider
     {
         Task<IActionResult> SetAvatarResult<T>(T entity, IFormFile uploadedFile) where T: IIdentifiable<Guid>;
-        Task<IActionResult> GetAvatarResult<T>(T entity) where T: IIdentifiable<Guid>;
+        Task<IActionResult> GetAvatarResult<T>(T entity, bool useIdenticon = true) where T: IIdentifiable<Guid>;
+        Task<IActionResult> ClearAvatar<T>(T entity) where T : IIdentifiable<Guid>;
     }
 
     public class AvatarProvider : IAvatarProvider
@@ -97,29 +99,43 @@ namespace WePrint.Utilities
             return new NoContentResult();
         }
 
-        public async Task<IActionResult> GetAvatarResult<T>(T entity) where T: IIdentifiable<Guid> 
+        public async Task<IActionResult> GetAvatarResult<T>(T entity, bool useIdenticon = true) where T: IIdentifiable<Guid> 
         {
             if (entity == null)
                 return new NotFoundResult();
 
             var avatar = await GetAvatarBlob(entity);
-            if (!await avatar.ExistsAsync())
+            Stream imageStream;
+            if (await avatar.ExistsAsync())
             {
-                if (_hostEnvironment.IsDevelopment())
-                {
-                    var section = _configuration.GetSection("Avatars");
-                    int width = section.GetValue<int>("Width");
-                    int height = section.GetValue<int>("Height");
-                    return new RedirectResult($"https://via.placeholder.com/{width}x{height}.png", false);
-                }
-                else
-                    return new NotFoundResult();
+                imageStream = await avatar.OpenReadAsync();
+            }
+            else if (useIdenticon)
+            {
+                imageStream = new MemoryStream();
+                await Identicon
+                    .FromValue(entity.Id.ToString(), _configuration.GetSection("Avatars").GetValue<int>("Width"))
+                    .SaveAsPngAsync(imageStream);
+                imageStream.Position = 0;
+            }
+            else
+            {
+                return new NotFoundResult();
             }
 
-            return new FileStreamResult(await avatar.OpenReadAsync(), "image/png")
+            return new FileStreamResult(imageStream, "image/png")
             {
                 FileDownloadName = entity.Id.ToString("D") + ".png"
             };
+        }
+
+        public async Task<IActionResult> ClearAvatar<T>(T entity) where T : IIdentifiable<Guid>
+        {
+            if (entity == null)
+                return new NotFoundResult();
+            var avatar = await GetAvatarBlob(entity);
+            await avatar.DeleteIfExistsAsync();
+            return new NoContentResult();
         }
 
 

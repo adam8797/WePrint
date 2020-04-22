@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 
-import Jdenticon from 'react-jdenticon';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import UserApi from '../../../api/UserApi';
 import Button from '../../button/button';
 import './notif-area.scss';
@@ -58,14 +55,10 @@ class NotifArea extends Component {
             <div className="notif-area__name">
               {user.firstName || user.lastName
                 ? `${user.firstName} ${user.lastName}`
-                : user.userName}
+                : user.username}
             </div>
             <div className="notif-area__avatar">
-              {user.avatar ? (
-                <img className="notif-area__ava-icon" src={user.avatar} alt="User Avatar" />
-              ) : (
-                <Jdenticon className="notif-area__ava-icon" value={`${user.id}`} />
-              )}
+              <img className="notif-area__ava-icon" src={`/api/users/by-id/${user.id}/avatar`} alt="User Avatar"/>
             </div>
             {/* <div className="notif-area__icon">
               <FontAwesomeIcon icon="bars" />

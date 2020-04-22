@@ -65,7 +65,7 @@ namespace WePrint.Controllers
         public async Task<IActionResult> GetThumbnail(Guid id)
         {
             var project = await Database.Projects.FindAsync(id);
-            return await _avatar.GetAvatarResult(project);
+            return await _avatar.GetAvatarResult(project, false);
         }
 
         [HttpPost("{id}/thumbnail")]
