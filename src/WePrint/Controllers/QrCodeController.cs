@@ -29,6 +29,7 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetQrCode(Guid pledgeId)
         {
+            var s = ;
             var currentUser = await CurrentUser;
             if (currentUser == null)
                 return Unauthorized();
@@ -41,7 +42,7 @@ namespace WePrint.Controllers
 
             
             QRCodeGenerator gen = new QRCodeGenerator();
-            Bitmap qrCodeImg = (new QRCode(gen.CreateQrCode($"{HttpContext.Request.Host}/api/qrcodes/scan/{pledgeId}", QRCodeGenerator.ECCLevel.Q))).GetGraphic(20);
+            Bitmap qrCodeImg = (new QRCode(gen.CreateQrCode($"{HttpContext.Request.Host}{Url.Action("ScanQrCode", new { pledgeId })}", QRCodeGenerator.ECCLevel.Q))).GetGraphic(20);
             ImageConverter converter = new ImageConverter();
             return File((byte[])converter.ConvertTo(qrCodeImg, typeof(byte[])), "image/jpeg");
         }
