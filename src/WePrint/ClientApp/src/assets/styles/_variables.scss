@@ -1,0 +1,89 @@
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Color system
+
+$blue-0: #004a7b;
+$blue-1: #0072be;
+$blue-2: #6ab5f6;
+$blue-3: #85c2f7;
+$blue-4: #e5eff7;
+
+$grey-1: #303036;
+$grey-2: #4d4f5c;
+$grey-3: #707070;
+$grey-4: #9a9a9a;
+$grey-5: #c4c4c4;
+$grey-6: #e0e0e0;
+$grey-7: #e5eff7;
+
+$black: #000000;
+$white: #ffffff;
+$red: #f66a6a;
+$green: #35a346;
+$light-green: #b2df8a;
+$yellow: #f2f55e;
+
+$primary: $blue-1;
+
+// Spacing
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+
+$spacer: 1rem !default;
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg: $white !default;
+$body-color: $grey-1 !default;
+
+// Paragraphs
+//
+// Style p element.
+
+$paragraph-margin-bottom: 1rem !default;
+
+// Links
+//
+// Style anchor elements.
+
+$link-color: $primary !default;
+$link-decoration: underline !default;
+$link-hover-color: darken($link-color, 15%) !default;
+$link-hover-decoration: null !default;
+// Darken percentage for links with `.text-*` class (e.g. `.text-success`)
+$emphasized-link-hover-darken-percentage: 15% !default;
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+$font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji' !default;
+
+$font-size-base: 1rem; // assumes browser default of 16px;
+
+$h1-font-size: $font-size-base * 2.5 !default;
+$h2-font-size: $font-size-base * 2 !default;
+$h3-font-size: $font-size-base * 1.75 !default;
+$h4-font-size: $font-size-base * 1.5 !default;
+$h5-font-size: $font-size-base * 1.25 !default;
+$h6-font-size: $font-size-base !default;
+
+$headings-margin-bottom: $spacer / 2 !default;
+$headings-font-family: null !default;
+$headings-font-style: null !default;
+$headings-font-weight: 500 !default;
+$headings-line-height: 1.2 !default;
+$headings-color: null !default;
+
+$line-height-base: 1.5 !default;
+$line-height-sm: 1.25 !default;
+$line-height-lg: 2 !default;
