@@ -6,7 +6,7 @@ import './help-card.scss';
 function HelpCard(props) {
   const { onClick, text, icon } = props;
   return (
-    <div className="help-card" onClick={onClick} onKeyDown={onClick}>
+    <div className="help-card" onClick={onClick}>
       <span className="help-card__text">{text}</span>
       <FontAwesomeIcon className="help-card__icon" icon={['far', icon]} size="5x" />
     </div>

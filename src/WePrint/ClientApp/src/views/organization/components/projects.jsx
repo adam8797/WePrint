@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { classNames } from 'classnames';
 
 import ProjectApi from '../../../api/ProjectApi';
 import './projects.scss';
@@ -20,9 +21,8 @@ function Projects(props) {
     <div>
       {projects.map(project => (
         <div
-          className={`project project${project.closed ? '--inactive' : '--active'}`}
+          className={classNames('project', { 'project--active': !project.closed })}
           onClick={() => history.push(`/project/${project.id}`)}
-          onKeyDown={() => history.push(`/project/${project.id}`)}
         >
           <div className="project__info">
             <div className="project__icon-container">

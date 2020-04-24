@@ -16,5 +16,6 @@ module.exports = {
         depth: 3,
       },
     ],
+    'jsx-a11y/click-events-have-key-events': 'off', // too restrictive for now, remove when we do an a11y pass
   },
 };

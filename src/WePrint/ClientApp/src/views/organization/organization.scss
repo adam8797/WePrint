@@ -7,6 +7,7 @@
   &__header {
     display: flex;
 
+    // TODO: review to match BEM standards, leaving for now because MVP focus
     .organization {
       &__title {
         padding-left: ms(1);
