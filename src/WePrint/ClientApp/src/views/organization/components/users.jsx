@@ -1,5 +1,4 @@
 import React from 'react';
-import Jdenticon from 'react-jdenticon';
 import PropTypes from 'prop-types';
 
 import UserApi from '../../../api/UserApi';
@@ -20,15 +19,11 @@ function Users(props) {
       {users.map(user => (
         <div className="user">
           <div className="user__info">
-            {user.avatar ? (
-              <img
-                className="user__icon"
-                src={UserApi.getDetailRoute(user.id, 'avatar')}
-                alt="User Avatar"
-              />
-            ) : (
-              <Jdenticon className="user__icon" value={user.username} size="75" />
-            )}
+            <img
+              className="user__icon"
+              src={UserApi.getDetailRoute(user.id, 'avatar')}
+              alt="User Avatar"
+            />
             <div className="user__name">
               {user.firstName} {user.lastName}
             </div>

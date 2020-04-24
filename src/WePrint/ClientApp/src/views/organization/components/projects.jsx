@@ -20,7 +20,7 @@ function Projects(props) {
     <div>
       {projects.map(project => (
         <div
-          className={`project project ${project.closed ? '--inactive' : '--active'}`}
+          className={`project project${project.closed ? '--inactive' : '--active'}`}
           onClick={() => history.push(`/project/${project.id}`)}
           onKeyDown={() => history.push(`/project/${project.id}`)}
         >
