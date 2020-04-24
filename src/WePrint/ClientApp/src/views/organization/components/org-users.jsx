@@ -21,7 +21,7 @@ function OrgUsers(props) {
           <div className="org-user__info">
             <img
               className="org-user__icon"
-              src={UserApi.getDetailRoute(user.id, 'avatar')}
+              src={UserApi.getAvatarUrl(user.id)}
               alt="User's Avatar"
             />
             <div className="org-user__name">

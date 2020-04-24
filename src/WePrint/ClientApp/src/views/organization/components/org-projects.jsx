@@ -30,7 +30,7 @@ function OrgProjects(props) {
             <div className="org-project__icon-container">
               <img
                 className="org-project__icon"
-                src={ProjectApi.getDetailRoute(project.id, 'thumbnail')}
+                src={ProjectApi.getThumbnailUrl(project.id)}
                 alt="Project Thumbnail"
               />
             </div>

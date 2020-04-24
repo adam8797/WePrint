@@ -103,7 +103,7 @@ class Organization extends Component {
           <div className="organization__header">
             <img
               className="organization__icon"
-              src={OrgApi.getDetailRoute(orgId, 'avatar')}
+              src={OrgApi.getAvatarUrl(orgId)}
               alt="Organization Logo"
             />
             <div className="organization__title">
