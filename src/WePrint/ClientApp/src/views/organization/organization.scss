@@ -1,0 +1,89 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.organization {
+  padding: ms(-1);
+
+  &__header {
+    display: flex;
+
+    // TODO: review to match BEM standards, leaving for now because MVP focus
+    .organization {
+      &__title {
+        padding-left: ms(1);
+      }
+
+      &__name {
+        font-size: $font-size-medium;
+        font-weight: $font-weight-semi-bold;
+      }
+
+      &__location {
+        font-size: $font-size-sub-heading;
+        color: $grey-3;
+      }
+
+      &__actions {
+        margin-left: auto;
+        align-self: flex-end;
+      }
+    }
+  }
+
+  &__icon {
+    border-radius: 100%;
+    width: $image-size-icon;
+    height: $image-size-icon;
+  }
+
+  &__section-title {
+    font-size: $font-size-sub-heading;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  &__description {
+    padding-bottom: ms(0);
+
+    &-content {
+      padding: ms(-1);
+      border: 1px solid $grey-6;
+    }
+  }
+
+  &__references {
+    display: flex;
+    width: 100%;
+  }
+
+  &__projects {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding-right: ms(0);
+
+    > hr {
+      width: 90%;
+    }
+  }
+
+  &__users {
+    border-left: 1px solid $grey-6;
+    padding-left: ms(0);
+    width: 50%;
+  }
+}
+
+.organization__loading,
+.organization__error {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-medium;
+  flex-direction: column;
+}
+
+.organization__loading-text,
+.organization__error-text {
+  padding-bottom: 10px;
+}

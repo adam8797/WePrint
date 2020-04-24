@@ -1,0 +1,33 @@
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.user {
+  padding: ms(-2);
+  margin-bottom: ms(-2);
+  border-radius: ms(-3);
+  background-color: $grey-7;
+
+  &__info {
+    align-items: center;
+    display: flex;
+  }
+
+  &__name {
+    margin-left: ms(-2);
+    font-size: $font-size-sub-heading;
+  }
+
+  &__bio {
+    color: $grey-3;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+  }
+
+  &__icon {
+    border-radius: 100%;
+    width: $image-size-icon;
+    height: $image-size-icon;
+  }
+}
