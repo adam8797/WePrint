@@ -162,7 +162,7 @@ class Organization extends Component {
 
 Organization.propTypes = {
   match: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.boolean, PropTypes.object])
+    PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.object])
   ).isRequired,
 };
 
