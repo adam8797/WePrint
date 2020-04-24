@@ -9,8 +9,8 @@ import OrgApi from '../../api/OrganizationApi';
 import { BodyCard } from '../../components';
 import Button from '../../components/button/button';
 import UserApi from '../../api/UserApi';
-import Users from './components/users';
-import Projects from './components/projects';
+import OrgUsers from './components/org-users';
+import OrgProjects from './components/org-projects';
 
 import './organization.scss';
 
@@ -140,17 +140,17 @@ class Organization extends Component {
               <div className="organization__projects">
                 <div className="organization__active-projects">
                   <div className="organization__section-title">Active Projects</div>
-                  <Projects projects={projects && projects.filter(p => !p.closed)} />
+                  <OrgProjects projects={projects && projects.filter(p => !p.closed)} />
                 </div>
                 <hr />
                 <div className="organization__past-projects">
                   <div className="organization__section-title">Past Projects</div>
-                  <Projects projects={projects && projects.filter(p => p.closed)} />
+                  <OrgProjects projects={projects && projects.filter(p => p.closed)} />
                 </div>
               </div>
               <div className="organization__users">
                 <div className="organization__section-title">The Team</div>
-                <Users users={users} />
+                <OrgUsers users={users} />
               </div>
             </div>
           </div>
@@ -161,7 +161,9 @@ class Organization extends Component {
 }
 
 Organization.propTypes = {
-  match: PropTypes.objectOf(PropTypes.string).isRequired,
+  match: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.boolean, PropTypes.object])
+  ).isRequired,
 };
 
 export default withRouter(Organization);
