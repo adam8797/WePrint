@@ -35,10 +35,6 @@ export class CommonApi {
     return observable.pipe(ErrorOnBadStatus);
   }
 
-  getDetailRoute(id, detail) {
-    return BuildUrl(this.apiPath, id, detail);
-  }
-
   // Returns an observable, which generates an array of all items at this endpoint
   getAll() {
     return axios.get(BuildUrl(this.apiPath)).pipe(ErrorOnBadStatus);
@@ -84,8 +80,7 @@ export class CommonApi {
   // Note: THIS IS A POLLING CALL. Remember to unsubscribe when you're done with it, or it might just keep making network requests in the background forever.
   track(id, pollInterval) {
     return timer(0, pollInterval).pipe(
-      ErrorOnBadStatus,
-      exhaustMap(() => this.Get(id)),
+      exhaustMap(() => this.get(id)),
       distinctUntilChanged(this.itemEqualityComparer)
     );
   }
@@ -95,8 +90,7 @@ export class CommonApi {
   // Note: THIS IS A POLLING CALL. Remember to unsubscribe when you're done with it, or it might just keep making network requests in the background forever.
   trackAll(pollInterval) {
     return timer(0, pollInterval).pipe(
-      ErrorOnBadStatus,
-      exhaustMap(() => this.GetAll()),
+      exhaustMap(() => this.getAll()),
       distinctUntilChanged((a, b) => ArrayDeepEquals(a, b, this.itemEqualityComparer))
     );
   }

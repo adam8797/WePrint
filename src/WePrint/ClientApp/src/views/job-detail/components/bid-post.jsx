@@ -38,7 +38,7 @@ class BidPost extends Component {
   }
 
   componentDidMount() {
-    PrinterApi.MyPrinters().subscribe(printers => {
+    PrinterApi.getAll().subscribe(printers => {
       this.setState({ printers });
     });
   }
