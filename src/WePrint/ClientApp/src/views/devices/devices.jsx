@@ -55,7 +55,7 @@ class Devices extends Component {
 
   componentDidMount() {
     this.subscription = PrinterApi.trackAll(1000).subscribe(printers => {
-      this.setState({ printers });
+      this.setState({ printers: this.removeDeletedPrinters(printers) });
     }, console.error);
   }
 
@@ -70,6 +70,16 @@ class Devices extends Component {
   navToEditDevice = printerId => {
     this.setState({ toEditDevice: printerId });
   };
+
+  removeDeletedPrinters(printers) {
+    const results = [];
+    for(let i = 0; i < printers.length; i++) {
+      if(!printers[i].deleted) {
+        results.push(printers[i]);
+      }
+    }
+    return results;
+  }
 
   render() {
     const { printers, toAddDevice, toEditDevice } = this.state;

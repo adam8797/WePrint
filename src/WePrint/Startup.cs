@@ -122,10 +122,10 @@ namespace WePrint
                     mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
                     mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
-                    
+                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, PrinterCreateModel, Guid>>();
+
                     // Data/View
                     mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
-                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, Guid>>();
 
                     // Other
                     mapper.AddProfile<SearchProfile>();
