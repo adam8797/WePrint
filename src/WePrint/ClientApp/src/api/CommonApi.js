@@ -80,8 +80,7 @@ export class CommonApi {
   // Note: THIS IS A POLLING CALL. Remember to unsubscribe when you're done with it, or it might just keep making network requests in the background forever.
   track(id, pollInterval) {
     return timer(0, pollInterval).pipe(
-      ErrorOnBadStatus,
-      exhaustMap(() => this.Get(id)),
+      exhaustMap(() => this.get(id)),
       distinctUntilChanged(this.itemEqualityComparer)
     );
   }
