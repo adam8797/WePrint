@@ -70,6 +70,8 @@
     <Compile Remove="Data\Migrations\20200413203524_ProjectUpdateNoCascade.Designer.cs" />
     <Compile Remove="Data\Migrations\20200413203943_AddressLineTwoNullable.cs" />
     <Compile Remove="Data\Migrations\20200413203943_AddressLineTwoNullable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200426211728_RemoveUpdateEditedBy.cs" />
+    <Compile Remove="Data\Migrations\20200426211728_RemoveUpdateEditedBy.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

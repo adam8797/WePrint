@@ -34,7 +34,7 @@ namespace WePrint.Controllers
         protected override async ValueTask<ProjectUpdate> UpdateDataModelAsync(ProjectUpdate project, ProjectUpdateCreateModel createModel)
         {
             var update = Mapper.Map<ProjectUpdate>(createModel);
-            update.EditedBy = await CurrentUser;
+            update.PostedBy = await CurrentUser;
             update.EditTimestamp = DateTimeOffset.Now;
             return update;
         }
@@ -42,7 +42,7 @@ namespace WePrint.Controllers
         protected override async ValueTask<ProjectUpdate> UpdateDataModelAsync(ProjectUpdate project, ProjectUpdateViewModel viewModel)
         {
             var update = Mapper.Map<ProjectUpdate>(viewModel);
-            update.EditedBy = await CurrentUser;
+            update.PostedBy = await CurrentUser;
             update.EditTimestamp = DateTimeOffset.Now;
             return update;
         }

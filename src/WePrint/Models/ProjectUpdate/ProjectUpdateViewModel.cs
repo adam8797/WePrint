@@ -16,8 +16,6 @@ namespace WePrint.Data
 
         public Guid PostedBy { get; set; }
 
-        public Guid EditedBy { get; set; }
-
         public Guid Project { get; set; }
 
         public bool Deleted { get; set; }

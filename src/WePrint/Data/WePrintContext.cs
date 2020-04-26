@@ -53,8 +53,7 @@ namespace WePrint.Data
 
             builder.Entity<ProjectUpdate>(e =>
             {
-                e.HasOne(x => x.PostedBy).WithOne().HasPrincipalKey<User>().OnDelete(DeleteBehavior.NoAction); 
-                e.HasOne(x => x.EditedBy).WithOne().HasPrincipalKey<User>().OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(x => x.PostedBy).WithMany().OnDelete(DeleteBehavior.NoAction);
             });
 
 
