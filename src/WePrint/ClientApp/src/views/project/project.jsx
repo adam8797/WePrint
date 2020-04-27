@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter } from 'react-router-dom';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
+import moment from 'moment';
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
-import { BodyCard, Button } from '../../components';
+import { BodyCard, Button, Table } from '../../components';
 import './project.scss';
 import UpdatesPanel from './components/updates-panel';
 
@@ -16,7 +17,6 @@ class Project extends Component {
       // TODO: find a better way to track this state
       error: false,
       orgErr: false,
-      pledgesErr: false,
       project: null,
       organization: null,
       pledges: null,
@@ -42,6 +42,7 @@ class Project extends Component {
             this.setState({ orgErr: true });
           }
         );
+        this.fetchPledges();
       },
       err => {
         console.error(err);
@@ -57,11 +58,11 @@ class Project extends Component {
       .getAll()
       .subscribe(
         pledges => {
-          this.setState({ pledges, pledgesErr: false });
+          this.setState({ pledges });
         },
         err => {
           console.error(err);
-          this.setState({ pledgesErr: true });
+          // TODO: do something with this
         }
       );
   }
@@ -90,7 +91,7 @@ class Project extends Component {
   }
 
   render() {
-    const { error, project, organization, orgErr, pledges, pledgesErr } = this.state;
+    const { error, project, organization, orgErr, pledges } = this.state;
     const { match } = this.props;
     const { projId } = match.params;
 
@@ -128,6 +129,35 @@ class Project extends Component {
       openGoal,
       progress,
     } = project;
+
+    const pledgeCols = [
+      {
+        Header: 'Date Pledged',
+        accessor: 'created',
+        Cell: ({ cell: { value } }) => moment(value).format('MM/DD/YYYY'),
+      },
+      {
+        Header: 'Name',
+        accessor: 'maker',
+        Cell: ({ cell }) => {
+          const { anonymous } = cell.row.original;
+          return anonymous ? 'Anonymous' : cell.value;
+        },
+      },
+      {
+        Header: 'Amount Pledged',
+        accessor: 'quantity',
+      },
+      {
+        Header: 'Estimated Delivery',
+        accessor: 'deliveryDate',
+        Cell: ({ cell: { value } }) => moment(value).format('MM/DD/YYYY'),
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+    ];
 
     return (
       <BodyCard>
@@ -176,35 +206,39 @@ class Project extends Component {
               </div>
             </div>
           </div>
-          <Tabs>
-            <TabList>
-              <Tab>
-                <span>Details</span>
-              </Tab>
-              <Tab>
-                <span data-count={project.updates.length}>Updates</span>
-              </Tab>
-            </TabList>
+          <div className="project__body">
+            <Tabs>
+              <TabList>
+                <Tab>
+                  <span>Details</span>
+                </Tab>
+                <Tab>
+                  <span data-count={project.updates.length}>Updates</span>
+                </Tab>
+              </TabList>
 
-            <TabPanel>
-              <p>{description}</p>
-              <h3>Delivery Instructions</h3>
-              <p>{shippingInstructions}</p>
-              <h3>Printing Instructions</h3>
-              <p>{printingInstructions}</p>
-              <p>{attachments}</p>
-            </TabPanel>
-            <TabPanel>
-              <UpdatesPanel projId={id} />
-            </TabPanel>
-          </Tabs>
+              <TabPanel>
+                <p>{description}</p>
+                <h3>Delivery Instructions</h3>
+                <p>{shippingInstructions}</p>
+                <h3>Printing Instructions</h3>
+                <p>{printingInstructions}</p>
+                <p>{attachments}</p>
+              </TabPanel>
+              <TabPanel>
+                <UpdatesPanel projId={id} />
+              </TabPanel>
+            </Tabs>
 
-          <hr />
-
-          <button onClick={() => this.fetchPledges()} type="button">
-            Load Pledges
-          </button>
-          <div className="pledges">{this.renderPledges(pledges, pledgesErr)}</div>
+            <hr />
+            {/* TODO: add outputs for error and loading states */}
+            <Table
+              title="Donators"
+              columns={pledgeCols}
+              data={pledges || []}
+              emptyMessage="There are no pledges yet, add yours now!"
+            />
+          </div>
         </div>
       </BodyCard>
     );

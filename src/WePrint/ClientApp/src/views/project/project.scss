@@ -7,11 +7,6 @@
     border-bottom: 1px solid $grey-1;
   }
 
-  // TODO: this is temporary
-  img {
-    max-width: 100px;
-  }
-
   &__overview {
     display: flex;
     justify-content: space-around;
@@ -79,6 +74,11 @@
   &__overview-buttons__pledge {
     flex-grow: 1;
     margin-right: 1rem;
+  }
+
+  &__body {
+    max-width: 900px;
+    margin: auto;
   }
 
   .react-tabs__tab-list {
