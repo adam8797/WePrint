@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 
 import UserApi from '../../../api/UserApi';
 import Button from '../../button/button';
@@ -57,9 +57,11 @@ class NotifArea extends Component {
                 ? `${user.firstName} ${user.lastName}`
                 : user.username}
             </div>
-            <div className="notif-area__avatar">
-              <img className="notif-area__ava-icon" src={`/api/users/by-id/${user.id}/avatar`} alt="User Avatar"/>
-            </div>
+            <Link to="/account">
+              <div className="notif-area__avatar">
+                <img className="notif-area__ava-icon" src={`/api/users/by-id/${user.id}/avatar`} alt="User Avatar"/>
+              </div>
+            </Link>
             {/* <div className="notif-area__icon">
               <FontAwesomeIcon icon="bars" />
             </div> */}

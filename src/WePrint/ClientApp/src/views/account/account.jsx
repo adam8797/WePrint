@@ -19,9 +19,6 @@ class Account extends Component {
         });
     }
 
-    componentDidMount() {
-    }
-
     render() {
         const { error, user } = this.state;
         if (error || user == null) {

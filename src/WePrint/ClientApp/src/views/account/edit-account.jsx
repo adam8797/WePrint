@@ -43,19 +43,25 @@ function EditAccount(props) {
             <WepInput
                 name="firstname"
                 id="firstname"
+                label="First Name"
+                placeholder="First name"
                 value={firstName}
                 handleChange={ev => setFirstName(ev.target.value)} /><br />
             <WepInput
                 name="lastname"
                 id="lastname"
+                label="Last Name"
+                placeholder="Last Name"
                 value={lastName}
                 handleChange={ev => setLastName(ev.target.value)} /> <br />
             <WepTextarea
                 name="bio"
                 id="bio"
+                label="Bio"
+                placeholder="Bio"
                 value={bio}
-                handleChange={ev => setBio(ev.target.value)} />
-            <Button onClick={saveUser} type={ButtonType.SUCCESS} > <br />
+                handleChange={ev => setBio(ev.target.value)} /><br />
+            <Button onClick={saveUser} type={ButtonType.SUCCESS} > 
                 Save
             </Button>
         </BodyCard>
