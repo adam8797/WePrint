@@ -1,0 +1,11 @@
+.pledge-form {
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+
+    &--inline {
+      flex-direction: row;
+    }
+  }
+}

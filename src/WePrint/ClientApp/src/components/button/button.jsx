@@ -17,13 +17,13 @@ export const ButtonSize = {
 };
 
 function Button(props) {
-  const { children, className, type, htmlType, size, icon, selected, ...rest } = props;
+  const { children, className, type, htmlType, size, icon, selected, outline, ...rest } = props;
 
   const buttonClass = classNames(
     'button',
     className,
     `button--${size}`,
-    `button--${type}`,
+    `button--${type}${outline ? '--outline' : ''}`,
     `button--${selected ? 'selected' : 'deselected'}`
   );
 
@@ -46,6 +46,7 @@ Button.propTypes = {
   htmlType: PropTypes.string,
   icon: PropTypes.string,
   selected: PropTypes.bool,
+  outline: PropTypes.bool,
 };
 
 Button.defaultProps = {

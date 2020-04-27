@@ -17,6 +17,7 @@ import {
   Organization,
   Account,
   EditOrganization,
+  Project,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -82,6 +83,8 @@ export default function AppRouter({ basename }) {
                 window.location.href = loc;
               }}
             />
+          <Route path="/project/:projId">
+            <Project />
           </Route>
           <Route path="/account">
             <Account />
