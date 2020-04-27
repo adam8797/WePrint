@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
@@ -19,7 +22,6 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using WePrint.Data;
 using WePrint.Models;
-using WePrint.Models.Search;
 using WePrint.Permissions;
 using WePrint.Utilities;
 
@@ -126,9 +128,6 @@ namespace WePrint
 
                     // Data/View
                     mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
-
-                    // Other
-                    mapper.AddProfile<SearchProfile>();
                 }, 
                 // Auto-Finding profiles has been disabled, because it kept trying to add the AutoProfile.
                 // You'll need to add new profiles here 
@@ -140,6 +139,13 @@ namespace WePrint
 
             services.AddTransient<IBlobContainerProvider, BlobContainerProvider>();
             services.AddScoped<IAvatarProvider, AvatarProvider>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(x => {
+                var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+                var factory = x.GetRequiredService<IUrlHelperFactory>();
+                return factory.GetUrlHelper(actionContext);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

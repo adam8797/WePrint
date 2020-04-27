@@ -7,7 +7,7 @@ import {
   About,
   EditDevice,
   Devices,
-  FindJob,
+  Find,
   Help,
   Home,
   PageNotFound,
@@ -53,7 +53,7 @@ export default function AppRouter({ basename }) {
             <Devices />
           </Route>
           <Route path="/find">
-            <FindJob />
+            <Find />
           </Route>
           <Route path="/post">
             <PostJob />
