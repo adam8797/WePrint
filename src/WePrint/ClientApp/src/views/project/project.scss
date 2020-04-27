@@ -7,6 +7,11 @@
     border-bottom: 1px solid $grey-1;
   }
 
+  // TODO: this is temporary
+  img {
+    max-width: 100px;
+  }
+
   &__overview {
     display: flex;
     justify-content: space-around;
