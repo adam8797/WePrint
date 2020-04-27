@@ -1,5 +1,5 @@
 import axios from 'axios-observable';
-import { CommonApi, BuildUrl } from './CommonApi';
+import { CommonApi, BuildUrl, ErrorOnBadStatus } from './CommonApi';
 import OrganizationModel from '../models/OrganizationModel';
 import UserModel from '../models/UserModel';
 import NestedApi from './NestedApi';
@@ -30,6 +30,10 @@ class OrgApi extends CommonApi {
 
   getAvatarUrl(id) {
     return BuildUrl(this.apiPath, id, 'avatar');
+  }
+
+  postAvatar(id, file) {
+    return axios.post(BuildUrl(this.apiPath, id, 'avatar'), file).pipe(ErrorOnBadStatus);
   }
 }
 

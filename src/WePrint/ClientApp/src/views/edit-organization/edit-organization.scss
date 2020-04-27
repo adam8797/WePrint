@@ -1,0 +1,53 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.edit-org {
+  &__header {
+    font-size: $font-size-medium;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  &__split-inline {
+    display: flex;
+    flex-direction: row;
+
+    > div {
+      width: 50%;
+    }
+  }
+
+  &__logo {
+    width: $image-size-standard;
+    height: $image-size-standard;
+    margin-right: $padding-standard;
+    border-radius: 100%;
+  }
+
+  &__user {
+    width: 100%;
+    background-color: $grey-7;
+    border-radius: $border-radius-standard;
+    margin-bottom: $padding-standard;
+    padding: $padding-standard;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    font-size: $font-size-sub-heading;
+  }
+
+  &__remove-icon {
+    color: $red;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: $padding-standard;
+  }
+
+  .file-drop {
+    font-size: $font-size-sub-heading;
+    padding: $padding-standard;
+  }
+
+  .button {
+    margin-right: $padding-standard;
+  }
+}

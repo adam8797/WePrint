@@ -1,7 +1,10 @@
 {
-  "eslint.workingDirectories": [ // allows vscode to find the correct node project root
+  "eslint.workingDirectories": [
+    // allows vscode to find the correct node project root
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "editor.tabSize": 2,
+  "eslint.nodePath": "/Users/emily/.nvm/versions/node/v12.16.1/bin/node"
 }
