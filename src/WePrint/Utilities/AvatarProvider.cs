@@ -94,8 +94,9 @@ namespace WePrint.Utilities
             // Upload the blob to Azure
             var avatar = await GetAvatarBlob(entity);
             finalImage.Position = 0;
-            await avatar.UploadFromStreamAsync(finalImage);
 
+            await avatar.DeleteIfExistsAsync();
+            await avatar.UploadFromStreamAsync(finalImage);
             return new NoContentResult();
         }
 
