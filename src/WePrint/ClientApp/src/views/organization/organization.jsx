@@ -11,6 +11,7 @@ import Button from '../../components/button/button';
 import UserApi from '../../api/UserApi';
 import OrgUsers from './components/org-users';
 import OrgProjects from './components/org-projects';
+import EditOrganization from '../edit-organization/edit-organization';
 
 import './organization.scss';
 
@@ -93,8 +94,14 @@ class Organization extends Component {
     // to be implemented when we implement editing orgs
     if (edit && canEdit) {
       return (
-        // <OrganizationEdit organization={organization} onSave={this.saveEdit}></OrganizationEdit>
-        <div />
+        <EditOrganization
+          organization={organization}
+          currentUser={user}
+          users={users}
+          returnCallback={() => {
+            this.setState({ edit: false });
+          }}
+        />
       );
     }
     return (

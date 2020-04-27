@@ -1,0 +1,37 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.edit-org {
+  &__header {
+    font-size: $font-size-medium;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  &__split-inline {
+    display: flex;
+    flex-direction: row;
+
+    > div {
+      width: 50%;
+    }
+  }
+
+  &__user {
+    width: 100%;
+    background-color: $grey-7;
+    border-radius: ms(-3);
+    margin-bottom: ms(-2);
+    padding: ms(-2);
+    color: black;
+    display: flex;
+    flex-direction: row;
+    font-size: $font-size-sub-heading;
+  }
+
+  &__remove-icon {
+    color: $red;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: ms(-2);
+  }
+}

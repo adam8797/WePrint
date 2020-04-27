@@ -15,6 +15,7 @@ import {
   JobDetail,
   FinishedJobs,
   Organization,
+  EditOrganization,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -69,6 +70,17 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/organization/:orgId">
             <Organization />
+          </Route>
+          <Route path="/new-organization">
+            <EditOrganization
+              returnCallback={org => {
+                let loc = window.location.origin;
+                if (org && org.id) {
+                  loc += `/organization/${org.id}`;
+                }
+                window.location.href = loc;
+              }}
+            />
           </Route>
           <Route path="*">
             <PageNotFound />
