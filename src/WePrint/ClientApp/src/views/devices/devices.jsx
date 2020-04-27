@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import PrinterApi from '../../api/PrinterApi';
-import { Button, BodyCard, Table } from '../../components';
+import { Button, BodyCard, Table, toastError } from '../../components';
 
 class Devices extends Component {
   constructor(props) {
@@ -54,9 +54,13 @@ class Devices extends Component {
   }
 
   componentDidMount() {
-    this.subscription = PrinterApi.trackAll(1000).subscribe(printers => {
-      this.setState({ printers: this.removeDeletedPrinters(printers) });
-    }, console.error);
+    this.subscription = 
+      PrinterApi.trackAll(1000).subscribe(printers => {
+        this.setState({ printers: this.removeDeletedPrinters(printers) });
+      }, 
+      error => {
+        toastError(error.response.statusText);
+      });
   }
 
   componentWillUnmount() {

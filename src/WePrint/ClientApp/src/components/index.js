@@ -16,3 +16,4 @@ export { default as WepDropdown } from './wep-dropdown/wep-dropdown';
 export { default as FileDrop } from './file-drop/file-drop';
 export { default as WepPrompt } from './wep-prompt/wep-prompt';
 export { default as FormGroup } from './form-group/form-group';
+export { toastError, toastMessage } from './toast-body/toast-body';
