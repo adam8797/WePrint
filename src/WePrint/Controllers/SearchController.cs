@@ -37,7 +37,7 @@ namespace WePrint.Controllers
                 ImageUrl = Url.Action("GetThumbnail", "Project", new { id = project.Id }),
                 Id = project.Id,
                 Title = project.Title,
-                Href = "/projects/" + project.Id,
+                Href = "/project/" + project.Id,
                 Type = "Project"
             }).ToListAsync();
 
@@ -47,7 +47,7 @@ namespace WePrint.Controllers
                 Id = org.Id,
                 Description = org.Description,
                 ImageUrl = Url.Action("GetOrgAvatar", "Organization", new { id = org.Id }),
-                Href = "/organizations/" + org.Id,
+                Href = "/organization/" + org.Id,
                 Type = "Organization"
             }).ToListAsync();
 
