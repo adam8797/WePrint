@@ -13,3 +13,4 @@ export { default as Topics } from './topics/topics';
 export { default as JobDetail } from './job-detail/job-detail';
 export { default as Organization } from './organization/organization';
 export { default as EditOrganization } from './edit-organization/edit-organization';
+export { default as Project } from './project/project';
