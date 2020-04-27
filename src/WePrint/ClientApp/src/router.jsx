@@ -18,6 +18,7 @@ import {
   Account,
   EditOrganization,
   Project,
+  CreateProject,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -64,9 +65,6 @@ export default function AppRouter({ basename }) {
           <Route path="/finished">
             <FinishedJobs />
           </Route>
-          <Route exact path="/">
-            <Home />
-          </Route>
           <Route path="/job/:jobId">
             <JobDetail />
           </Route>
@@ -89,6 +87,12 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/account">
             <Account />
+          </Route>
+          <Route path="/create-project">
+            <CreateProject />
+          </Route>
+          <Route exact path="/">
+            <Home />
           </Route>
           <Route path="*">
             <PageNotFound />

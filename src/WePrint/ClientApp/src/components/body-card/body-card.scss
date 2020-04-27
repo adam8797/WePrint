@@ -16,4 +16,14 @@
     justify-self: center;
     align-self: center;
   }
+
+  &__actions {
+    margin-top: 1rem;
+  }
+  &__action-left {
+    float: left;
+  }
+  &__action-right {
+    float: right;
+  }
 }
