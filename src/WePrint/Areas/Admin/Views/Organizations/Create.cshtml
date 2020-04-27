@@ -1,0 +1,152 @@
+﻿@using Westwind.AspNetCore.Markdown
+@model Organization
+
+@section Head
+{
+    <style>
+        img.avatar {
+            width: 100px;
+            height: 100px;
+        }
+
+        .custom-file {
+            margin-bottom: 20px;
+        }
+    </style>
+}
+
+<a href="#" onclick="window.history.back()">Go Back</a>
+<hr />
+
+<h3>Create new Organization</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <form enctype="multipart/form-data" asp-action="CreateOrg">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <span>Logo</span>
+            <div class="custom-file">
+                <input type="file" name="Avatar" class="custom-file-input" id="customFile">
+                <label class="custom-file-label" for="customFile">Choose Logo</label>
+            </div>
+
+            <h5>Address</h5>
+            <hr />
+
+            <div class="form-group">
+                <label asp-for="Address.Attention" class="control-label"></label>
+                <input asp-for="Address.Attention" class="form-control" />
+                <span asp-validation-for="Address.Attention" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address.AddressLine1" class="control-label"></label>
+                <input asp-for="Address.AddressLine1" class="form-control" />
+                <span asp-validation-for="Address.AddressLine1" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address.AddressLine2" class="control-label"></label>
+                <input asp-for="Address.AddressLine2" class="form-control" />
+                <span asp-validation-for="Address.AddressLine2" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address.AddressLine3" class="control-label"></label>
+                <input asp-for="Address.AddressLine3" class="form-control" />
+                <span asp-validation-for="Address.AddressLine3" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Address.City" for="inputCity"></label>
+                    <input asp-for="Address.City" type="text" class="form-control" id="inputCity">
+                    <span asp-validation-for="Address.City" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Address.State" for="inputState"></label>
+                    <select asp-for="Address.State" id="inputState" class="form-control">
+                        <option selected disabled>Choose...</option>
+                        <option value="AL">Alabama</option>
+                        <option value="AK">Alaska</option>
+                        <option value="AZ">Arizona</option>
+                        <option value="AR">Arkansas</option>
+                        <option value="CA">California</option>
+                        <option value="CO">Colorado</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="DE">Delaware</option>
+                        <option value="DC">D.C</option>
+                        <option value="FL">Florida</option>
+                        <option value="GA">Georgia</option>
+                        <option value="HI">Hawaii</option>
+                        <option value="ID">Idaho</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IN">Indiana</option>
+                        <option value="IA">Iowa</option>
+                        <option value="KS">Kansas</option>
+                        <option value="KY">Kentucky</option>
+                        <option value="LA">Louisiana</option>
+                        <option value="ME">Maine</option>
+                        <option value="MD">Maryland</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="MI">Michigan</option>
+                        <option value="MN">Minnesota</option>
+                        <option value="MS">Mississippi</option>
+                        <option value="MO">Missouri</option>
+                        <option value="MT">Montana</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="NV">Nevada</option>
+                        <option value="NH">New Hampshire</option>
+                        <option value="NJ">New Jersey</option>
+                        <option value="NM">New Mexico</option>
+                        <option value="NY">New York</option>
+                        <option value="NC">North Carolina</option>
+                        <option value="ND">North Dakota</option>
+                        <option value="OH">Ohio</option>
+                        <option value="OK">Oklahoma</option>
+                        <option value="OR">Oregon</option>
+                        <option value="PA">Pennsylvania</option>
+                        <option value="RI">Rhode Island</option>
+                        <option value="SC">South Carolina</option>
+                        <option value="SD">South Dakota</option>
+                        <option value="TN">Tennessee</option>
+                        <option value="TE">Texas</option>
+                        <option value="UT">Utah</option>
+                        <option value="VT">Vermont</option>
+                        <option value="VA">Virginia</option>
+                        <option value="WA">Washington</option>
+                        <option value="WV">West Virginia</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="Address.ZipCode" for="inputZip"></label>
+                    <input asp-for="Address.ZipCode" type="text" class="form-control" id="inputZip">
+                    <span asp-validation-for="Address.ZipCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <input type="submit" class="btn btn-success" />
+        </form>
+        <script>
+            document.querySelector('.custom-file-input').addEventListener('change',function(e){
+                var fileName = document.getElementById("customFile").files[0].name;
+                var nextSibling = e.target.nextElementSibling;
+                nextSibling.innerText = fileName;
+            })
+        </script>
+    </div>
+</div>
