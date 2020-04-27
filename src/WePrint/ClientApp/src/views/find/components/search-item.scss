@@ -1,0 +1,13 @@
+@import '../../../assets/styles/effects';
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.search-item {
+
+    border-bottom: 1px solid black;
+
+    .avatar {
+        width: 75px;
+        height: 75px;
+    }
+}
