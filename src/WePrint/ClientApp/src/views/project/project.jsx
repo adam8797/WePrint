@@ -6,9 +6,10 @@ import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import moment from 'moment';
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
-import { BodyCard, Button, Table } from '../../components';
+import { BodyCard, Button, Table, SectionTitle } from '../../components';
 import './project.scss';
 import UpdatesPanel from './components/updates-panel';
+import CreatePledge from './components/create-pledge';
 
 class Project extends Component {
   constructor(props) {
@@ -238,6 +239,8 @@ class Project extends Component {
               data={pledges || []}
               emptyMessage="There are no pledges yet, add yours now!"
             />
+            <SectionTitle title="Pledge now" />
+            <CreatePledge projId={id} />
           </div>
         </div>
       </BodyCard>
