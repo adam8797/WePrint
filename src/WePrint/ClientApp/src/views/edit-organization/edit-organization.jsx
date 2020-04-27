@@ -9,6 +9,7 @@ import FormGroup from '../../components/form-group/form-group';
 import BodyCard from '../../components/body-card/body-card';
 import WepInput from '../../components/wep-input/wep-input';
 import WepTextarea from '../../components/wep-textarea/wep-textarea';
+import FileDrop from '../../components/file-drop/file-drop';
 import Button, { ButtonType } from '../../components/button/button';
 
 import './edit-organization.scss';
@@ -38,7 +39,12 @@ function EditOrganization(props) {
   const [orgUsers, setOrgUsers] = useState(users || []);
   const [user, setUser] = useState(currentUser);
 
+  // file
+  const [logo, setLogo] = useState(organization.id && OrgApi.getAvatarUrl(organization.id));
+  const [file, setFile] = useState(null);
+
   const [error, setError] = useState(false);
+
   if (!user) {
     UserApi.CurrentUser().subscribe(u => {
       // currently this information is not sent back we need to fix this!
@@ -80,16 +86,48 @@ function EditOrganization(props) {
       zipCode,
     };
     organization.users = orgUsers.map(u => u.id);
+    let data;
+    if (file) {
+      data = new FormData();
+      data.append('file', file);
+    }
+
+    console.log(organization.id);
     if (organization.id) {
-      OrgApi.replace(organization.id, org).subscribe(returnCallback, console.error);
+      OrgApi.replace(organization.id, org).subscribe(response => {
+        if (data) {
+          OrgApi.postAvatar(organization.id, data).subscribe(() => {
+            returnCallback(response);
+          }, console.error);
+        } else {
+          returnCallback(response);
+        }
+      }, console.error);
     } else {
-      OrgApi.create(org).subscribe(returnCallback, console.error);
+      OrgApi.create(org).subscribe(response => {
+        if (data) {
+          OrgApi.postAvatar(response.id, data).subscribe(() => {
+            returnCallback(response);
+          }, console.error);
+        } else {
+          returnCallback(response);
+        }
+      }, console.error);
     }
   };
 
   const deleteOrg = () => {
     if (!organization.id) return;
     OrgApi.delete(organization.id).subscribe(returnCallback, console.error);
+  };
+
+  const uploadFile = files => {
+    setFile(files[0]);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setLogo(reader.result);
+    };
+    reader.readAsDataURL(files[0]);
   };
 
   const getUserDisplay = u => {
@@ -115,6 +153,7 @@ function EditOrganization(props) {
       </div>
     );
   };
+
   if (error) {
     return <BodyCard>You already have an organization!</BodyCard>;
   }
@@ -188,7 +227,16 @@ function EditOrganization(props) {
             <FormGroup
               title="Logo"
               help="The image that will be displayed next to the organization"
-            ></FormGroup>
+            >
+              <div className="edit-org__split-inline">
+                <img className="edit-org__logo" src={logo} alt="Organization Logo" />
+                <FileDrop
+                  handleFiles={uploadFile}
+                  accept=".png, .jpg, .jpeg"
+                  customMsg="Drag an image file here, or click to select one"
+                />
+              </div>
+            </FormGroup>
           </div>
         </div>
         <FormGroup title="Organization Bio" help="A description of the organization">

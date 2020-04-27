@@ -13,13 +13,13 @@
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    margin-bottom: ms(-2);
+    margin-bottom: $padding-standard;
     color: black;
   }
 
   &__title {
     font-weight: $font-weight-semi-bold;
-    padding-right: ms(-2);
+    padding-right: $padding-standard;
   }
 
   &__help {
@@ -30,6 +30,6 @@
   .wep-input,
   .wep-textarea__wrapper {
     width: 100%;
-    margin-bottom: ms(-2);
+    margin-bottom: $padding-standard;
   }
 }

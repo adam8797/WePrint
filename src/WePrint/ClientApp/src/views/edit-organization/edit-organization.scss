@@ -16,12 +16,19 @@
     }
   }
 
+  &__logo {
+    width: $image-size-standard;
+    height: $image-size-standard;
+    margin-right: $padding-standard;
+    border-radius: 100%;
+  }
+
   &__user {
     width: 100%;
     background-color: $grey-7;
-    border-radius: ms(-3);
-    margin-bottom: ms(-2);
-    padding: ms(-2);
+    border-radius: $border-radius-standard;
+    margin-bottom: $padding-standard;
+    padding: $padding-standard;
     color: black;
     display: flex;
     flex-direction: row;
@@ -32,6 +39,15 @@
     color: $red;
     cursor: pointer;
     margin-left: auto;
-    margin-right: ms(-2);
+    margin-right: $padding-standard;
+  }
+
+  .file-drop {
+    font-size: $font-size-sub-heading;
+    padding: $padding-standard;
+  }
+
+  .button {
+    margin-right: $padding-standard;
   }
 }
