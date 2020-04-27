@@ -1,16 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Hosting
 
 @inject UserManager<User> UserManager
+@inject IHostEnvironment HostEnvironment
 
-@if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Administrator"))
+@if (HostEnvironment.IsProduction())
 {
-    <p>Welcome, you are an administrator</p>
+    <p>Welcome. The dashboard doesn't exist yet...</p>
 }
 else
 {
-    <p>You are <b>not</b> and Administrator, click below to be added to the group</p>
+    if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Administrator"))
+    {
+        <p>Welcome, you are an administrator</p>
+    }
+    else
+    {
+        <p>You are <b>not</b> and Administrator, click below to be added to the group</p>
 
-    <form method="post" asp-action="Promote">
-        <input type="submit" value="Promote" />
-    </form>
+        <form method="post" asp-action="Promote">
+            <input type="submit" value="Promote"/>
+        </form>
+    }
 }

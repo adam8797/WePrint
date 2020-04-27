@@ -49,7 +49,7 @@ namespace WePrint.Controllers
 
         protected override IQueryable<ProjectUpdate> Filter(IQueryable<ProjectUpdate> data, Project parent, User user)
         {
-            return Database.ProjectUpdates.Where(x => x.Project == parent);
+            return Database.ProjectUpdates.Where(x => x.Project == parent).OrderByDescending(x => x.Timestamp);
         }
     }
 }
