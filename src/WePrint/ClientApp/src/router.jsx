@@ -83,6 +83,7 @@ export default function AppRouter({ basename }) {
                 window.location.href = loc;
               }}
             />
+          </Route>
           <Route path="/project/:projId">
             <Project />
           </Route>
