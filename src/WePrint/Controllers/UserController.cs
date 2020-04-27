@@ -44,6 +44,21 @@ namespace WePrint.Controllers
             return Ok(vm);
         }
 
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateUser([FromBody] UserViewModel updated)
+        {
+            User current = await CurrentUser;
+            if (updated.Id != current.Id)
+                return Unauthorized();
+
+            Mapper.Map(updated, current);
+            await Database.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpGet("avatar")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]

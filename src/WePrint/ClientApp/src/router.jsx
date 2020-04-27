@@ -15,6 +15,7 @@ import {
   JobDetail,
   FinishedJobs,
   Organization,
+  Account,
   EditOrganization,
 } from './views';
 
@@ -81,6 +82,9 @@ export default function AppRouter({ basename }) {
                 window.location.href = loc;
               }}
             />
+          </Route>
+          <Route path="/account">
+            <Account />
           </Route>
           <Route path="*">
             <PageNotFound />
