@@ -23,9 +23,36 @@ namespace WePrint.Controllers
         /// Search for all jobs matching some string
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<SearchViewModel>>> SearchJob([FromQuery]string q)
+        public async Task<ActionResult<List<SearchViewModel>>> Search([FromQuery]string q)
         {
-            return await Database.Projects.Where(x => x.Title.Contains(q)).ProjectTo<SearchViewModel>(Mapper.ConfigurationProvider).ToListAsync();
+            var projects = Database.Projects
+                .Where(x => x.Title.Contains(q));
+
+            var orgs = Database.Organizations
+                .Where(x => x.Name.Contains(q) || x.Description.Contains(q));
+
+            var pvm = await projects.Select(project => new SearchViewModel()
+            {
+                Description = project.Description,
+                ImageUrl = Url.Action("GetThumbnail", "Project", new { id = project.Id }),
+                Id = project.Id,
+                Title = project.Title,
+                Href = "/projects/" + project.Id,
+                Type = "Project"
+            }).ToListAsync();
+
+            var ovm = await orgs.Select(org => new SearchViewModel()
+            {
+                Title = org.Name,
+                Id = org.Id,
+                Description = org.Description,
+                ImageUrl = Url.Action("GetOrgAvatar", "Organization", new { id = org.Id }),
+                Href = "/organizations/" + org.Id,
+                Type = "Organization"
+            }).ToListAsync();
+
+            return pvm.Concat(ovm).OrderBy(x => x.Title).ToList();
+
         }
     }
 }

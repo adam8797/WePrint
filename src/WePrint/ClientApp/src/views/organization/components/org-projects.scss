@@ -1,12 +1,12 @@
 @import '../../../assets/styles/sizes';
 @import '../../../assets/styles/colors';
 
-.project {
+.org-project {
   cursor: pointer;
-  padding: ms(-2);
+  padding: $padding-standard;
   padding-top: ms(0);
-  margin-bottom: ms(-2);
-  border-radius: ms(-3);
+  margin-bottom: $padding-standard;
+  border-radius: $border-radius-standard;
   background-color: $grey-7;
 
   &--active {
@@ -31,7 +31,7 @@
   }
 
   &__icon {
-    border-radius: ms(-8);
+    border-radius: $border-radius-small;
     width: $image-size-standard;
     height: $image-size-standard;
   }

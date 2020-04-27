@@ -7,7 +7,7 @@ import {
   About,
   EditDevice,
   Devices,
-  FindJob,
+  Find,
   Help,
   Home,
   PageNotFound,
@@ -16,6 +16,7 @@ import {
   FinishedJobs,
   Organization,
   Account,
+  EditOrganization,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -54,7 +55,7 @@ export default function AppRouter({ basename }) {
             <Devices />
           </Route>
           <Route path="/find">
-            <FindJob />
+            <Find />
           </Route>
           <Route path="/post">
             <PostJob />
@@ -70,6 +71,17 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/organization/:orgId">
             <Organization />
+          </Route>
+          <Route path="/new-organization">
+            <EditOrganization
+              returnCallback={org => {
+                let loc = window.location.origin;
+                if (org && org.id) {
+                  loc += `/organization/${org.id}`;
+                }
+                window.location.href = loc;
+              }}
+            />
           </Route>
           <Route path="/account">
             <Account />

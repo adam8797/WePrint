@@ -44,8 +44,6 @@ namespace WePrint.Areas.Admin.Controllers
 
         #region Create
 
-        //ToDo
-
         public virtual async Task<IActionResult> Create()
         {
             return View();
@@ -73,7 +71,8 @@ namespace WePrint.Areas.Admin.Controllers
 
         public virtual async Task<IActionResult> Edit(Guid id)
         {
-            return View();
+            var model = await Database.Set<T>().FindAsync(id);
+            return View(model);
         }
 
         [HttpPost]
@@ -82,8 +81,6 @@ namespace WePrint.Areas.Admin.Controllers
         {
             try
             {
-                // TODO: Add update logic here
-
                 return RedirectToAction("Index");
             }
             catch

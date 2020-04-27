@@ -1,10 +1,10 @@
 @import '../../../assets/styles/sizes';
 @import '../../../assets/styles/colors';
 
-.user {
-  padding: ms(-2);
-  margin-bottom: ms(-2);
-  border-radius: ms(-3);
+.org-user {
+  padding: $padding-standard;
+  margin-bottom: $padding-standard;
+  border-radius: $border-radius-standard;
   background-color: $grey-7;
 
   &__info {
@@ -13,7 +13,7 @@
   }
 
   &__name {
-    margin-left: ms(-2);
+    margin-left: $padding-standard;
     font-size: $font-size-sub-heading;
   }
 

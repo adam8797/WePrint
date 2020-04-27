@@ -16,6 +16,7 @@ import {
   faTrash,
   faPen,
   faSync,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -47,5 +48,6 @@ library.add(
   faTrash,
   faPen,
   faFrown,
-  faSync
+  faSync,
+  faTimes
 );

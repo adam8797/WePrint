@@ -19,7 +19,7 @@ function EditDevice() {
   useEffect(() => {
     // This should work, relies on the API changing printer ids to not use `/`
     if (printerId) {
-      PrinterApi.GetPrinter(printerId).subscribe(printer => {
+      PrinterApi.get(printerId).subscribe(printer => {
         setName(printer.name);
         setPrinterType(printer.type);
         setLayerMin(printer.layerMin);
@@ -52,14 +52,14 @@ function EditDevice() {
 
     if (printerId) {
       // update not create
-      PrinterApi.UpdatePrinter(printerId, printer).subscribe({
+      PrinterApi.correct(printerId, printer).subscribe({
         error: console.error,
         complete: () => {
           history.push('/devices');
         },
       });
     } else {
-      PrinterApi.CreatePrinter(printer).subscribe({
+      PrinterApi.create(printer).subscribe({
         error: console.error,
         complete: () => {
           history.push('/devices');
@@ -74,7 +74,7 @@ function EditDevice() {
       // TODO: add better confirmation alert
       // eslint-disable-next-line no-alert
       if (window.confirm(`Do you really want to delete printer: ${name}?`)) {
-        PrinterApi.DeletePrinter(printerId).subscribe({
+        PrinterApi.delete(printerId).subscribe({
           error: console.error,
           complete: () => {
             history.push('/devices');
