@@ -3,7 +3,6 @@
 
 .form-group {
   padding-right: ms(-1);
-  color: $grey-3;
 
   &--sub-form {
     font-size: $font-size-small;
@@ -14,7 +13,6 @@
     flex-direction: row;
     align-items: baseline;
     margin-bottom: $padding-standard;
-    color: black;
   }
 
   &__title {
@@ -31,5 +29,9 @@
   .wep-textarea__wrapper {
     width: 100%;
     margin-bottom: $padding-standard;
+  }
+
+  label {
+    color: $grey-3;
   }
 }
