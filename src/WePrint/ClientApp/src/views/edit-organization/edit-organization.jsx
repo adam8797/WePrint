@@ -87,7 +87,7 @@ function EditOrganization(props) {
   };
 
   const saveOrg = () => {
-    let org = organization;
+    const org = organization;
     organization.name = name;
     organization.description = description;
     organization.address = {
@@ -144,7 +144,7 @@ function EditOrganization(props) {
   };
 
   const getUserDisplay = u => {
-    if (!u) return;
+    if (!u) return false;
     if (user && user.id === u.id) {
       return (
         <div className="edit-org__user">
@@ -187,14 +187,14 @@ function EditOrganization(props) {
               />
             </FormGroup>
             <FormGroup title="Location" help="Where is the organization located?">
-              <label>Attention</label>
+              <label htmlFor="attention">Attention</label>
               <WepInput
                 name="attention"
                 id="attention"
                 value={attention}
                 handleChange={ev => setAttention(ev.target.value)}
               />
-              <label>Address</label>
+              <label htmlFor="addressLine1">Address</label>
               <WepInput
                 name="addressLine1"
                 id="addressLine1"
@@ -213,21 +213,21 @@ function EditOrganization(props) {
                 value={addressLine3}
                 handleChange={ev => setAddressLine3(ev.target.value)}
               />
-              <label>City</label>
+              <label htmlFor="city">City</label>
               <WepInput
                 name="city"
                 id="city"
                 value={city}
                 handleChange={ev => setCity(ev.target.value)}
               />
-              <label>State</label>
+              <label htmlFor="state">State</label>
               <WepInput
                 name="state"
                 id="state"
                 value={state}
                 handleChange={ev => setState(ev.target.value)}
               />
-              <label>Zip</label>
+              <label htmlFor="zipCode">Zip</label>
               <WepInput
                 name="zipCode"
                 id="zipCode"
@@ -260,7 +260,7 @@ function EditOrganization(props) {
             id="description"
             value={description}
             handleChange={ev => setDescription(ev.target.value)}
-          ></WepTextarea>
+          />
         </FormGroup>
         <FormGroup title="Manage Users" help="The users who are part of the organization">
           <FormGroup

@@ -25,6 +25,7 @@ FormGroup.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
   help: PropTypes.string,
+  type: PropTypes.string,
 };
 
 FormGroup.Type = FormType;
