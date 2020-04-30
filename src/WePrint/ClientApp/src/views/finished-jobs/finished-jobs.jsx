@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import JobApi from '../../api/JobApi';
 
-import BodyCard from '../../components/body-card/body-card';
-import ToggleableDisplay from '../../components/toggleable-display/toggleable-display';
+import { BodyCard, ToggleableDisplay, CardTypes } from '../../components';
 import { finishedJobStatuses } from '../../models/Enums';
 
 class FinishedJobs extends Component {
@@ -11,6 +10,41 @@ class FinishedJobs extends Component {
     this.state = {
       jobs: [],
     };
+
+    this.columns = [
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Owner',
+        accessor: 'customerUserName',
+      },
+      {
+        Header: 'Maker',
+        accessor: 'maker',
+      },
+      {
+        Header: 'Price',
+        accessor: 'price',
+      },
+      {
+        Header: 'Total Prints',
+        accessor: 'prints',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+      {
+        Header: 'Final Print Time',
+        accessor: 'printTime',
+      },
+      {
+        Header: 'Finished On',
+        accessor: 'completedDate',
+      },
+    ];
   }
 
   componentDidMount() {
@@ -37,7 +71,12 @@ class FinishedJobs extends Component {
 
     return (
       <BodyCard>
-        <ToggleableDisplay title="My Finished Jobs" data={displayJobs} />
+        <ToggleableDisplay
+          title="My Finished Jobs"
+          data={displayJobs}
+          cardType={CardTypes.JOB}
+          columns={this.columns}
+        />
       </BodyCard>
     );
   }

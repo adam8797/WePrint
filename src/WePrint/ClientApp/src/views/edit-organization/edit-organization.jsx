@@ -311,7 +311,7 @@ EditOrganization.propTypes = {
   organization: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
   ),
-  currentUser: PropTypes.objectOf(PropTypes.string),
+  currentUser: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
   users: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)),
   returnCallback: PropTypes.func,
 };

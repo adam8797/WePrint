@@ -1,0 +1,42 @@
+@import '../../../assets/styles/effects';
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.org-card {
+  background: $blue-4;
+  box-shadow: $card-shadow;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: $padding-standard;
+  width: $image-size-large;
+
+  &__title {
+    margin-left: $padding-standard;
+    font-size: $font-size-sub-heading;
+    font-weight: $font-weight-semi-bold;
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    padding-bottom: $padding-standard;
+  }
+
+  &__detail {
+    border-top: 1px solid $grey-3;
+    padding: 10px;
+    padding-top: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    width: $image-size-icon;
+    min-width: $image-size-icon;
+    height: $image-size-icon;
+    border-radius: 100%;
+  }
+}

@@ -17,6 +17,7 @@ import {
   faPen,
   faSync,
   faTimes,
+  faBuilding as faBuildingSolid,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -44,6 +45,7 @@ library.add(
   faArrowLeft,
   faComments,
   faBuilding,
+  faBuildingSolid,
   faQuestionCircleOutline,
   faTrash,
   faPen,
