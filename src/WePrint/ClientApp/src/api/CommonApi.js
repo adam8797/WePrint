@@ -1,7 +1,6 @@
 import axios from 'axios-observable';
 import { of, throwError, timer } from 'rxjs';
 import { switchMap, exhaustMap, distinctUntilChanged } from 'rxjs/operators';
-import { toast } from 'react-toastify';
 
 // Root endpoint of the API. You can point this at different urls for development and whatnot
 export const ROOT_ENDPOINT = './api/';
