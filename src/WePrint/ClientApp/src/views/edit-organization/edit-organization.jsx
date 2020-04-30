@@ -167,7 +167,7 @@ function EditOrganization(props) {
     );
   };
 
-  if (error && false) {
+  if (error) {
     return <BodyCard>You already have an organization!</BodyCard>;
   }
   return (
