@@ -1,4 +1,5 @@
 ﻿@using Westwind.AspNetCore.Markdown
+@using WePrint
 @model Organization
 
 @section Head
@@ -16,7 +17,7 @@
 
 <dl>
     <dt>Id</dt>
-    <dd>@Model.Id</dd>
+    <dd><a href="@Url.GetReactUrl(Model)">@Model.Id</a></dd>
 
     <dt>Name</dt>
     <dd>@Model.Name</dd>

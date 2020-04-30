@@ -13,19 +13,28 @@
             <th scope="col">Progress</th>
             <th scope="col">Pledges</th>
             <th scope="col">Updates</th>
+            <th scope="col">Tools</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var org in Model.Where(x => !x.Deleted))
+        @foreach (var project in Model.Where(x => !x.Deleted))
         {
             <tr>
-                <th scope="row"><a asp-action="Details" asp-route-id="@org.Id">@org.ShortId()</a></th>
-                <td>@org.Title</td>
-                <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@org.Organization.Id">@org.Organization.Name</a></td>
-                <td>@org.Goal</td>
-                <td>@org.Pledges.Where(x => x.Status >= PledgeStatus.Shipped).Sum(x => x.Quantity)</td>
-                <td>@org.Pledges.Count</td>
-                <td>@org.Updates.Count</td>
+                <th scope="row"><a asp-action="Details" asp-route-id="@project.Id">@project.ShortId()</a></th>
+                <td>@project.Title</td>
+                <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@project.Organization.Id">@project.Organization.Name</a></td>
+                <td>@project.Goal</td>
+                <td>@project.Pledges.Where(x => x.Status >= PledgeStatus.Shipped).Sum(x => x.Quantity)</td>
+                <td>@project.Pledges.Count</td>
+                <td>@project.Updates.Count</td>
+                <td>
+                    <a href="@Url.GetReactUrl(project)">
+                        <svg class="bi bi-box-arrow-up-right" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M1.5 13A1.5 1.5 0 003 14.5h8a1.5 1.5 0 001.5-1.5V9a.5.5 0 00-1 0v4a.5.5 0 01-.5.5H3a.5.5 0 01-.5-.5V5a.5.5 0 01.5-.5h4a.5.5 0 000-1H3A1.5 1.5 0 001.5 5v8zm7-11a.5.5 0 01.5-.5h5a.5.5 0 01.5.5v5a.5.5 0 01-1 0V2.5H9a.5.5 0 01-.5-.5z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M14.354 1.646a.5.5 0 010 .708l-8 8a.5.5 0 01-.708-.708l8-8a.5.5 0 01.708 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </td>
             </tr>
         }
     </tbody>
