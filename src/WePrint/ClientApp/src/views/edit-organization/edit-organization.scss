@@ -21,6 +21,15 @@
     height: $image-size-standard;
     margin-right: $padding-standard;
     border-radius: 100%;
+
+    &--blank {
+      border: 1px solid $grey-4;
+      background-color: $grey-8;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      padding: $padding-standard;
+    }
   }
 
   &__user {

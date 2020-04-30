@@ -167,7 +167,7 @@ function EditOrganization(props) {
     );
   };
 
-  if (error) {
+  if (error && false) {
     return <BodyCard>You already have an organization!</BodyCard>;
   }
   return (
@@ -242,8 +242,12 @@ function EditOrganization(props) {
               help="The image that will be displayed next to the organization"
             >
               <div className="edit-org__split-inline">
-                {logoUrl && (
+                {(logoUrl && (
                   <img className="edit-org__logo" src={logoUrl} alt="Organization Logo" />
+                )) || (
+                  <div>
+                    <div className="edit-org__logo edit-org__logo--blank">No Logo Uploaded</div>
+                  </div>
                 )}
                 <FileDrop
                   handleFiles={uploadFile}
