@@ -13,6 +13,7 @@ import {
   FileDrop,
   Button,
   ButtonType,
+  StatusView,
 } from '../../components';
 
 import './edit-organization.scss';
@@ -168,7 +169,11 @@ function EditOrganization(props) {
   };
 
   if (error) {
-    return <BodyCard>You already have an organization!</BodyCard>;
+    return (
+      <BodyCard>
+        <StatusView text="You already have an organization!" />
+      </BodyCard>
+    );
   }
   return (
     <BodyCard>

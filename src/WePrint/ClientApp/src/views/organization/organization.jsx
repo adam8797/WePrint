@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactMarkdown from 'react-markdown';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import OrgApi from '../../api/OrganizationApi';
-import { BodyCard } from '../../components';
+import { BodyCard, StatusView } from '../../components';
 import Button from '../../components/button/button';
 import UserApi from '../../api/UserApi';
 import OrgUsers from './components/org-users';
@@ -71,22 +70,17 @@ class Organization extends Component {
     if (error) {
       return (
         <BodyCard>
-          <div className="organization__error">
-            <span className="organization__error-text">
-              Could not load organization with id {orgId}
-            </span>
-            <FontAwesomeIcon icon={['far', 'frown']} />
-          </div>
+          <StatusView
+            text={`Could not load organization with id ${orgId}`}
+            icon={['far', 'frown']}
+          />
         </BodyCard>
       );
     }
     if (isEmpty(organization)) {
       return (
         <BodyCard>
-          <div className="organization__loading">
-            <span className="organization__loading-text">Organization Loading...</span>
-            <FontAwesomeIcon icon="sync" spin />
-          </div>
+          <StatusView text="Organization Loading..." icon="sync" spin />
         </BodyCard>
       );
     }
