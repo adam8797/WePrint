@@ -5,12 +5,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserApi from '../../api/UserApi';
 import OrgApi from '../../api/OrganizationApi';
 
-import FormGroup from '../../components/form-group/form-group';
-import BodyCard from '../../components/body-card/body-card';
-import WepInput from '../../components/wep-input/wep-input';
-import WepTextarea from '../../components/wep-textarea/wep-textarea';
-import FileDrop from '../../components/file-drop/file-drop';
-import Button, { ButtonType } from '../../components/button/button';
+import {
+  FormGroup,
+  BodyCard,
+  WepInput,
+  WepTextarea,
+  FileDrop,
+  Button,
+  ButtonType,
+} from '../../components';
 
 import './edit-organization.scss';
 
@@ -19,6 +22,17 @@ function EditOrganization(props) {
   let { organization } = props;
   if (!organization) {
     organization = { name: 'New Organization', address: {} };
+  }
+
+  let callback = returnCallback;
+  if (!callback) {
+    callback = org => {
+      let loc = window.location.origin;
+      if (org && org.id) {
+        loc += `/organization/${org.id}`;
+      }
+      window.location.href = loc;
+    };
   }
 
   // basic info
@@ -40,7 +54,7 @@ function EditOrganization(props) {
   const [user, setUser] = useState(currentUser);
 
   // file
-  const [logo, setLogo] = useState(organization.id && OrgApi.getAvatarUrl(organization.id));
+  const [logoUrl, setLogoUrl] = useState(organization.id && OrgApi.getAvatarUrl(organization.id));
   const [file, setFile] = useState(null);
 
   const [error, setError] = useState(false);
@@ -73,7 +87,7 @@ function EditOrganization(props) {
   };
 
   const saveOrg = () => {
-    let org = organization;
+    const org = organization;
     organization.name = name;
     organization.description = description;
     organization.address = {
@@ -89,28 +103,27 @@ function EditOrganization(props) {
     let data;
     if (file) {
       data = new FormData();
-      data.append('file', file);
+      data.append('upload', file);
     }
 
-    console.log(organization.id);
     if (organization.id) {
       OrgApi.replace(organization.id, org).subscribe(response => {
         if (data) {
           OrgApi.postAvatar(organization.id, data).subscribe(() => {
-            returnCallback(response);
+            callback(response);
           }, console.error);
         } else {
-          returnCallback(response);
+          callback(response);
         }
       }, console.error);
     } else {
       OrgApi.create(org).subscribe(response => {
         if (data) {
           OrgApi.postAvatar(response.id, data).subscribe(() => {
-            returnCallback(response);
+            callback(response);
           }, console.error);
         } else {
-          returnCallback(response);
+          callback(response);
         }
       }, console.error);
     }
@@ -118,20 +131,20 @@ function EditOrganization(props) {
 
   const deleteOrg = () => {
     if (!organization.id) return;
-    OrgApi.delete(organization.id).subscribe(returnCallback, console.error);
+    OrgApi.delete(organization.id).subscribe(callback, console.error);
   };
 
   const uploadFile = files => {
     setFile(files[0]);
     const reader = new FileReader();
     reader.onload = () => {
-      setLogo(reader.result);
+      setLogoUrl(reader.result);
     };
     reader.readAsDataURL(files[0]);
   };
 
   const getUserDisplay = u => {
-    if (!u) return;
+    if (!u) return false;
     if (user && user.id === u.id) {
       return (
         <div className="edit-org__user">
@@ -162,7 +175,7 @@ function EditOrganization(props) {
       <div className="edit-org">
         <div className="edit-org__header">{organization.name}</div>
         <hr />
-        <div className="edit-org__split-inline">
+        <div className="edit-org__split-inline edit-org__split-inline--equal">
           <div>
             <FormGroup title="Organization Name" help="What is the organization called?">
               <WepInput
@@ -174,14 +187,14 @@ function EditOrganization(props) {
               />
             </FormGroup>
             <FormGroup title="Location" help="Where is the organization located?">
-              Attention
+              <label htmlFor="attention">Attention</label>
               <WepInput
                 name="attention"
                 id="attention"
                 value={attention}
                 handleChange={ev => setAttention(ev.target.value)}
               />
-              Address
+              <label htmlFor="addressLine1">Address</label>
               <WepInput
                 name="addressLine1"
                 id="addressLine1"
@@ -200,21 +213,21 @@ function EditOrganization(props) {
                 value={addressLine3}
                 handleChange={ev => setAddressLine3(ev.target.value)}
               />
-              City
+              <label htmlFor="city">City</label>
               <WepInput
                 name="city"
                 id="city"
                 value={city}
                 handleChange={ev => setCity(ev.target.value)}
               />
-              State
+              <label htmlFor="state">State</label>
               <WepInput
                 name="state"
                 id="state"
                 value={state}
                 handleChange={ev => setState(ev.target.value)}
               />
-              Zip
+              <label htmlFor="zipCode">Zip</label>
               <WepInput
                 name="zipCode"
                 id="zipCode"
@@ -229,7 +242,9 @@ function EditOrganization(props) {
               help="The image that will be displayed next to the organization"
             >
               <div className="edit-org__split-inline">
-                <img className="edit-org__logo" src={logo} alt="Organization Logo" />
+                {(logoUrl && (
+                  <img className="edit-org__logo" src={logoUrl} alt="Organization Logo" />
+                )) || <div className="edit-org__logo edit-org__logo--blank">No Logo Uploaded</div>}
                 <FileDrop
                   handleFiles={uploadFile}
                   accept=".png, .jpg, .jpeg"
@@ -245,7 +260,7 @@ function EditOrganization(props) {
             id="description"
             value={description}
             handleChange={ev => setDescription(ev.target.value)}
-          ></WepTextarea>
+          />
         </FormGroup>
         <FormGroup title="Manage Users" help="The users who are part of the organization">
           <FormGroup
@@ -278,7 +293,7 @@ function EditOrganization(props) {
             Delete
           </Button>
         )}
-        <Button onClick={returnCallback}>Return</Button>
+        <Button onClick={callback}>Return</Button>
         <Button onClick={saveOrg} type={ButtonType.SUCCESS}>
           Save
         </Button>

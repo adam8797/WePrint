@@ -72,15 +72,7 @@ export default function AppRouter({ basename }) {
             <Organization />
           </Route>
           <Route path="/new-organization">
-            <EditOrganization
-              returnCallback={org => {
-                let loc = window.location.origin;
-                if (org && org.id) {
-                  loc += `/organization/${org.id}`;
-                }
-                window.location.href = loc;
-              }}
-            />
+            <EditOrganization />
           </Route>
           <Route path="/project/:projId">
             <Project />
