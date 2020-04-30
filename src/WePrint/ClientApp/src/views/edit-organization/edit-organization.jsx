@@ -175,7 +175,7 @@ function EditOrganization(props) {
       <div className="edit-org">
         <div className="edit-org__header">{organization.name}</div>
         <hr />
-        <div className="edit-org__split-inline">
+        <div className="edit-org__split-inline edit-org__split-inline--equal">
           <div>
             <FormGroup title="Organization Name" help="What is the organization called?">
               <WepInput
@@ -244,11 +244,7 @@ function EditOrganization(props) {
               <div className="edit-org__split-inline">
                 {(logoUrl && (
                   <img className="edit-org__logo" src={logoUrl} alt="Organization Logo" />
-                )) || (
-                  <div>
-                    <div className="edit-org__logo edit-org__logo--blank">No Logo Uploaded</div>
-                  </div>
-                )}
+                )) || <div className="edit-org__logo edit-org__logo--blank">No Logo Uploaded</div>}
                 <FileDrop
                   handleFiles={uploadFile}
                   accept=".png, .jpg, .jpeg"
