@@ -59,6 +59,7 @@ namespace WePrint.Controllers
         #endregion
 
         [HttpGet("{id}/thumbnail")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

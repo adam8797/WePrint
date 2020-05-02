@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -92,6 +93,7 @@ namespace WePrint.Controllers.Base
         #region HTTP Verbs
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // GET /api/[controller]
         public virtual async Task<ActionResult<IEnumerable<TViewModel>>> Get()
@@ -108,6 +110,7 @@ namespace WePrint.Controllers.Base
 
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
