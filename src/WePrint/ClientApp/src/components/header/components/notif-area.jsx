@@ -59,7 +59,7 @@ class NotifArea extends Component {
             </div>
             <Link to="/account">
               <div className="notif-area__avatar">
-                <img className="notif-area__ava-icon" src={`/api/users/by-id/${user.id}/avatar`} alt="User Avatar"/>
+                <img className="notif-area__ava-icon" src={`/api/users/${user.id}/avatar`} alt="User Avatar"/>
               </div>
             </Link>
             {/* <div className="notif-area__icon">

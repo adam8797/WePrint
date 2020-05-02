@@ -8,7 +8,7 @@ class UserApi extends CommonApi {
   }
 
   CurrentUser() {
-    return axios.get(BuildUrl(usersApiPath)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(usersApiPath, "current")).pipe(ErrorOnBadStatus);
     }
 
     UpdateUser(userModel) {
@@ -16,11 +16,11 @@ class UserApi extends CommonApi {
     }
 
   GetUser(id) {
-    return axios.get(BuildUrl(usersApiPath, 'by-id', id)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(usersApiPath, id)).pipe(ErrorOnBadStatus);
   }
 
   GetUserByUsername(username) {
-    return axios.get(BuildUrl(usersApiPath, 'by-name', username)).pipe(ErrorOnBadStatus);
+    return axios.get(BuildUrl(usersApiPath, username)).pipe(ErrorOnBadStatus);
   }
 
   getAvatar(id) {
@@ -28,7 +28,7 @@ class UserApi extends CommonApi {
   }
 
   getAvatarUrl(id) {
-    return BuildUrl(this.apiPath, 'by-id', id, 'avatar');
+    return BuildUrl(usersApiPath, id, 'avatar');
   }
 }
 

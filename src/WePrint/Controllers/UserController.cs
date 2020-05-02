@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +27,6 @@ using WePrint.Utilities;
 
 namespace WePrint.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/users")]
     public class UserController : WePrintController
@@ -34,109 +38,79 @@ namespace WePrint.Controllers
             _avatar = avatar;
         }
 
-        // GET: /api/users/
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserViewModel>> GetCurrentUser()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserViewModel>> GetUser(string id)
         {
-            var vm = Mapper.Map<UserViewModel>(await CurrentUser);
-            return Ok(vm);
-        }
-
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUser([FromBody] UserViewModel updated)
-        {
-            User current = await CurrentUser;
-            if (updated.Id != current.Id)
+            var user = await FindUser(id);
+            if (id.ToLower() == "current" && user == null)
                 return Unauthorized();
 
-            Mapper.Map(updated, current);
-            await Database.SaveChangesAsync();
+            if (user == null || user.Deleted)
+                return NotFound();
 
-            return Ok();
+            var vm = Mapper.Map<UserViewModel>(user);
+            return vm;
         }
 
-        [HttpGet("avatar")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet]
+        public async Task<ActionResult<List<UserViewModel>>> GetUsers()
+        {
+            return Mapper.Map<List<UserViewModel>>(await Database.Users
+                .OrderBy(x => x.UserName)
+                .Where(x => !x.Deleted)
+                .ToListAsync());
+        }
+
+
+        private async Task<User> FindUser(string query)
+        {
+            if (query.ToLower() == "current")
+                    return await CurrentUser;
+            
+            if (Guid.TryParse(query, out _))
+                return await UserManager.FindByIdAsync(query);
+            
+            return await UserManager.FindByNameAsync(query);
+        }
+
+        [HttpPatch("current")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromBody] JsonPatchDocument<UserViewModelFacade> patchDoc)
+        {
+            User current = await CurrentUser;
+
+            var facade = new UserViewModelFacade(current);
+            patchDoc.ApplyTo(facade);
+
+            await Database.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        #region Avatar Stuff
+
+        [HttpGet("{id}/avatar")]
         public async Task<IActionResult> GetCurrentAvatar()
         {
             return await _avatar.GetAvatarResult(await CurrentUser);
         }
 
-        [HttpDelete("avatar")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        [HttpDelete("current/avatar")]
         public async Task<IActionResult> ClearCurrentAvatar()
         {
             return await _avatar.ClearAvatar(await CurrentUser);
         }
 
-        [HttpPost("avatar")]
+        [Authorize]
+        [HttpPost("current/avatar")]
         [RequestSizeLimit(5 * 1_000_000)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetCurrentAvatar(IFormFile postedImage)
         {
             var user = await CurrentUser;
             return await _avatar.SetAvatarResult(user, postedImage);
         }
 
-        // GET" /api/users/by-id/{id}
-        [HttpGet("by-id/{id}")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserViewModel>> GetUserById(Guid id)
-        {
-            var targetUser = await Database.Users.FindAsync(id);
-            if (targetUser == null)
-                return NotFound();
-
-            var vm = Mapper.Map<UserViewModel>(targetUser);
-            return vm;
-        }
-
-        // GET" /api/users/by-name/{id}
-        [HttpGet("by-name/{id}")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserViewModel>> GetUserByUsername(string id)
-        {
-            var targetUser = await UserManager.FindByNameAsync(id);
-            if (targetUser == null)
-                return NotFound();
-
-            var vm = Mapper.Map<UserViewModel>(targetUser);
-            return vm;
-        }
-
-        [HttpGet("by-id/{id}/avatar")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAvatarById(Guid id)
-        {
-            var targetUser = await Database.Users.FindAsync(id);
-            return await _avatar.GetAvatarResult(targetUser);
-        }
-
-        [HttpGet("by-name/{id}/avatar")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAvatarByName(string id)
-        {
-            var targetUser = await UserManager.FindByNameAsync(id);
-            return await _avatar.GetAvatarResult(targetUser);
-        }
+        #endregion
     }
 }

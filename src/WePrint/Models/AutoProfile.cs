@@ -19,6 +19,7 @@ namespace WePrint.Models
             CreateMap<TViewModel, TData>();
             CreateMap<TCreateModel, TData>();
             CreateMap<TKey, TData>().ConvertUsing<EntityConverter<TKey, TData>>();
+            CreateMap<TKey?, TData>().ConvertUsing<NullKeyEntityConverter<TKey, TData>>();
             CreateMap<TData, TKey>().ConvertUsing(x => x.Id);
             CreateMap<TData, TKey?>().ConvertUsing((x, y) => x?.Id);
         }
@@ -34,6 +35,7 @@ namespace WePrint.Models
             CreateMap<TData, TViewModel>();
             CreateMap<TViewModel, TData>().ForMember(x => x.Deleted, y => y.Ignore());
             CreateMap<TKey, TData>().ConvertUsing<EntityConverter<TKey, TData>>();
+            CreateMap<TKey?, TData>().ConvertUsing<NullKeyEntityConverter<TKey, TData>>();
             CreateMap<TData, TKey>().ConvertUsing(x => x.Id);
             CreateMap<TData, TKey?>().ConvertUsing((x, y) => x?.Id);
         }
