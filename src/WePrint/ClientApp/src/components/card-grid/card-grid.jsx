@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import JobCard from './components/job-card';
 import OrgCard from './components/org-card';
+import ProjCard from './components/proj-card';
 
 import './card-grid.scss';
 
 export const CardTypes = {
   JOB: 'JobCard',
   ORGANIZATION: 'OrgCard',
+  PROJECT: 'ProjCard',
 };
 
 function CardGrid(props) {
@@ -54,6 +56,19 @@ function CardGrid(props) {
             key={card.id}
           />
         );
+      case CardTypes.PROJECT:
+        return (
+          <ProjCard
+            projId={card.id}
+            title={card.title}
+            location={card.location}
+            goal={card.goal}
+            closed={card.closed}
+            progressDisplay={card.progressDisplay}
+            link={card.link}
+            key={card.id}
+          />
+        );
       default:
         console.error(`Card type ${cardType} not recognized`);
         return '';
@@ -71,7 +86,13 @@ function CardGrid(props) {
 CardGrid.propTypes = {
   cards: PropTypes.arrayOf(
     PropTypes.objectOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.array])
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.object,
+        PropTypes.array,
+        PropTypes.bool,
+      ])
     )
   ),
   cardType: PropTypes.string,

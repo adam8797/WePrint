@@ -20,6 +20,7 @@ import {
   Project,
   CreateProject,
   Organizations,
+  Projects,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -80,6 +81,9 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/project/:projId">
             <Project />
+          </Route>
+          <Route path="/projects">
+            <Projects />
           </Route>
           <Route path="/account">
             <Account />

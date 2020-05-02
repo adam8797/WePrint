@@ -52,7 +52,13 @@ ToggleableDisplay.propTypes = {
   title: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(
     PropTypes.objectOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.array])
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.object,
+        PropTypes.array,
+        PropTypes.bool,
+      ])
     )
   ).isRequired,
   cardType: PropTypes.string.isRequired,

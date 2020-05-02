@@ -18,6 +18,7 @@ import {
   faSync,
   faTimes,
   faBuilding as faBuildingSolid,
+  faHandsHelping,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -51,5 +52,6 @@ library.add(
   faPen,
   faFrown,
   faSync,
-  faTimes
+  faTimes,
+  faHandsHelping
 );
