@@ -96,6 +96,7 @@ namespace WePrint.Controllers
         #region Get Full Lists
 
         [HttpGet("{id}/users")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserViewModel>>> GetUsers(Guid id)
@@ -158,6 +159,7 @@ namespace WePrint.Controllers
         }
 
         [HttpGet("{id}/projects")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ProjectViewModel>>> GetProjects(Guid id)
