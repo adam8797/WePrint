@@ -34,5 +34,22 @@ namespace WePrint.Controllers
         {
             return Database.Pledges.Where(x => x.Project == parent);
         }
+
+        [HttpPatch("{id}/setstatus")]
+        public async Task<IActionResult> UpdateStatus(Guid parentId, Guid id, PledgeStatus newStatus)
+        {
+            var pledge = await Database.Pledges.FindAsync(id);
+
+            if (pledge.Project.Id != parentId)
+                return NotFound();
+
+            if ((await CurrentUser).Organization != pledge.Project.Organization)
+                return Forbid();
+
+            pledge.Status = newStatus;
+
+            await Database.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
