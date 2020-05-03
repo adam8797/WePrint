@@ -28,15 +28,18 @@ class Organization extends Component {
   }
 
   componentDidMount() {
-    this.fetchOrg();
-    UserApi.CurrentUser().subscribe(user => {
+    const { match, user, orgId } = this.props;
+    this.fetchOrg(orgId || match.params.orgId);
+    if (!user) {
+      UserApi.CurrentUser().subscribe(u => {
+        this.setState({ user: u });
+      });
+    } else {
       this.setState({ user });
-    });
+    }
   }
 
-  fetchOrg() {
-    const { match } = this.props;
-    const { orgId } = match.params;
+  fetchOrg(orgId) {
     OrgApi.get(orgId).subscribe(
       organization => {
         this.setState({ organization, error: false });
@@ -160,6 +163,13 @@ Organization.propTypes = {
   match: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.object])
   ).isRequired,
+  user: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string])),
+  orgId: PropTypes.string,
+};
+
+Organization.defaultProps = {
+  user: null,
+  orgId: null,
 };
 
 export default withRouter(Organization);
