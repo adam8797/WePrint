@@ -4,6 +4,7 @@ import NestedApi from './NestedApi';
 import ProjectModel from '../models/ProjectModel';
 import PledgeModel from '../models/PledgeModel';
 import ProjectUpdateModel from '../models/ProjectUpdateModel';
+import PledgeApi from './PledgeApi';
 
 class ProjectApi extends CommonApi {
   constructor() {
@@ -11,7 +12,7 @@ class ProjectApi extends CommonApi {
   }
 
   pledgesFor(projectId) {
-    return new NestedApi('projects', projectId, 'pledges', 'pledges', PledgeModel.AllPropsEqual);
+    return new PledgeApi('projects', projectId, 'pledges', 'pledges', PledgeModel.AllPropsEqual);
   }
 
   updatesFor(projectId) {
