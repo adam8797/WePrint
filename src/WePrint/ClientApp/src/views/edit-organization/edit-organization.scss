@@ -51,6 +51,10 @@
     margin-right: $padding-standard;
   }
 
+  &__input-error {
+    color: $red;
+  }
+
   .file-drop {
     font-size: $font-size-sub-heading;
     padding: $padding-standard;

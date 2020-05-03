@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useForm } from 'react-hook-form';
+import { isEmpty, includes } from 'lodash';
 
 import UserApi from '../../api/UserApi';
 import OrgApi from '../../api/OrganizationApi';
@@ -17,9 +19,12 @@ import {
 } from '../../components';
 
 import './edit-organization.scss';
+import { USStates } from '../../models/Enums';
 
 function EditOrganization(props) {
   const { currentUser, users, returnCallback } = props;
+  const { register, handleSubmit, errors } = useForm();
+
   let { organization } = props;
   if (!organization) {
     organization = { name: 'New Organization', address: {} };
@@ -36,26 +41,14 @@ function EditOrganization(props) {
     };
   }
 
-  // basic info
-  const [name, setName] = useState(organization.name);
-  const [description, setDescription] = useState(organization.description);
-
-  // address info
-  const [addressLine1, setAddressLine1] = useState(organization.address.addressLine1);
-  const [addressLine2, setAddressLine2] = useState(organization.address.addressLine2);
-  const [addressLine3, setAddressLine3] = useState(organization.address.addressLine3);
-  const [attention, setAttention] = useState(organization.address.attention);
-  const [city, setCity] = useState(organization.address.city);
-  const [state, setState] = useState(organization.address.state);
-  const [zipCode, setZipCode] = useState(organization.address.zipCode);
-
   // users
-  const [newUser, setNewUser] = useState(null);
+  const [newUser, setNewUser] = useState('');
   const [orgUsers, setOrgUsers] = useState(users || []);
   const [user, setUser] = useState(currentUser);
 
   // file
   const [logoUrl, setLogoUrl] = useState(organization.id && OrgApi.getAvatarUrl(organization.id));
+  const [logoMissing, setLogoMissing] = useState(false);
   const [file, setFile] = useState(null);
 
   const [error, setError] = useState(false);
@@ -87,18 +80,22 @@ function EditOrganization(props) {
     setOrgUsers(orgUsers.filter(orgUser => orgUser.id !== u.id));
   };
 
-  const saveOrg = () => {
+  const saveOrg = form => {
+    if (!logoUrl) {
+      setLogoMissing(true);
+      return;
+    }
     const org = organization;
-    organization.name = name;
-    organization.description = description;
+    organization.name = form.name;
+    organization.description = form.description;
     organization.address = {
-      attention,
-      addressLine1,
-      addressLine2,
-      addressLine3,
-      city,
-      state,
-      zipCode,
+      attention: form.attention,
+      addressLine1: form.addressLine1,
+      addressLine2: form.addressLine2,
+      addressLine3: form.addressLine3,
+      city: form.city,
+      state: form.state.toUpperCase(),
+      zipCode: form.zipCode,
     };
     organization.users = orgUsers.map(u => u.id);
     let data;
@@ -140,6 +137,7 @@ function EditOrganization(props) {
     const reader = new FileReader();
     reader.onload = () => {
       setLogoUrl(reader.result);
+      setLogoMissing(false);
     };
     reader.readAsDataURL(files[0]);
   };
@@ -180,128 +178,167 @@ function EditOrganization(props) {
       <div className="edit-org">
         <div className="edit-org__header">{organization.name}</div>
         <hr />
-        <div className="edit-org__split-inline edit-org__split-inline--equal">
-          <div>
-            <FormGroup title="Organization Name" help="What is the organization called?">
-              <WepInput
-                name="name"
-                id="name"
-                value={name}
-                placeholder="Organization Name..."
-                handleChange={ev => setName(ev.target.value)}
-              />
-            </FormGroup>
-            <FormGroup title="Location" help="Where is the organization located?">
-              <label htmlFor="attention">Attention</label>
-              <WepInput
-                name="attention"
-                id="attention"
-                value={attention}
-                handleChange={ev => setAttention(ev.target.value)}
-              />
-              <label htmlFor="addressLine1">Address</label>
-              <WepInput
-                name="addressLine1"
-                id="addressLine1"
-                value={addressLine1}
-                handleChange={ev => setAddressLine1(ev.target.value)}
-              />
-              <WepInput
-                name="addressLine2"
-                id="addressLine2"
-                value={addressLine2}
-                handleChange={ev => setAddressLine2(ev.target.value)}
-              />
-              <WepInput
-                name="addressLine3"
-                id="addressLine3"
-                value={addressLine3}
-                handleChange={ev => setAddressLine3(ev.target.value)}
-              />
-              <label htmlFor="city">City</label>
-              <WepInput
-                name="city"
-                id="city"
-                value={city}
-                handleChange={ev => setCity(ev.target.value)}
-              />
-              <label htmlFor="state">State</label>
-              <WepInput
-                name="state"
-                id="state"
-                value={state}
-                handleChange={ev => setState(ev.target.value)}
-              />
-              <label htmlFor="zipCode">Zip</label>
-              <WepInput
-                name="zipCode"
-                id="zipCode"
-                value={zipCode}
-                handleChange={ev => setZipCode(ev.target.value)}
-              />
-            </FormGroup>
-          </div>
-          <div>
-            <FormGroup
-              title="Logo"
-              help="The image that will be displayed next to the organization"
-            >
-              <div className="edit-org__split-inline">
-                {(logoUrl && (
-                  <img className="edit-org__logo" src={logoUrl} alt="Organization Logo" />
-                )) || <div className="edit-org__logo edit-org__logo--blank">No Logo Uploaded</div>}
-                <FileDrop
-                  handleFiles={uploadFile}
-                  accept=".png, .jpg, .jpeg"
-                  customMsg="Drag an image file here, or click to select one"
+        <form onSubmit={handleSubmit(saveOrg)}>
+          <div className="edit-org__split-inline edit-org__split-inline--equal">
+            <div>
+              <FormGroup title="Organization Name" help="What is the organization called?">
+                <WepInput
+                  name="name"
+                  register={register({ required: true })}
+                  value={organization.name}
+                  id="name"
+                  placeholder="Organization Name..."
+                  error={!!errors.name}
                 />
-              </div>
-            </FormGroup>
+                {errors.name && <div className="edit-org__input-error">Name is required</div>}
+              </FormGroup>
+              <FormGroup title="Location" help="Where is the organization located?">
+                <label htmlFor="attention">Attention</label>
+                <WepInput
+                  name="attention"
+                  register={register({ required: true })}
+                  id="attention"
+                  value={organization.address.attention}
+                  error={!!errors.attention}
+                />
+                {errors.attention && (
+                  <div className="edit-org__input-error">Attention is required</div>
+                )}
+                <label htmlFor="addressLine1">Address</label>
+                <WepInput
+                  name="addressLine1"
+                  register={register({ required: true })}
+                  id="addressLine1"
+                  value={organization.address.addressLine1}
+                  error={!!errors.addressLine1}
+                />
+                {errors.addressLine1 && (
+                  <div className="edit-org__input-error">Address is required</div>
+                )}
+                <WepInput
+                  name="addressLine2"
+                  register={register}
+                  id="addressLine2"
+                  value={organization.address.addressLine2}
+                />
+                <WepInput
+                  name="addressLine3"
+                  register={register}
+                  id="addressLine3"
+                  value={organization.address.addressLine3}
+                />
+                <label htmlFor="city">City</label>
+                <WepInput
+                  name="city"
+                  register={register({ required: true })}
+                  id="city"
+                  value={organization.address.city}
+                  error={!!errors.city}
+                />
+                {errors.city && <div className="edit-org__input-error">City is required</div>}
+                <label htmlFor="state">State</label>
+                <WepInput
+                  name="state"
+                  register={register({
+                    required: true,
+                    validate: value => includes(USStates, value.toUpperCase()),
+                  })}
+                  id="state"
+                  value={organization.address.state}
+                  error={!!errors.state}
+                />
+                {errors.state && (
+                  <div className="edit-org__input-error">
+                    Please enter a valid two-character state key
+                  </div>
+                )}
+                <label htmlFor="zipCode">Zip</label>
+                <WepInput
+                  name="zipCode"
+                  register={register({ required: true, minLength: 5, maxLength: 5, min: 0 })}
+                  id="zipCode"
+                  htmlType="number"
+                  value={organization.address.zipCode}
+                  error={!!errors.zipCode}
+                />
+                {errors.zipCode && (
+                  <div className="edit-org__input-error">Please enter a valid zip code</div>
+                )}
+              </FormGroup>
+            </div>
+            <div>
+              <FormGroup
+                title="Logo"
+                help="The image that will be displayed next to the organization"
+              >
+                <div className="edit-org__split-inline">
+                  {(logoUrl && (
+                    <img className="edit-org__logo" src={logoUrl} alt="Organization Logo" />
+                  )) || (
+                    <div className="edit-org__logo edit-org__logo--blank">No Logo Uploaded</div>
+                  )}
+                  <FileDrop
+                    handleFiles={uploadFile}
+                    name="logo"
+                    accept=".png, .jpg, .jpeg"
+                    customMsg="Drag an image file here, or click to select one"
+                  />
+                </div>
+                {logoMissing && <div className="edit-org__input-error">Logo is required</div>}
+              </FormGroup>
+            </div>
           </div>
-        </div>
-        <FormGroup title="Organization Bio" help="A description of the organization">
-          <WepTextarea
-            name="description"
-            id="description"
-            value={description}
-            handleChange={ev => setDescription(ev.target.value)}
-          />
-        </FormGroup>
-        <FormGroup title="Manage Users" help="The users who are part of the organization">
-          <FormGroup
-            title="Add A User"
-            help="Add a new user to be part of the organization"
-            type={FormGroup.Type.SUBFORM}
-          >
-            <WepInput
-              name="user"
-              id="user"
-              value={newUser}
-              placeholder="Username..."
-              handleChange={ev => setNewUser(ev.target.value)}
+          <FormGroup title="Organization Bio" help="A description of the organization">
+            <WepTextarea
+              name="description"
+              register={register({ required: true })}
+              id="description"
+              value={organization.description}
+              error={!!errors.description}
             />
-            <Button size={Button.Size.SMALL} onClick={addUser}>
-              Add User
+            {errors.description && (
+              <div className="edit-org__input-error">Description is required</div>
+            )}
+          </FormGroup>
+          <FormGroup title="Manage Users" help="The users who are part of the organization">
+            <FormGroup
+              title="Add A User"
+              help="Add a new user to be part of the organization"
+              type={FormGroup.Type.SUBFORM}
+            >
+              <WepInput
+                name="user"
+                id="user"
+                value={newUser}
+                placeholder="Username..."
+                handleChange={ev => setNewUser(ev.target.value)}
+              />
+              <Button size={Button.Size.SMALL} onClick={addUser}>
+                Add User
+              </Button>
+            </FormGroup>
+            <FormGroup
+              title="Current Users"
+              help="The users that are currently part of the organization"
+              type={FormGroup.Type.SUBFORM}
+            >
+              {orgUsers.map(u => getUserDisplay(u))}
+            </FormGroup>
+          </FormGroup>
+          {organization.id && (
+            <Button onClick={deleteOrg} type={ButtonType.DANGER}>
+              Delete
             </Button>
-          </FormGroup>
-          <FormGroup
-            title="Current Users"
-            help="The users that are currently part of the organization"
-            type={FormGroup.Type.SUBFORM}
+          )}
+          <Button onClick={callback}>Return</Button>
+          <Button
+            type={ButtonType.SUCCESS}
+            htmlType="submit"
+            disabled={!isEmpty(errors) || logoMissing}
           >
-            {orgUsers.map(u => getUserDisplay(u))}
-          </FormGroup>
-        </FormGroup>
-
-        {organization.id && (
-          <Button onClick={deleteOrg} type={ButtonType.DANGER}>
-            Delete
+            Save
           </Button>
-        )}
-        <Button onClick={callback}>Return</Button>
-        <Button onClick={saveOrg} type={ButtonType.SUCCESS}>
-          Save
-        </Button>
+        </form>
       </div>
     </BodyCard>
   );
@@ -309,7 +346,7 @@ function EditOrganization(props) {
 
 EditOrganization.propTypes = {
   organization: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.array])
   ),
   currentUser: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
   users: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)),
