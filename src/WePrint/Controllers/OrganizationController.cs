@@ -38,6 +38,12 @@ namespace WePrint.Controllers
             return org;
         }
 
+        protected override async ValueTask<Organization> PostDeleteDataModelAsync(Organization dataModel)
+        {
+            dataModel.Users.Clear();
+            return dataModel;
+        }
+
         #endregion
 
         #region Avatars

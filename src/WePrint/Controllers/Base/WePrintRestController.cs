@@ -88,6 +88,17 @@ namespace WePrint.Controllers.Base
             return Mapper.Map(viewModel, dataModel);
         }
 
+        /// <summary>
+        /// Take post delete actions if needed.
+        /// </summary>
+        /// <param name="dataModel">DB Model to delete</param>
+        /// <returns></returns>
+        protected virtual async ValueTask<TData> PostDeleteDataModelAsync(TData dataModel)
+        {
+            return dataModel;
+        }
+
+
         #endregion
 
         #region HTTP Verbs
@@ -211,6 +222,7 @@ namespace WePrint.Controllers.Base
                 return Forbid();
 
             entity.Deleted = true;
+            entity = await PostDeleteDataModelAsync(entity);
             await Database.SaveChangesAsync();
             return Ok();
         }
