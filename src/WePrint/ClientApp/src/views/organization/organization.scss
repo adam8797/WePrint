@@ -72,18 +72,3 @@
     width: 50%;
   }
 }
-
-.organization__loading,
-.organization__error {
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  font-size: $font-size-medium;
-  flex-direction: column;
-}
-
-.organization__loading-text,
-.organization__error-text {
-  padding-bottom: 10px;
-}

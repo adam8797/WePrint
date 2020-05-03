@@ -9,7 +9,7 @@ function JobCard(props) {
   const {
     image,
     name,
-    jobId,
+    link,
     customerUserName,
     source,
     externalId,
@@ -25,7 +25,7 @@ function JobCard(props) {
     <div
       className="job-card"
       onClick={() => {
-        history.push(`/job/${jobId}`);
+        history.push(link);
       }}
     >
       <img className="job-card__image" src={image} alt="Job" />
@@ -62,7 +62,7 @@ function JobCard(props) {
 JobCard.propTypes = {
   // required
   name: PropTypes.string.isRequired,
-  jobId: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
   customerUserName: PropTypes.string.isRequired,
   source: PropTypes.string,
   // optional

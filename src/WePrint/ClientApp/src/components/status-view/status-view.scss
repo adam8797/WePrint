@@ -1,0 +1,14 @@
+@import '../../assets/styles/sizes';
+
+.status-view {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-medium;
+  flex-direction: column;
+
+  &__text {
+    padding-bottom: $padding-standard;
+  }
+}

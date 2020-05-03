@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import moment from 'moment';
 import { find } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Table } from '../../../components';
+import { Table, StatusView } from '../../../components';
 import JobApi from '../../../api/JobApi';
 import UserApi from '../../../api/UserApi';
 import JobPlaceholder from '../../../assets/images/job.png';
@@ -130,22 +129,13 @@ class Job extends Component {
     const { job, error } = this.state;
     const { jobId } = this.props;
     if (error) {
-      return (
-        <div className="job__error">
-          <span className="job__error-text">Could not load job with id {jobId}</span>
-          <FontAwesomeIcon icon={['far', 'frown']} />
-        </div>
-      );
+      return <StatusView icon={['far', 'frown']} text={`Could not load job with id ${jobId}`} />;
     }
 
     if (!Object.keys(job).length) {
-      return (
-        <div className="job__loading">
-          <span className="job__loading-text">Job Loading...</span>
-          <FontAwesomeIcon icon="sync" spin />
-        </div>
-      );
+      return <StatusView icon="sync" text="Job Loading..." spin />;
     }
+
     let timeLeft;
     let bidDeadlineStyle;
     if (job) {

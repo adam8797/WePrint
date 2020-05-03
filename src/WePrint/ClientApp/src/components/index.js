@@ -2,7 +2,8 @@
 export { default as SideNav } from './side-nav/side-nav';
 export { default as Header } from './header/header';
 export { default as BodyCard } from './body-card/body-card';
-export { default as JobGrid } from './job-grid/job-grid';
+export { default as CardGrid } from './card-grid/card-grid';
+export { CardTypes } from './card-grid/card-grid';
 export { default as Table } from './table/table';
 export { default as SectionTitle } from './section-title/section-title';
 export { default as Button } from './button/button';
@@ -16,3 +17,4 @@ export { default as WepDropdown } from './wep-dropdown/wep-dropdown';
 export { default as FileDrop } from './file-drop/file-drop';
 export { default as WepPrompt } from './wep-prompt/wep-prompt';
 export { default as FormGroup } from './form-group/form-group';
+export { default as StatusView } from './status-view/status-view';

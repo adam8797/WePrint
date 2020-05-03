@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import JobGrid from '../job-grid/job-grid';
+import CardGrid from '../card-grid/card-grid';
 import SectionTitle from '../section-title/section-title';
 import Table from '../table/table';
 
@@ -11,41 +11,6 @@ class ToggleableDisplay extends Component {
     this.state = {
       showGrid: true,
     };
-
-    this.columns = [
-      {
-        Header: 'Name',
-        accessor: 'name',
-      },
-      {
-        Header: 'Owner',
-        accessor: 'customerUserName',
-      },
-      {
-        Header: 'Maker',
-        accessor: 'maker',
-      },
-      {
-        Header: 'Price',
-        accessor: 'price',
-      },
-      {
-        Header: 'Total Prints',
-        accessor: 'prints',
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-      },
-      {
-        Header: 'Final Print Time',
-        accessor: 'printTime',
-      },
-      {
-        Header: 'Finished On',
-        accessor: 'completedDate',
-      },
-    ];
   }
 
   toggleGrid(showGrid) {
@@ -54,7 +19,7 @@ class ToggleableDisplay extends Component {
 
   render() {
     const { showGrid } = this.state;
-    const { title, data } = this.props;
+    const { title, data, cardType, columns } = this.props;
     const actions = [
       {
         key: 'grid',
@@ -73,7 +38,11 @@ class ToggleableDisplay extends Component {
     return (
       <div>
         <SectionTitle title={title} actions={actions} />
-        {showGrid ? <JobGrid jobs={data} /> : <Table columns={this.columns} data={data} />}
+        {showGrid ? (
+          <CardGrid cards={data} cardType={cardType} />
+        ) : (
+          <Table columns={columns} data={data} />
+        )}
       </div>
     );
   }
@@ -82,7 +51,19 @@ class ToggleableDisplay extends Component {
 ToggleableDisplay.propTypes = {
   title: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(
-    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]))
+    PropTypes.objectOf(
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.object,
+        PropTypes.array,
+        PropTypes.bool,
+      ])
+    )
+  ).isRequired,
+  cardType: PropTypes.string.isRequired,
+  columns: PropTypes.arrayOf(
+    PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.func]))
   ).isRequired,
 };
 

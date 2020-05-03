@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter } from 'react-router-dom';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import moment from 'moment';
+
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
-import { BodyCard, Button, Table, SectionTitle } from '../../components';
-import './project.scss';
+import { BodyCard, Button, Table, SectionTitle, StatusView } from '../../components';
 import UpdatesPanel from './components/updates-panel';
 import CreatePledge from './components/create-pledge';
+
+import './project.scss';
 
 class Project extends Component {
   constructor(props) {
@@ -99,10 +100,7 @@ class Project extends Component {
     if (error) {
       return (
         <BodyCard>
-          <div className="project__error">
-            <span className="project__error-text">Could not load project with id {projId}</span>
-            <FontAwesomeIcon icon={['far', 'frown']} />
-          </div>
+          <StatusView text={`Could not load project with id ${projId}`} icon={['far', 'frown']} />
         </BodyCard>
       );
     }
@@ -110,10 +108,7 @@ class Project extends Component {
     if (!project) {
       return (
         <BodyCard>
-          <div className="project__loading">
-            <span className="project__loading-text">Project Loading...</span>
-            <FontAwesomeIcon icon="sync" spin />
-          </div>
+          <StatusView text="Project Loading..." icon="sync" spin />
         </BodyCard>
       );
     }
