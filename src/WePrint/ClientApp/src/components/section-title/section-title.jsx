@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import Button from '../button/button';
 import './section-title.scss';
 
-function SectionTitle({ title, id, actions }) {
+function SectionTitle({ title, id, actions, headerSize }) {
   // create anchors for sections to link directly to them
   const anchor = id || `${title.toLocaleLowerCase()}-section`;
+
+  const HeaderTag = headerSize === undefined ? "h2" : `h${headerSize}`;
 
   const actionItems = actions.map(action => (
     <Button
@@ -22,7 +24,7 @@ function SectionTitle({ title, id, actions }) {
 
   return (
     <div className="section-title" id={anchor}>
-      <h2>{title}</h2>
+      <HeaderTag>{title}</HeaderTag>
       <div className="section-title__actions">{actionItems}</div>
     </div>
   );
@@ -39,6 +41,7 @@ SectionTitle.propTypes = {
       icon: PropTypes.string,
     })
   ),
+  headerSize: PropTypes.number,
 };
 
 SectionTitle.defaultProps = {
