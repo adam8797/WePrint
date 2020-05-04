@@ -46,7 +46,7 @@ namespace WePrint.Controllers
                 return Forbid();
 
             QRCodeGenerator gen = new QRCodeGenerator();
-            Bitmap qrCodeImg = (new QRCode(gen.CreateQrCode($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{Url.Action("ScanQrCode", new { pledgeId })}", QRCodeGenerator.ECCLevel.Q))).GetGraphic(20);
+            Bitmap qrCodeImg = (new QRCode(gen.CreateQrCode($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{Url.Action("ScanQrCode", new { pledgeId })}", QRCodeGenerator.ECCLevel.L))).GetGraphic(4);
 
             await using var ms = new MemoryStream();
             qrCodeImg.Save(ms, ImageFormat.Png);
