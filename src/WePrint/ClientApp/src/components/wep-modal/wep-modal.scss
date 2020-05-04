@@ -1,0 +1,30 @@
+@import '../../assets/styles/colors';
+@import '../../assets//styles/effects';
+
+.wep-modal {
+  padding: 1rem;
+  background-color: $white;
+  box-shadow: $modal-shadow;
+  outline: none;
+
+  &__button-container {
+    display: flex;
+    justify-content: flex-end;
+
+    .button + .button {
+      margin-left: 0.8rem;
+    }
+  }
+}
+
+.wep-modal__overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.75);
+}
