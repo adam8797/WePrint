@@ -163,7 +163,7 @@ Organization.propTypes = {
   match: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.object])
   ).isRequired,
-  user: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string])),
+  user: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
   orgId: PropTypes.string,
 };
 

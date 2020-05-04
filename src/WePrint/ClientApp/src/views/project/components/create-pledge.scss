@@ -1,3 +1,5 @@
+@import '../../../assets/styles/colors';
+
 .pledge-form {
   .input-group {
     display: flex;
@@ -6,6 +8,10 @@
 
     &--inline {
       flex-direction: row;
+    }
+
+    &__error {
+      color: $red;
     }
   }
 }
