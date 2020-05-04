@@ -57,7 +57,13 @@ function CreatePledge({ projId, modalOpen, closeModal }) {
               name="delivery"
               id="delivery"
               value=""
-              register={register({ required: true, pattern: /[01]\d\/[0123]\d\/[2]\d\d\d/ })}
+              register={register({
+                required: true,
+                validate: {
+                  validDate: value => moment(value, 'MM/DD/YYYY', true).isValid(),
+                  dateInFuture: value => moment().diff(value, 'days') <= 0,
+                },
+              })}
               placeholder={moment().format('MM/DD/YYYY')}
               error={!!errors.delivery}
             />
