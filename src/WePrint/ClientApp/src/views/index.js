@@ -20,3 +20,4 @@ export { default as Organizations } from './organizations/organizations';
 export { default as Projects } from './projects/projects';
 export { default as Recieved } from './recieved/recieved';
 export { default as MyOrg } from './my-org/my-org';
+export { default as PledgePage } from './pledge-page/pledge-page';

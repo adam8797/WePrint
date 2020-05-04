@@ -78,7 +78,9 @@
 
   &__overview-buttons__pledge {
     flex-grow: 1;
-    margin-right: 1rem;
+  }
+  &__overview-buttons__share {
+    margin-left: 1rem;
   }
 
   &__body {

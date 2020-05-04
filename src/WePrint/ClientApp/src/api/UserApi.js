@@ -9,11 +9,11 @@ class UserApi extends CommonApi {
 
   CurrentUser() {
     return axios.get(BuildUrl(usersApiPath)).pipe(ErrorOnBadStatus);
-    }
+  }
 
-    UpdateUser(userModel) {
-        return axios.put(BuildUrl(usersApiPath), userModel).pipe(ErrorOnBadStatus);
-    }
+  UpdateUser(userModel) {
+    return axios.put(BuildUrl(usersApiPath), userModel).pipe(ErrorOnBadStatus);
+  }
 
   GetUser(id) {
     return axios.get(BuildUrl(usersApiPath, 'by-id', id)).pipe(ErrorOnBadStatus);
@@ -29,6 +29,13 @@ class UserApi extends CommonApi {
 
   getAvatarUrl(id) {
     return BuildUrl(this.apiPath, 'by-id', id, 'avatar');
+  }
+
+  getPledges(id) {
+    if (id) {
+      return axios.get(BuildUrl(usersApiPath, 'pledges', id)).pipe(ErrorOnBadStatus);
+    }
+    return axios.get(BuildUrl(usersApiPath, 'pledges')).pipe(ErrorOnBadStatus);
   }
 }
 

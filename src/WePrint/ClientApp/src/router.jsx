@@ -23,6 +23,7 @@ import {
   Projects,
   Recieved,
   MyOrg,
+  PledgePage,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -83,6 +84,9 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/organizations">
             <Organizations />
+          </Route>
+          <Route path="/project/:projId/pledge/:pledgeId">
+            <PledgePage />
           </Route>
           <Route path="/project/:projId">
             <Project />
