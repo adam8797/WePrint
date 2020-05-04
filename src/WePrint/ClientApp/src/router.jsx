@@ -21,6 +21,7 @@ import {
   CreateProject,
   Organizations,
   Projects,
+  Recieved,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -90,6 +91,9 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/create-project">
             <CreateProject />
+          </Route>
+          <Route path="/recieved/:projId/:pledgeId">
+            <Recieved />
           </Route>
           <Route exact path="/">
             <Home />
