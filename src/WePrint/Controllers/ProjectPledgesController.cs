@@ -43,7 +43,9 @@ namespace WePrint.Controllers
             if (pledge.Project.Id != parentId)
                 return NotFound();
 
-            if ((await CurrentUser).Organization != pledge.Project.Organization)
+            var user = await CurrentUser;
+            if (!((user == pledge.Maker && newStatus != PledgeStatus.Finished) || 
+                  (user.Organization == pledge.Project.Organization && newStatus == PledgeStatus.Finished)))
                 return Forbid();
 
             pledge.Status = newStatus;
