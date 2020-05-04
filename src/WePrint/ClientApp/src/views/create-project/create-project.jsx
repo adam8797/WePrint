@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { isEmpty, includes } from 'lodash';
+
 import {
   BodyCard,
   SectionTitle,
@@ -10,8 +13,10 @@ import {
   FileDrop,
   toastError,
 } from '../../components';
-import './create-project.scss';
+import { USStates } from '../../models/Enums';
 import ProjectApi from '../../api/ProjectApi';
+
+import './create-project.scss';
 
 const CreationStatus = {
   NOT_STARTED: 'NOT_STARTED',
@@ -24,29 +29,11 @@ class CreateProject extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      goal: 0,
-      openGoal: false,
-      description: '',
-      shippingInstructions: '',
-      addrName: '',
-      addr1: '',
-      addr2: '',
-      addr3: '',
-      addrCity: '',
-      addrState: '',
-      addrZip: '',
-      printingInstructions: '',
       thumb: null,
       projectId: null,
       uploadStatus: CreationStatus.NOT_STARTED,
     };
   }
-
-  handleFormChange = ev => {
-    const { name, value } = ev.target;
-    this.setState({ [name]: value });
-  };
 
   handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
@@ -60,24 +47,23 @@ class CreateProject extends Component {
     }
   };
 
-  handleSubmission = () => {
+  handleSubmission = form => {
+    const { projectId, thumb } = this.state;
     const {
-      projectId,
       title,
-      goal,
-      openGoal,
       description,
+      goal,
       shippingInstructions,
-      addrName,
+      printingInstructions,
+      attention,
       addr1,
       addr2,
       addr3,
       addrCity,
       addrState,
       addrZip,
-      printingInstructions,
-      thumb,
-    } = this.state;
+      openGoal,
+    } = form;
 
     this.setState({ uploadStatus: CreationStatus.STARTED });
 
@@ -88,12 +74,12 @@ class CreateProject extends Component {
       shippingInstructions,
       printingInstructions,
       address: {
-        attention: addrName,
+        attention,
         addressLine1: addr1,
         addressLine2: addr2,
         addressLine3: addr3,
         city: addrCity,
-        state: addrState,
+        state: addrState.toUpperCase(),
         zipCode: addrZip,
       },
       openGoal,
@@ -101,7 +87,7 @@ class CreateProject extends Component {
 
     // TODO: Use this to help get around creation errors with the thumbnail to prevent duplicates
     // TODO: It's currently broken however, the patch doesn't work
-    if (projectId) {
+    if (projectId && false) {
       ProjectApi.correct(projectId, payload).subscribe(
         project => {
           console.log('success,', project);
@@ -153,24 +139,9 @@ class CreateProject extends Component {
   };
 
   render() {
-    const {
-      title,
-      goal,
-      openGoal,
-      description,
-      shippingInstructions,
-      addrName,
-      addr1,
-      addr2,
-      addr3,
-      addrCity,
-      addrState,
-      addrZip,
-      printingInstructions,
-      thumb,
-      projectId,
-      uploadStatus,
-    } = this.state;
+    const { thumb, projectId, uploadStatus } = this.state;
+
+    const { register, handleSubmit, errors } = useForm();
 
     if (uploadStatus === CreationStatus.DONE) {
       return <Redirect to={`/project/${projectId}`} push />;
@@ -180,135 +151,184 @@ class CreateProject extends Component {
       <BodyCard className="create-proj" centered>
         <h1>Create Project</h1>
         <hr />
-        <SectionTitle title="Basic Information" />
-        <div className="create-proj__section">
-          <div className="create-proj__basic-info">
-            <div className="create-proj__key-info">
-              <div className="input-group">
-                <label htmlFor="title">Name*</label>
-                <WepInput
-                  name="title"
-                  id="title"
-                  value={title}
-                  placeholder="Project Name..."
-                  handleChange={this.handleFormChange}
-                />
+        <form onSubmit={handleSubmit(this.handleSubmission)}>
+          <SectionTitle title="Basic Information" />
+          <div className="create-proj__section">
+            <div className="create-proj__basic-info">
+              <div className="create-proj__key-info">
+                <div className="input-group">
+                  <label htmlFor="title">Name*</label>
+                  <WepInput
+                    name="title"
+                    register={register({ required: true })}
+                    id="title"
+                    value=""
+                    placeholder="Project Name..."
+                    error={!!errors.title}
+                  />
+                  {errors.title && <div className="input-group__error">Title is required</div>}
+                </div>
+                <div className="input-group">
+                  <label htmlFor="goal">Goal*</label>
+                  <WepNumber
+                    name="goal"
+                    register={register({ required: true, min: 0 })}
+                    id="goal"
+                    value={0}
+                    error={!!errors.goal}
+                  />
+                  {errors.goal && <div className="input-group__error">Goal is required</div>}
+                </div>
+                <div className="create-proj__open">
+                  <input
+                    type="checkbox"
+                    name="open"
+                    id="open"
+                    defaultValue={false}
+                    ref={register({ required: true })}
+                  />
+                  <label htmlFor="open">Open Goal?</label>
+                </div>
               </div>
-              <div className="input-group">
-                <label htmlFor="goal">Goal*</label>
-                <WepNumber
-                  name="goal"
-                  id="goal"
-                  value={goal}
-                  handleChange={this.handleFormChange}
-                />
-              </div>
-              <div className="create-proj__open">
-                <input type="checkbox" name="open" id="open" value={openGoal} />
-                <label htmlFor="open">Open Goal?</label>
+              <FileDrop
+                className="create-proj__thumb"
+                handleFiles={this.handleThumbChange}
+                customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
+              />
+              <div className="create-proj__desc">
+                <div className="input-group">
+                  <label htmlFor="description">Desription*</label>
+                  <WepTextarea
+                    name="description"
+                    id="description"
+                    register={register({ required: true })}
+                    value=""
+                    error={!!errors.description}
+                  />
+                  {errors.description && (
+                    <div className="input-group__error">Description is required</div>
+                  )}
+                </div>
               </div>
             </div>
-            <FileDrop
-              className="create-proj__thumb"
-              handleFiles={this.handleThumbChange}
-              customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
-            />
-            <div className="create-proj__desc">
-              <div className="input-group">
-                <label htmlFor="description">Desription*</label>
-                <WepTextarea
-                  name="description"
-                  id="description"
-                  value={description}
-                  handleChange={this.handleFormChange}
-                />
-              </div>
+          </div>
+          <SectionTitle title="Delivery Information" />
+          <div className="create-proj__section">
+            <div className="input-group">
+              <label htmlFor="shippingInstructions">Instructions*</label>
+              <WepTextarea
+                name="shippingInstructions"
+                id="shippingInstructions"
+                register={register({ required: true })}
+                value=""
+                error={!!errors.shippingInstructions}
+              />
+              {errors.shippingInstructions && (
+                <div className="input-group__error">Shipping instructions are required</div>
+              )}
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="attention">Name*</label>
+              <WepInput
+                name="attention"
+                id="attention"
+                register={register({ required: true })}
+                value=""
+                error={!!errors.attention}
+              />
+              {errors.attention && <div className="input-group__error">Name is required</div>}
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="addr1">Address 1*</label>
+              <WepInput
+                name="addr1"
+                id="addr1"
+                value=""
+                register={register({ required: true })}
+                error={!!errors.addr1}
+              />
+              {errors.addr1 && <div className="input-group__error">Address is required</div>}
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="addr2">Address 2</label>
+              <WepInput name="addr2" id="addr2" value="" register={register} />
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="addr3">Address 3</label>
+              <WepInput name="addr3" id="addr3" value="" register={register} />
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="addrCity">City*</label>
+              <WepInput
+                name="addrCity"
+                id="addrCity"
+                value=""
+                register={register({ required: true })}
+                error={!!errors.addrCity}
+              />
+              {errors.addrCity && <div className="input-group__error">City is required</div>}
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="addrState">State*</label>
+              <WepInput
+                name="addrState"
+                id="addrState"
+                value=""
+                register={register({
+                  required: true,
+                  validate: value => includes(USStates, value.toUpperCase()),
+                })}
+                error={!!errors.addr1}
+              />
+              {errors.addrState && (
+                <div className="input-group__error">
+                  Please enter a valid two character state key
+                </div>
+              )}
+            </div>
+            <div className="input-group input-group--inline">
+              <label htmlFor="addrZip">Zipcode*</label>
+              <WepInput
+                name="addrZip"
+                id="addrZip"
+                value=""
+                register={register({ required: true, minLength: 5, maxLength: 5, min: 0 })}
+                error={!!errors.addrZip}
+              />
+              {errors.addrZip && (
+                <div className="input-group__error">Please input a valid zip code</div>
+              )}
             </div>
           </div>
-        </div>
-        <SectionTitle title="Delivery Information" />
-        <div className="create-proj__section">
-          <div className="input-group">
-            <label htmlFor="shippingInstructions">Instructions*</label>
-            <WepTextarea
-              name="shippingInstructions"
-              id="shippingInstructions"
-              value={shippingInstructions}
-              handleChange={this.handleFormChange}
-            />
+          <SectionTitle title="Printing Information" />
+          <div className="create-proj__section">
+            <div className="input-group">
+              <label htmlFor="printingInstructions">Instructions*</label>
+              <WepTextarea
+                name="printingInstructions"
+                id="printingInstructions"
+                value=""
+                register={register({ required: true })}
+                error={!!errors.printingInstructions}
+              />
+              {errors.printingInstructions && (
+                <div className="input-group__error">Instructions are required</div>
+              )}
+            </div>
           </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addrName">Name*</label>
-            <WepInput
-              name="addrName"
-              id="addrName"
-              value={addrName}
-              handleChange={this.handleFormChange}
-            />
+          <div className="body-card__actions">
+            <Button
+              type={Button.Type.PRIMARY}
+              htmlType="submit"
+              size={Button.Size.LARGE}
+              className="body-card__action-right"
+              onClick={this.handleSubmission}
+              disabled={this.uploadStatus === CreationStatus.STARTED || !isEmpty(errors)}
+            >
+              Create Project
+            </Button>
           </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addr1">Address 1*</label>
-            <WepInput name="addr1" id="addr1" value={addr1} handleChange={this.handleFormChange} />
-          </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addr2">Address 2</label>
-            <WepInput name="addr2" id="addr2" value={addr2} handleChange={this.handleFormChange} />
-          </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addr3">Address 3</label>
-            <WepInput name="addr3" id="addr3" value={addr3} handleChange={this.handleFormChange} />
-          </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addrCity">City*</label>
-            <WepInput
-              name="addrCity"
-              id="addrCity"
-              value={addrCity}
-              handleChange={this.handleFormChange}
-            />
-          </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addrState">State*</label>
-            <WepInput
-              name="addrState"
-              id="addrState"
-              value={addrState}
-              handleChange={this.handleFormChange}
-            />
-          </div>
-          <div className="input-group input-group--inline">
-            <label htmlFor="addrZip">Zipcode*</label>
-            <WepInput
-              name="addrZip"
-              id="addrZip"
-              value={addrZip}
-              handleChange={this.handleFormChange}
-            />
-          </div>
-        </div>
-        <SectionTitle title="Printing Information" />
-        <div className="create-proj__section">
-          <div className="input-group">
-            <label htmlFor="printingInstructions">Instructions*</label>
-            <WepTextarea
-              name="printingInstructions"
-              id="printingInstructions"
-              value={printingInstructions}
-              handleChange={this.handleFormChange}
-            />
-          </div>
-        </div>
-        <div className="body-card__actions">
-          <Button
-            type={Button.Type.PRIMARY}
-            size={Button.Size.LARGE}
-            className="body-card__action-right"
-            onClick={this.handleSubmission}
-            disabled={this.uploadStatus === CreationStatus.STARTED}
-          >
-            Create Project
-          </Button>
-        </div>
+        </form>
       </BodyCard>
     );
   }
