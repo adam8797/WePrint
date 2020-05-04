@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +47,33 @@ namespace WePrint.Controllers
         {
             var vm = Mapper.Map<UserViewModel>(await CurrentUser);
             return Ok(vm);
+        }
+
+
+        [HttpGet("pledges")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<PledgeViewModel>>> GetUserPledges()
+        {
+            var user = await CurrentUser;
+            var pledges = await Database.Pledges
+                .Where(x => x.Maker == user)
+                .ProjectTo<PledgeViewModel>(Mapper.ConfigurationProvider)
+                .ToListAsync();
+            return pledges;
+        }
+
+        [HttpGet("pledges/{project}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<PledgeViewModel>>> GetUserProjectPledges(Guid project)
+        {
+            var user = await CurrentUser;
+            var pledges = await Database.Pledges
+                .Where(x => x.Maker == user && x.Project.Id == project)
+                .ProjectTo<PledgeViewModel>(Mapper.ConfigurationProvider)
+                .ToListAsync();
+            return pledges;
         }
 
         [HttpPut]
