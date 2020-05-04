@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
-import { BodyCard, Button, Table, SectionTitle, StatusView } from '../../components';
+import { BodyCard, Button, Table, StatusView } from '../../components';
 import UpdatesPanel from './components/updates-panel';
 import CreatePledge from './components/create-pledge';
 
@@ -22,12 +22,21 @@ class Project extends Component {
       project: null,
       organization: null,
       pledges: null,
+      pledgeModalOpen: false,
     };
   }
 
   componentDidMount() {
     this.fetchProject();
   }
+
+  openModal = () => {
+    this.setState({ pledgeModalOpen: true });
+  };
+
+  closeModal = () => {
+    this.setState({ pledgeModalOpen: false });
+  };
 
   fetchProject() {
     const { match } = this.props;
@@ -93,7 +102,7 @@ class Project extends Component {
   }
 
   render() {
-    const { error, project, organization, orgErr, pledges } = this.state;
+    const { error, project, organization, orgErr, pledges, pledgeModalOpen } = this.state;
     const { match } = this.props;
     const { projId } = match.params;
 
@@ -176,12 +185,17 @@ class Project extends Component {
                   size={Button.Size.LARGE}
                   type={Button.Type.PRIMARY}
                   className="project__overview-buttons__pledge"
+                  onClick={this.openModal}
                 >
                   Pledge Now!
                 </Button>
-                <Button size={Button.Size.LARGE} outline>
+                {/* <Button
+                  size={Button.Size.LARGE}
+                  outline
+                  className="project__overview-buttons__share"
+                >
                   Share
-                </Button>
+                </Button> */}
               </div>
               <div className="project__org-info">
                 <div className="project__org">
@@ -234,10 +248,9 @@ class Project extends Component {
               data={pledges || []}
               emptyMessage="There are no pledges yet, add yours now!"
             />
-            <SectionTitle title="Pledge now" />
-            <CreatePledge projId={id} />
           </div>
         </div>
+        <CreatePledge projId={id} modalOpen={pledgeModalOpen} closeModal={this.closeModal} />
       </BodyCard>
     );
   }
