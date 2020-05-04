@@ -8,6 +8,7 @@ import {
   WepTextarea,
   Button,
   FileDrop,
+  toastError,
 } from '../../components';
 import './create-project.scss';
 import ProjectApi from '../../api/ProjectApi';
@@ -61,6 +62,7 @@ class CreateProject extends Component {
 
   handleSubmission = () => {
     const {
+      projectId,
       title,
       goal,
       openGoal,
@@ -97,28 +99,57 @@ class CreateProject extends Component {
       openGoal,
     };
 
-    ProjectApi.create(payload).subscribe(
-      project => {
-        console.log('success,', project);
-        const { id } = project;
+    // TODO: Use this to help get around creation errors with the thumbnail to prevent duplicates
+    // TODO: It's currently broken however, the patch doesn't work
+    if (projectId) {
+      ProjectApi.correct(projectId, payload).subscribe(
+        project => {
+          console.log('success,', project);
 
-        const data = new FormData();
-        data.append('postedImage', thumb);
+          const data = new FormData();
+          data.append('postedImage', thumb);
 
-        ProjectApi.setThumbnail(id, data).subscribe(
-          () => this.setState({ projectId: id, uploadStatus: CreationStatus.DONE }),
-          err => {
-            // TODO: better error handling and reporting
-            console.error(err);
-            this.setState({ uploadStatus: CreationStatus.ERROR });
-          }
-        );
-      },
-      err => {
-        console.error(err);
-        this.setState({ uploadStatus: CreationStatus.ERROR });
-      }
-    );
+          ProjectApi.setThumbnail(projectId, data).subscribe(
+            () => this.setState({ uploadStatus: CreationStatus.DONE }),
+            err => {
+              console.error(err);
+              toastError('There was an error setting the project thumbnail during update');
+              this.setState({ uploadStatus: CreationStatus.ERROR });
+            }
+          );
+        },
+        err => {
+          console.error(err);
+          toastError('There was an error updating the project');
+          this.setState({ uploadStatus: CreationStatus.ERROR });
+        }
+      );
+    } else {
+      ProjectApi.create(payload).subscribe(
+        project => {
+          console.log('success,', project);
+          const { id } = project;
+          this.setState({ projectId: id });
+
+          const data = new FormData();
+          data.append('postedImage', thumb);
+
+          ProjectApi.setThumbnail(id, data).subscribe(
+            () => this.setState({ uploadStatus: CreationStatus.DONE }),
+            err => {
+              console.error(err);
+              toastError('There was an error setting the project thumbnail during creation');
+              this.setState({ uploadStatus: CreationStatus.ERROR });
+            }
+          );
+        },
+        err => {
+          console.error(err);
+          toastError(`There was an error creating the project`);
+          this.setState({ uploadStatus: CreationStatus.ERROR });
+        }
+      );
+    }
   };
 
   render() {
@@ -142,7 +173,7 @@ class CreateProject extends Component {
     } = this.state;
 
     if (uploadStatus === CreationStatus.DONE) {
-      return <Redirect to={`/projects/${projectId}`} push />;
+      return <Redirect to={`/project/${projectId}`} push />;
     }
 
     return (
