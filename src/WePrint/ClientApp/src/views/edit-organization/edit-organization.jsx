@@ -282,6 +282,7 @@ function EditOrganization(props) {
                     name="logo"
                     accept=".png, .jpg, .jpeg"
                     customMsg="Drag an image file here, or click to select one"
+                    error={!!logoMissing}
                   />
                 </div>
                 {logoMissing && <div className="edit-org__input-error">Logo is required</div>}

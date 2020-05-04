@@ -1,5 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { isEmpty, includes } from 'lodash';
+
 import {
   BodyCard,
   SectionTitle,
@@ -10,8 +13,10 @@ import {
   FileDrop,
   toastError,
 } from '../../components';
-import './create-project.scss';
+import { USStates } from '../../models/Enums';
 import ProjectApi from '../../api/ProjectApi';
+
+import './create-project.scss';
 
 const CreationStatus = {
   NOT_STARTED: 'NOT_STARTED',
@@ -20,35 +25,13 @@ const CreationStatus = {
   ERROR: 'ERROR',
 };
 
-class CreateProject extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: '',
-      goal: 0,
-      openGoal: false,
-      description: '',
-      shippingInstructions: '',
-      addrName: '',
-      addr1: '',
-      addr2: '',
-      addr3: '',
-      addrCity: '',
-      addrState: '',
-      addrZip: '',
-      printingInstructions: '',
-      thumb: null,
-      projectId: null,
-      uploadStatus: CreationStatus.NOT_STARTED,
-    };
-  }
+function CreateProject() {
+  const [thumb, setThumb] = useState(null);
+  const [projectId, setProjectId] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
+  const [thumbMissing, setThumbMissing] = useState(false);
 
-  handleFormChange = ev => {
-    const { name, value } = ev.target;
-    this.setState({ [name]: value });
-  };
-
-  handleThumbChange = newFiles => {
+  const handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
       const [newThumb] = newFiles;
       // if (newThumb.name === thumb.name) {
@@ -56,30 +39,33 @@ class CreateProject extends Component {
       //   // TODO: add alert to let user's know if a file was already added
       //   return;
       // }
-      this.setState({ thumb: newThumb });
+      setThumb(newThumb);
+      setThumbMissing(false);
     }
   };
 
-  handleSubmission = () => {
+  const handleSubmission = form => {
+    if (!thumb) {
+      setThumbMissing(true);
+      return;
+    }
     const {
-      projectId,
       title,
-      goal,
-      openGoal,
       description,
+      goal,
       shippingInstructions,
-      addrName,
+      printingInstructions,
+      attention,
       addr1,
       addr2,
       addr3,
       addrCity,
       addrState,
       addrZip,
-      printingInstructions,
-      thumb,
-    } = this.state;
+      openGoal,
+    } = form;
 
-    this.setState({ uploadStatus: CreationStatus.STARTED });
+    setUploadStatus(CreationStatus.STARTED);
 
     const payload = {
       title,
@@ -88,12 +74,12 @@ class CreateProject extends Component {
       shippingInstructions,
       printingInstructions,
       address: {
-        attention: addrName,
+        attention,
         addressLine1: addr1,
         addressLine2: addr2,
         addressLine3: addr3,
         city: addrCity,
-        state: addrState,
+        state: addrState.toUpperCase(),
         zipCode: addrZip,
       },
       openGoal,
@@ -110,18 +96,18 @@ class CreateProject extends Component {
           data.append('postedImage', thumb);
 
           ProjectApi.setThumbnail(projectId, data).subscribe(
-            () => this.setState({ uploadStatus: CreationStatus.DONE }),
+            () => setUploadStatus(CreationStatus.DONE),
             err => {
               console.error(err);
               toastError('There was an error setting the project thumbnail during update');
-              this.setState({ uploadStatus: CreationStatus.ERROR });
+              setUploadStatus(CreationStatus.ERROR);
             }
           );
         },
         err => {
           console.error(err);
           toastError('There was an error updating the project');
-          this.setState({ uploadStatus: CreationStatus.ERROR });
+          setUploadStatus(CreationStatus.ERROR);
         }
       );
     } else {
@@ -129,57 +115,40 @@ class CreateProject extends Component {
         project => {
           console.log('success,', project);
           const { id } = project;
-          this.setState({ projectId: id });
+          setProjectId(id);
 
           const data = new FormData();
           data.append('postedImage', thumb);
 
           ProjectApi.setThumbnail(id, data).subscribe(
-            () => this.setState({ uploadStatus: CreationStatus.DONE }),
+            () => setUploadStatus(CreationStatus.DONE),
             err => {
               console.error(err);
               toastError('There was an error setting the project thumbnail during creation');
-              this.setState({ uploadStatus: CreationStatus.ERROR });
+              setUploadStatus(CreationStatus.ERROR);
             }
           );
         },
         err => {
           console.error(err);
           toastError(`There was an error creating the project`);
-          this.setState({ uploadStatus: CreationStatus.ERROR });
+          setUploadStatus(CreationStatus.ERROR);
         }
       );
     }
   };
 
-  render() {
-    const {
-      title,
-      goal,
-      openGoal,
-      description,
-      shippingInstructions,
-      addrName,
-      addr1,
-      addr2,
-      addr3,
-      addrCity,
-      addrState,
-      addrZip,
-      printingInstructions,
-      thumb,
-      projectId,
-      uploadStatus,
-    } = this.state;
+  const { register, handleSubmit, errors } = useForm();
 
-    if (uploadStatus === CreationStatus.DONE) {
-      return <Redirect to={`/project/${projectId}`} push />;
-    }
+  if (uploadStatus === CreationStatus.DONE) {
+    return <Redirect to={`/project/${projectId}`} push />;
+  }
 
-    return (
-      <BodyCard className="create-proj" centered>
-        <h1>Create Project</h1>
-        <hr />
+  return (
+    <BodyCard className="create-proj" centered>
+      <h1>Create Project</h1>
+      <hr />
+      <form onSubmit={handleSubmit(handleSubmission)}>
         <SectionTitle title="Basic Information" />
         <div className="create-proj__section">
           <div className="create-proj__basic-info">
@@ -188,40 +157,52 @@ class CreateProject extends Component {
                 <label htmlFor="title">Name*</label>
                 <WepInput
                   name="title"
+                  register={register({ required: true })}
                   id="title"
-                  value={title}
+                  value=""
                   placeholder="Project Name..."
-                  handleChange={this.handleFormChange}
+                  error={!!errors.title}
                 />
+                {errors.title && <div className="input-group__error">Title is required</div>}
               </div>
               <div className="input-group">
                 <label htmlFor="goal">Goal*</label>
                 <WepNumber
                   name="goal"
+                  register={register({ required: true, min: 0 })}
                   id="goal"
-                  value={goal}
-                  handleChange={this.handleFormChange}
+                  value={0}
+                  error={!!errors.goal}
                 />
+                {errors.goal && <div className="input-group__error">Goal is required</div>}
               </div>
               <div className="create-proj__open">
-                <input type="checkbox" name="open" id="open" value={openGoal} />
+                <input type="checkbox" name="open" id="open" defaultValue={false} ref={register} />
                 <label htmlFor="open">Open Goal?</label>
               </div>
             </div>
-            <FileDrop
-              className="create-proj__thumb"
-              handleFiles={this.handleThumbChange}
-              customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
-            />
+            <div>
+              <FileDrop
+                className="create-proj__thumb"
+                handleFiles={handleThumbChange}
+                customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
+                error={!!thumbMissing}
+              />
+              {thumbMissing && <div className="input-group__error">Thumbnail is required</div>}
+            </div>
             <div className="create-proj__desc">
               <div className="input-group">
-                <label htmlFor="description">Desription*</label>
+                <label htmlFor="description">Description*</label>
                 <WepTextarea
                   name="description"
                   id="description"
-                  value={description}
-                  handleChange={this.handleFormChange}
+                  register={register({ required: true })}
+                  value=""
+                  error={!!errors.description}
                 />
+                {errors.description && (
+                  <div className="input-group__error">Description is required</div>
+                )}
               </div>
             </div>
           </div>
@@ -233,57 +214,85 @@ class CreateProject extends Component {
             <WepTextarea
               name="shippingInstructions"
               id="shippingInstructions"
-              value={shippingInstructions}
-              handleChange={this.handleFormChange}
+              register={register({ required: true })}
+              value=""
+              error={!!errors.shippingInstructions}
             />
+            {errors.shippingInstructions && (
+              <div className="input-group__error">Shipping instructions are required</div>
+            )}
           </div>
           <div className="input-group input-group--inline">
-            <label htmlFor="addrName">Name*</label>
+            <label htmlFor="attention">Name*</label>
             <WepInput
-              name="addrName"
-              id="addrName"
-              value={addrName}
-              handleChange={this.handleFormChange}
+              name="attention"
+              id="attention"
+              register={register({ required: true })}
+              value=""
+              error={!!errors.attention}
             />
+            {errors.attention && <div className="input-group__error">&nbsp; Name is required</div>}
           </div>
           <div className="input-group input-group--inline">
             <label htmlFor="addr1">Address 1*</label>
-            <WepInput name="addr1" id="addr1" value={addr1} handleChange={this.handleFormChange} />
+            <WepInput
+              name="addr1"
+              id="addr1"
+              value=""
+              register={register({ required: true })}
+              error={!!errors.addr1}
+            />
+            {errors.addr1 && <div className="input-group__error">&nbsp; Address is required</div>}
           </div>
           <div className="input-group input-group--inline">
             <label htmlFor="addr2">Address 2</label>
-            <WepInput name="addr2" id="addr2" value={addr2} handleChange={this.handleFormChange} />
+            <WepInput name="addr2" id="addr2" value="" register={register} />
           </div>
           <div className="input-group input-group--inline">
             <label htmlFor="addr3">Address 3</label>
-            <WepInput name="addr3" id="addr3" value={addr3} handleChange={this.handleFormChange} />
+            <WepInput name="addr3" id="addr3" value="" register={register} />
           </div>
           <div className="input-group input-group--inline">
             <label htmlFor="addrCity">City*</label>
             <WepInput
               name="addrCity"
               id="addrCity"
-              value={addrCity}
-              handleChange={this.handleFormChange}
+              value=""
+              register={register({ required: true })}
+              error={!!errors.addrCity}
             />
+            {errors.addrCity && <div className="input-group__error">&nbsp;City is required</div>}
           </div>
           <div className="input-group input-group--inline">
             <label htmlFor="addrState">State*</label>
             <WepInput
               name="addrState"
               id="addrState"
-              value={addrState}
-              handleChange={this.handleFormChange}
+              value=""
+              register={register({
+                required: true,
+                validate: value => includes(USStates, value.toUpperCase()),
+              })}
+              error={!!errors.addr1}
             />
+            {errors.addrState && (
+              <div className="input-group__error">
+                &nbsp;Please enter a valid two character state key
+              </div>
+            )}
           </div>
           <div className="input-group input-group--inline">
             <label htmlFor="addrZip">Zipcode*</label>
             <WepInput
               name="addrZip"
               id="addrZip"
-              value={addrZip}
-              handleChange={this.handleFormChange}
+              value=""
+              register={register({ required: true, minLength: 5, maxLength: 5, min: 0 })}
+              error={!!errors.addrZip}
             />
+            {errors.addrZip && (
+              <div className="input-group__error">&nbsp;Please input a valid zip code</div>
+            )}
           </div>
         </div>
         <SectionTitle title="Printing Information" />
@@ -293,25 +302,29 @@ class CreateProject extends Component {
             <WepTextarea
               name="printingInstructions"
               id="printingInstructions"
-              value={printingInstructions}
-              handleChange={this.handleFormChange}
+              value=""
+              register={register({ required: true })}
+              error={!!errors.printingInstructions}
             />
+            {errors.printingInstructions && (
+              <div className="input-group__error">Instructions are required</div>
+            )}
           </div>
         </div>
         <div className="body-card__actions">
           <Button
             type={Button.Type.PRIMARY}
+            htmlType="submit"
             size={Button.Size.LARGE}
             className="body-card__action-right"
-            onClick={this.handleSubmission}
-            disabled={this.uploadStatus === CreationStatus.STARTED}
+            disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors) || thumbMissing}
           >
             Create Project
           </Button>
         </div>
-      </BodyCard>
-    );
-  }
+      </form>
+    </BodyCard>
+  );
 }
 
 export default CreateProject;
