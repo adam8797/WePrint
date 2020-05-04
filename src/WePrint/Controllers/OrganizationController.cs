@@ -97,7 +97,6 @@ namespace WePrint.Controllers
 
         #endregion
 
-
         #region Get Full Lists
 
         [HttpGet("{id}/users")]
@@ -106,10 +105,10 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserViewModel>>> GetUsers(Guid id)
         {
-            var users = await Database.Users
+            var users = Mapper.Map<List<UserViewModel>>(
+                await Database.Users
                 .Where(x => x.Organization.Id == id)
-                .ProjectTo<UserViewModel>(Mapper.ConfigurationProvider)
-                .ToListAsync(); 
+                .ToListAsync());
             return users;
         }
 
