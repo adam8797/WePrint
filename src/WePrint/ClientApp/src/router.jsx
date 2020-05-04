@@ -22,6 +22,7 @@ import {
   Organizations,
   Projects,
   Recieved,
+  MyOrg,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -76,6 +77,9 @@ export default function AppRouter({ basename }) {
           </Route>
           <Route path="/new-organization">
             <EditOrganization />
+          </Route>
+          <Route path="/my-org">
+            <MyOrg />
           </Route>
           <Route path="/organizations">
             <Organizations />

@@ -19,6 +19,9 @@ import {
   faTimes,
   faBuilding as faBuildingSolid,
   faHandsHelping,
+  faIdBadge,
+  faUserLock,
+  faHome,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -53,5 +56,8 @@ library.add(
   faFrown,
   faSync,
   faTimes,
-  faHandsHelping
+  faHandsHelping,
+  faIdBadge,
+  faUserLock,
+  faHome
 );

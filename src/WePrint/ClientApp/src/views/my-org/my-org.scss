@@ -1,0 +1,17 @@
+@import '../../assets/styles/sizes';
+
+.my-org {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  &__text {
+    font-size: $font-size-medium;
+  }
+
+  &__sub-text {
+    font-size: $font-size-sub-heading;
+  }
+}
