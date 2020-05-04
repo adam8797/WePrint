@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import  ProjectApi  from '../../api/ProjectApi';
 import { BodyCard, SectionTitle } from '../../components';
-import './recieved.scss';
 
 class Recieved extends Component {
   constructor(props) {
