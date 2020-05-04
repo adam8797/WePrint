@@ -6,11 +6,13 @@ import moment from 'moment';
 
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
-import { BodyCard, Button, Table, StatusView } from '../../components';
+import UserApi from '../../api/UserApi';
+import { BodyCard, Button, Table, StatusView, toastError } from '../../components';
 import UpdatesPanel from './components/updates-panel';
 import CreatePledge from './components/create-pledge';
 
 import './project.scss';
+import MyPledges from './components/my-pledges';
 
 class Project extends Component {
   constructor(props) {
@@ -22,6 +24,8 @@ class Project extends Component {
       project: null,
       organization: null,
       pledges: null,
+      myPledges: null,
+      canPledge: false,
       pledgeModalOpen: false,
     };
   }
@@ -31,7 +35,14 @@ class Project extends Component {
   }
 
   openModal = () => {
-    this.setState({ pledgeModalOpen: true });
+    const { canPledge } = this.state;
+    if (canPledge) {
+      this.setState({ pledgeModalOpen: true });
+    } else {
+      toastError(
+        'You are not able to pledge right now. Make sure you are logged in and do not have an active pledge'
+      );
+    }
   };
 
   closeModal = () => {
@@ -76,6 +87,18 @@ class Project extends Component {
           // TODO: do something with this
         }
       );
+    UserApi.getPledges(projId).subscribe(
+      myPledges => this.setState({ myPledges, canPledge: !this.checkActivePledge(myPledges) }),
+      err => console.error(err)
+    );
+  }
+
+  checkActivePledge(myPledges) {
+    // return true if any pledges have status 'NotStarted' or 'InProgress'
+    return (
+      myPledges.filter(pledge => pledge.status === 'NotStarted' || pledge.status === 'InProgress')
+        .length > 0
+    );
   }
 
   renderPledges(pledges, error) {
@@ -102,7 +125,16 @@ class Project extends Component {
   }
 
   render() {
-    const { error, project, organization, orgErr, pledges, pledgeModalOpen } = this.state;
+    const {
+      error,
+      project,
+      organization,
+      orgErr,
+      pledges,
+      myPledges,
+      canPledge,
+      pledgeModalOpen,
+    } = this.state;
     const { match } = this.props;
     const { projId } = match.params;
 
@@ -186,6 +218,7 @@ class Project extends Component {
                   type={Button.Type.PRIMARY}
                   className="project__overview-buttons__pledge"
                   onClick={this.openModal}
+                  disabled={!canPledge}
                 >
                   Pledge Now!
                 </Button>
@@ -248,6 +281,7 @@ class Project extends Component {
               data={pledges || []}
               emptyMessage="There are no pledges yet, add yours now!"
             />
+            <MyPledges pledges={myPledges} openPledgeModal={this.openModal} canPledge={canPledge} />
           </div>
         </div>
         <CreatePledge projId={id} modalOpen={pledgeModalOpen} closeModal={this.closeModal} />

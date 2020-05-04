@@ -1,0 +1,37 @@
+.my-pledges {
+  max-width: 300px;
+  margin: auto;
+
+  &__title {
+    text-align: center;
+  }
+
+  &__list {
+    margin-top: 1rem;
+  }
+
+  &__button {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  &__pledge {
+    display: flex;
+    justify-content: space-between;
+    & + & {
+      margin-top: 0.8rem;
+    }
+  }
+
+  &__pledge-created {
+    flex-grow: 1;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid black;
+  }
+
+  &__pledge-quantity {
+    flex-basis: 2.5rem;
+    text-align: right;
+  }
+}
