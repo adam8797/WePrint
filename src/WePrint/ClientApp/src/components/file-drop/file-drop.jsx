@@ -14,6 +14,7 @@ function FileDrop({
   dropMsg,
   disabledMsg,
   accept,
+  error,
   handleFiles = noop,
 }) {
   const onDrop = useCallback(
@@ -32,6 +33,7 @@ function FileDrop({
   const fileDropClass = classNames('file-drop', className, {
     'file-drop--disabled': disabled,
     'file-drop--active': isDragActive,
+    'file-drop--error': !!error,
   });
 
   let message = customMsg || 'Drag your files here, or click to select files';
@@ -61,6 +63,7 @@ FileDrop.propTypes = {
   // See here for details https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#Unique_file_type_specifiers
   accept: PropTypes.string,
   handleFiles: PropTypes.func,
+  error: PropTypes.bool,
 };
 
 export default FileDrop;

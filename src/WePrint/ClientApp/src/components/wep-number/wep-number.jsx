@@ -3,23 +3,49 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './wep-number.scss';
 
-const noop = () => {};
-
 function WepNumber(props) {
-  const { name, id, value, min, max, step, placeholder = '', handleChange = noop, error } = props;
+  const {
+    register,
+    name,
+    id,
+    value,
+    min,
+    max,
+    step,
+    placeholder = '',
+    handleChange,
+    error,
+  } = props;
   const className = classNames('wep-number', { 'wep-number--error': error });
+  if (handleChange) {
+    return (
+      <input
+        className={className}
+        type="number"
+        name={name}
+        id={id}
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        placeholder={placeholder}
+        onChange={handleChange}
+      />
+    );
+  }
+
   return (
     <input
+      ref={register}
       className={className}
       type="number"
       name={name}
       id={id}
-      value={value}
+      defaultValue={value}
       min={min}
       max={max}
       step={step}
       placeholder={placeholder}
-      onChange={handleChange}
     />
   );
 }
@@ -34,6 +60,7 @@ WepNumber.propTypes = {
   placeholder: PropTypes.string,
   handleChange: PropTypes.func,
   error: PropTypes.bool,
+  register: PropTypes.func,
 };
 
 export default WepNumber;

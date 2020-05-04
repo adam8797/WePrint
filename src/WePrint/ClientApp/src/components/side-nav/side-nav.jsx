@@ -31,6 +31,9 @@ const SideNav = () => {
       <NavItem to="/projects" active={match.path.startsWith('/projects')} icon="hands-helping">
         Projects
       </NavItem>
+      <NavItem to="/create-project" active={match.path.startsWith('/create-project')} icon="plus">
+        New Project
+      </NavItem>
       <NavItem to="/my-org" active={match.path.startsWith('/my-org')} icon="id-badge">
         My Organization
       </NavItem>

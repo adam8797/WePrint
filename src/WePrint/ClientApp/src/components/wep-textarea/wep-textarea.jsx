@@ -3,11 +3,24 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './wep-textarea.scss';
 
-const noop = () => {};
-
 function WepTextarea(props) {
-  const { name, id, value, placeholder = '', handleChange = noop, error, register } = props;
+  const { name, id, value, placeholder = '', handleChange, error, register } = props;
   const className = classNames('wep-textarea', { 'wep-textarea--error': error });
+  if (handleChange) {
+    return (
+      <div className="wep-textarea__wrapper">
+        <textarea
+          className={className}
+          name={name}
+          id={id}
+          value={value}
+          placeholder={placeholder}
+          onChange={handleChange}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="wep-textarea__wrapper">
       <textarea
@@ -15,9 +28,8 @@ function WepTextarea(props) {
         className={className}
         name={name}
         id={id}
-        value={value}
+        defaultValue={value}
         placeholder={placeholder}
-        onChange={handleChange}
       />
     </div>
   );

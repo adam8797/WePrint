@@ -22,6 +22,7 @@ import {
   faIdBadge,
   faUserLock,
   faHome,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -59,5 +60,6 @@ library.add(
   faHandsHelping,
   faIdBadge,
   faUserLock,
-  faHome
+  faHome,
+  faPlus
 );
