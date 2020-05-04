@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Bson;
 using WePrint.Data;
 using WePrint.Models;
 using WePrint.Permissions;
@@ -93,11 +95,9 @@ namespace WePrint.Controllers.Base
         /// </summary>
         /// <param name="dataModel">DB Model to delete</param>
         /// <returns></returns>
-        protected virtual async ValueTask<TData> PostDeleteDataModelAsync(TData dataModel)
+        protected virtual async Task PostDeleteDataModelAsync(TData dataModel)
         {
-            return dataModel;
         }
-
 
         #endregion
 
@@ -222,7 +222,7 @@ namespace WePrint.Controllers.Base
                 return Forbid();
 
             entity.Deleted = true;
-            entity = await PostDeleteDataModelAsync(entity);
+            await PostDeleteDataModelAsync(entity);
             await Database.SaveChangesAsync();
             return Ok();
         }

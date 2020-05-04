@@ -38,10 +38,9 @@ namespace WePrint.Controllers
             return org;
         }
 
-        protected override async ValueTask<Organization> PostDeleteDataModelAsync(Organization dataModel)
+        protected override async Task PostDeleteDataModelAsync(Organization dataModel)
         {
             dataModel.Users.Clear();
-            return dataModel;
         }
 
         #endregion
