@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import moment from 'moment';
+import { Progress } from 'reactstrap';
 
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
@@ -198,8 +199,15 @@ class Project extends Component {
       },
     ];
 
+    const progFinished = Math.round((progress.Finished ? progress.Finished / goal : 0) * 100);
+    const progInProg = Math.round(
+      (progress.InProgress || progress.Shipped
+        ? ((progress.InProgress || 0) + (progress.Shipped || 0)) / goal
+        : 0) * 100
+    );
+
     return (
-      <BodyCard>
+      <BodyCard centered>
         <div className="project">
           <div className="project__header">
             <h1>{title}</h1>
@@ -211,7 +219,15 @@ class Project extends Component {
             <div className="project__details">
               <div className="project__progress">
                 <p>
-                  {progress.Finished || 0}/{goal} {openGoal && '(open goal)'}
+                  <Progress multi>
+                    <Progress bar color="success" value={progFinished}>
+                      {progress.Finished}
+                    </Progress>
+                    <Progress bar color="primary" value={progInProg}>
+                      {(progress.InProgress || 0) + (progress.Shipped || 0)}
+                    </Progress>
+                  </Progress>
+                  {openGoal && '(open goal)'}
                 </p>
               </div>
               <div className="project__overview-buttons">
