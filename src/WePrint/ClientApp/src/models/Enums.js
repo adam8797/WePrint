@@ -43,6 +43,14 @@ export const FinishType = {
   None: 'None',
 };
 
+export const PledgeStatus = {
+  NotStarted: 'NotStarted',
+  InProgress: 'InProgress',
+  Shipped: 'Shipped',
+  Finished: 'Finished',
+  Canceled: 'Canceled',
+};
+
 export const USStates = [
   'AL',
   'AK',

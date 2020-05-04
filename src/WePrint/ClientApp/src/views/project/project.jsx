@@ -13,6 +13,7 @@ import CreatePledge from './components/create-pledge';
 
 import './project.scss';
 import MyPledges from './components/my-pledges';
+import { PledgeStatus } from '../../models/Enums';
 
 class Project extends Component {
   constructor(props) {
@@ -96,8 +97,10 @@ class Project extends Component {
   checkActivePledge(myPledges) {
     // return true if any pledges have status 'NotStarted' or 'InProgress'
     return (
-      myPledges.filter(pledge => pledge.status === 'NotStarted' || pledge.status === 'InProgress')
-        .length > 0
+      myPledges.filter(
+        pledge =>
+          pledge.status === PledgeStatus.NotStarted || pledge.status === PledgeStatus.InProgress
+      ).length > 0
     );
   }
 
@@ -281,7 +284,12 @@ class Project extends Component {
               data={pledges || []}
               emptyMessage="There are no pledges yet, add yours now!"
             />
-            <MyPledges pledges={myPledges} openPledgeModal={this.openModal} canPledge={canPledge} />
+            <MyPledges
+              projId={id}
+              pledges={myPledges}
+              openPledgeModal={this.openModal}
+              canPledge={canPledge}
+            />
           </div>
         </div>
         <CreatePledge projId={id} modalOpen={pledgeModalOpen} closeModal={this.closeModal} />

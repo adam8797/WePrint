@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 import { Button } from '../../../components';
 import PledgeModel from '../../../models/PledgeModel';
 import './my-pledges.scss';
 
-function MyPledges({ pledges, openPledgeModal, canPledge }) {
+function MyPledges({ projId, pledges, openPledgeModal, canPledge }) {
   return (
     <div className="my-pledges">
       <h3 className="my-pledges__title">Your Pledges</h3>
@@ -15,7 +16,10 @@ function MyPledges({ pledges, openPledgeModal, canPledge }) {
               <div className="my-pledges__pledge" key={pledge.id}>
                 <div className="my-pledges__pledge-quantity">{pledge.quantity}</div>
                 <div className="my-pledges__pledge-created">
-                  on {moment(pledge.created).format('MMM, Do YYYY')}
+                  on{' '}
+                  <Link to={`/project/${projId}/pledge/${pledge.id}`}>
+                    {moment(pledge.created).format('MMM, Do YYYY')}
+                  </Link>
                 </div>
                 <div className="my-pledges__pledge-status">{pledge.status}</div>
               </div>
@@ -32,6 +36,7 @@ function MyPledges({ pledges, openPledgeModal, canPledge }) {
 }
 
 MyPledges.propTypes = {
+  projId: PropTypes.string.isRequired,
   pledges: PropTypes.arrayOf(PropTypes.shape(PledgeModel)),
   openPledgeModal: PropTypes.func.isRequired,
   canPledge: PropTypes.bool.isRequired,
