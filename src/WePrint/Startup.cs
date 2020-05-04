@@ -121,13 +121,12 @@ namespace WePrint
 
                     // Data/View/Create
                     mapper.AddProfile<ProjectProfile>();
-                    mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>>();
-                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel, Guid>>();
-                    mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>>();
-                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, PrinterCreateModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel>>();
+                    mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel>>();
+                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, PrinterCreateModel>>();
 
                     // Data/View
-                    mapper.AddProfile<AutoProfile<User, UserViewModel, Guid>>();
+                    mapper.AddProfile<AutoProfile<User, UserViewModel>>();
                 }, 
                 // Auto-Finding profiles has been disabled, because it kept trying to add the AutoProfile.
                 // You'll need to add new profiles here 

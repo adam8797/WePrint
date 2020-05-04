@@ -2,6 +2,7 @@
 using System.Linq;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
+using WePrint.Data;
 
 namespace WePrint.Models
 {
@@ -19,8 +20,9 @@ namespace WePrint.Models
                 ));
             CreateMap<ProjectViewModel, Project>();
             CreateMap<ProjectCreateModel, Project>();
-            CreateMap<Guid, Project>().ConvertUsing<EntityConverter<Guid, Project>>();
+            CreateMap<Guid?, Project>().ConvertUsing(AutoProfile.DBLookupMap);
             CreateMap<Project, Guid>().ConvertUsing(x => x.Id);
+            CreateMap<Project, Guid?>().ConvertUsing((x, y) => x?.Id);
         }
     }
 }
