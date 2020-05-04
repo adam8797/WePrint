@@ -58,11 +58,6 @@ class Organization extends Component {
     );
   }
 
-  saveEdit() {
-    this.setState({ organization: {}, edit: false });
-    this.fetchOrg();
-  }
-
   render() {
     const { error, organization, user, users, projects, edit } = this.state;
     const { match } = this.props;
@@ -92,8 +87,8 @@ class Organization extends Component {
           organization={organization}
           currentUser={user}
           users={users}
-          returnCallback={() => {
-            this.setState({ edit: false });
+          returnCallback={org => {
+            this.setState({ organization: org, edit: false });
           }}
         />
       );
