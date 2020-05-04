@@ -109,7 +109,7 @@ class PledgePage extends Component {
     return (
       <BodyCard className="pledge-page">
         <div className="pledge-page__header">
-          <h1>
+          <h1 className="pledge-page__title">
             Thanks for pledging to <Link to={`/project/${project.id}/`}>{project.title}</Link>
           </h1>
           <Button

@@ -10,10 +10,9 @@ import UserApi from '../../api/UserApi';
 import { BodyCard, Button, Table, StatusView, toastError } from '../../components';
 import UpdatesPanel from './components/updates-panel';
 import CreatePledge from './components/create-pledge';
-
-import './project.scss';
 import MyPledges from './components/my-pledges';
 import { PledgeStatus } from '../../models/Enums';
+import './project.scss';
 
 class Project extends Component {
   constructor(props) {
