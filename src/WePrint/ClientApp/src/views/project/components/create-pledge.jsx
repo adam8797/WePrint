@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 import { WepInput, WepNumber, Button, WepModal, toastMessage } from '../../../components';
 import './create-pledge.scss';
 import ProjectApi from '../../../api/ProjectApi';
 
 function CreatePledge({ projId, modalOpen, closeModal }) {
+  const history = useHistory();
+
   const [units, setUnits] = useState('');
   const [delivery, setDelivery] = useState('');
   const [anon, setAnon] = useState(false);
@@ -21,7 +24,7 @@ function CreatePledge({ projId, modalOpen, closeModal }) {
         pledge => {
           console.log('pledge', pledge);
           toastMessage('Pledge has been submitted successfully!');
-          closeModal();
+          history.push(`/project/${pledge.project}/pledge/${pledge.id}`);
         },
         err => console.error(err)
       );

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
-import { BodyCard, StatusView, Button } from '../../components';
+import moment from 'moment';
+import { BodyCard, StatusView, Button, SectionTitle } from '../../components';
 import ProjectApi from '../../api/ProjectApi';
 import { PledgeStatus } from '../../models/Enums';
+import './pledge-page.scss';
 
 const PledgePageStatus = {
   NOT_STARTED: 'NOT_STARTED',
@@ -105,43 +107,91 @@ class PledgePage extends Component {
     }
 
     return (
-      <BodyCard>
-        <h1>
-          Thanks for pledging to <Link to={`/project/${project.id}/`}>{project.title}</Link>
-        </h1>
-        <p>units: {pledge.quantity}</p>
-        <p>pledged on: {pledge.created}</p>
-        <p>est delivery on: {pledge.deliveryDate}</p>
-        <p>Current status: {pledge.status}</p>
-        <div className="status-buttons">
+      <BodyCard className="pledge-page">
+        <div className="pledge-page__header">
+          <h1>
+            Thanks for pledging to <Link to={`/project/${project.id}/`}>{project.title}</Link>
+          </h1>
           <Button
-            type={Button.Type.PRIMARY}
-            onClick={() => this.setStatus(PledgeStatus.InProgress)}
-            disabled={pledge.status !== PledgeStatus.NotStarted}
-          >
-            Set InProgress
-          </Button>
-          <Button
-            type={Button.Type.PRIMARY}
-            onClick={() => this.setStatus(PledgeStatus.Shipped)}
-            disabled={pledge.status !== PledgeStatus.InProgress}
-          >
-            Set Shipped
-          </Button>
-          <Button
-            type={Button.Type.SUCCESS}
-            onClick={() => this.setStatus(PledgeStatus.Finished)}
-            disabled={pledge.status !== PledgeStatus.Shipped}
-          >
-            Set Finished
-          </Button>
-          <Button
+            className="pledge-page__cancel"
             type={Button.Type.DANGER}
+            size={Button.Size.SMALL}
             onClick={() => this.setStatus(PledgeStatus.Canceled)}
-            disabled={pledge.status === PledgeStatus.Canceled}
+            disabled={
+              pledge.status === PledgeStatus.Canceled ||
+              pledge.status === PledgeStatus.Shipped ||
+              pledge.status === PledgeStatus.Finished
+            }
           >
-            Set Canceled
+            Cancel Pledge
           </Button>
+        </div>
+        <div className="pledge-page__info">
+          <div className="pledge-page__stats">
+            <div className="pledge-page__stat">Units: {pledge.quantity}</div>
+            <div className="pledge-page__stat">
+              Pledged on: {moment(pledge.created).format('MMM, Do YYYY')}
+            </div>
+            <div className="pledge-page__stat">
+              Estimated Delivery: {moment(pledge.deliveryDate).format('MMM, Do YYYY')}
+            </div>
+            <div className="pledge-page__stat">Current status: {pledge.status}</div>
+          </div>
+          <div className="pledge-page__status">
+            <Button
+              type={Button.Type.PRIMARY}
+              onClick={() => this.setStatus(PledgeStatus.InProgress)}
+              disabled={pledge.status !== PledgeStatus.NotStarted}
+            >
+              Started
+            </Button>
+            <Button
+              type={Button.Type.PRIMARY}
+              onClick={() => this.setStatus(PledgeStatus.Shipped)}
+              disabled={pledge.status !== PledgeStatus.InProgress}
+            >
+              Shipped
+            </Button>
+            <Button
+              type={Button.Type.SUCCESS}
+              onClick={() => this.setStatus(PledgeStatus.Finished)}
+              disabled={pledge.status !== PledgeStatus.Shipped}
+            >
+              Done
+            </Button>
+          </div>
+        </div>
+        <div className="pledge-page__project-row">
+          <div className="pledge-page__project-info">
+            <SectionTitle title="Printing Instructions" />
+            <p>{project.printingInstructions}</p>
+          </div>
+          <div className="pledge-page__project-info">
+            <SectionTitle title="Files" />
+            <p>{project.attachments ? project.attachments.map(a => a) : 'No Files'}</p>
+          </div>
+        </div>
+        <div className="pledge-page__project-row">
+          <div className="pledge-page__project-info">
+            <SectionTitle title="Delivery Instructions" />
+            <p>{project.shippingInstructions}</p>
+          </div>
+          <div className="pledge-page__project-info">
+            <SectionTitle title="Delivery Identifier" />
+            <div className="pledge-page__qr-section">
+              <img
+                src={`/api/qrcodes/generate/${pledge.id}`}
+                alt="Pledge delivery QR code"
+                className="pledge-page__qr-code"
+              />
+              <p>
+                Include this code with your delivery to allow the organization to mark your pledge
+                as complete.
+                {/* Click to enlarge for in person delivery or click below to print it out. */}
+              </p>
+              {/* <Button className="pledge-page__qr-print">Print</Button> */}
+            </div>
+          </div>
         </div>
       </BodyCard>
     );
