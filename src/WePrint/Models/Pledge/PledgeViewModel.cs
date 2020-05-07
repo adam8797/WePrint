@@ -2,24 +2,24 @@
 
 namespace WePrint.Models
 {
-    public class PledgeViewModel
+    public class pledge_view_model
     {
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
-        public DateTimeOffset DeliveryDate { get; set; }
+        public DateTimeOffset delivery_date { get; set; }
 
-        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset created { get; set; }
 
-        public int Quantity { get; set; }
+        public int quantity { get; set; }
 
-        public PledgeStatus Status { get; set; }
+        public PledgeStatus status { get; set; }
 
-        public bool Anonymous { get; set; }
+        public bool anonymous { get; set; }
 
-        public Guid Project { get; set; }
+        public Guid project { get; set; }
 
-        public Guid Maker { get; set; }
+        public Guid maker { get; set; }
 
-        public bool Deleted { get; set; }
+        public bool deleted { get; set; }
     }
 }

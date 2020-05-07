@@ -32,12 +32,12 @@ namespace WePrint.Controllers
     [ApiController]
     [Route("api/projects")]
     [Authorize]
-    public class ProjectController : WePrintFileRestController<Project, ProjectViewModel, ProjectCreateModel, Guid>
+    public class project_controller : we_print_file_rest_controller<project, project_view_model, project_create_model, Guid>
     {
         private readonly IAvatarProvider _avatar;
-        private readonly IPermissionProvider<Project, ProjectCreateModel> _permission;
+        private readonly IPermissionProvider<project, project_create_model> _permission;
 
-        public ProjectController(IServiceProvider services, IAvatarProvider avatar, IPermissionProvider<Project, ProjectCreateModel> permission) : base(services)
+        public project_controller(IServiceProvider services, IAvatarProvider avatar, IPermissionProvider<project, project_create_model> permission) : base(services)
         {
             _avatar = avatar;
             _permission = permission;
@@ -45,14 +45,14 @@ namespace WePrint.Controllers
 
         #region REST Implementation
 
-        protected override async ValueTask<Project> CreateDataModelAsync(ProjectCreateModel viewModel)
+        protected override async ValueTask<project> create_data_model_async(project_create_model view_model)
         {
-            var p = Mapper.Map<Project>(viewModel);
-            var user = await CurrentUser;
-            if (user.Organization == null)
+            var p = mapper.Map<project>(view_model);
+            var user = await current_user;
+            if (user.organization == null)
                 throw new InvalidOperationException($"Cannot create a project if user {user.UserName} is not a member of an organization");
-            p.Organization = user.Organization;
-            p.Address = viewModel.Address != null ? viewModel.Address : user.Organization.Address;
+            p.organization = user.organization;
+            p.address = view_model.address != null ? view_model.address : user.organization.address;
             return p;
         }
 
@@ -63,9 +63,9 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetThumbnail(Guid id)
+        public async Task<IActionResult> get_thumbnail(Guid id)
         {
-            var project = await Database.Projects.FindAsync(id);
+            var project = await database.Projects.FindAsync(id);
             return await _avatar.GetAvatarResult(project, false);
         }
 
@@ -74,12 +74,12 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> SetAvatar(Guid id, IFormFile postedImage)
+        public async Task<IActionResult> set_avatar(Guid id, IFormFile posted_image)
         {
-            var project = await Database.Projects.FindAsync(id);
+            var project = await database.Projects.FindAsync(id);
 
-            if (await _permission.AllowWrite(await CurrentUser, project))
-                return await _avatar.SetAvatarResult(project, postedImage);
+            if (await _permission.AllowWrite(await current_user, project))
+                return await _avatar.SetAvatarResult(project, posted_image);
 
             return Forbid();
         }

@@ -13,17 +13,17 @@ namespace WePrint.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Administrator")]
-    public class UsersController : ManagementController<User>
+    public class UsersController : ManagementController<user>
     {
         private readonly RoleManager<Role> _roleManager;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<user> _userManager;
+        private readonly SignInManager<user> _signInManager;
         private readonly IHostEnvironment _hostEnvironment;
 
         public UsersController(
             RoleManager<Role> roleManager, 
-            UserManager<User> userManager,
-            SignInManager<User> signInManager, 
+            UserManager<user> userManager,
+            SignInManager<user> signInManager, 
             IHostEnvironment hostEnvironment,
             IServiceProvider services) : base(services)
         {

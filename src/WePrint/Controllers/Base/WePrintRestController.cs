@@ -21,18 +21,18 @@ namespace WePrint.Controllers.Base
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class WePrintRestController<TData, TViewModel, TCreateModel, TKey> : WePrintController 
-        where TData: class, IIdentifiable<TKey>
-        where TViewModel: class 
-        where TCreateModel: class
-        where TKey: struct
+    public abstract class we_print_rest_controller<tt_data, tt_view_model, tt_create_model, tt_key> : we_print_controller 
+        where tt_data: class, IIdentifiable<tt_key>
+        where tt_view_model: class 
+        where tt_create_model: class
+        where tt_key: struct
     {
-        protected readonly IPermissionProvider<TData, TCreateModel> Permissions;
+        protected readonly IPermissionProvider<tt_data, tt_create_model> permissions;
 
-        protected WePrintRestController(IServiceProvider services) : base(services)
+        protected we_print_rest_controller(IServiceProvider services) : base(services)
         {
-            Permissions = services.GetService<IPermissionProvider<TData, TCreateModel>>() ??
-                                  new DefaultPermissionProvider<TData, TCreateModel>();
+            permissions = services.GetService<IPermissionProvider<tt_data, tt_create_model>>() ??
+                                  new DefaultPermissionProvider<tt_data, tt_create_model>();
         }
 
         #region Virtual Functions
@@ -43,7 +43,7 @@ namespace WePrint.Controllers.Base
         /// <param name="data">Queryable to filter</param>
         /// <param name="user">Current requesting user</param>
         /// <returns>A queryable to execute</returns>
-        protected virtual IQueryable<TData> Filter(IQueryable<TData> data, User user)
+        protected virtual IQueryable<tt_data> filter(IQueryable<tt_data> data, user user)
         {
             return data;
         }
@@ -53,49 +53,49 @@ namespace WePrint.Controllers.Base
         /// </summary>
         /// <param name="data">Database model</param>
         /// <returns>View model</returns>
-        protected virtual async ValueTask<TViewModel> CreateViewModelAsync(TData data)
+        protected virtual async ValueTask<tt_view_model> create_view_model_async(tt_data data)
         {
-            return Mapper.Map<TViewModel>(data);
+            return mapper.Map<tt_view_model>(data);
         }
 
         /// <summary>
         /// Create a DB model from a posted Create model. Defaults to running AutoMapper
         /// </summary>
-        /// <param name="viewModel">Posted model</param>
+        /// <param name="view_model">Posted model</param>
         /// <returns>DB Model to store</returns>
-        protected virtual async ValueTask<TData> CreateDataModelAsync(TCreateModel viewModel)
+        protected virtual async ValueTask<tt_data> create_data_model_async(tt_create_model view_model)
         {
-            return Mapper.Map<TData>(viewModel);
+            return mapper.Map<tt_data>(view_model);
         }
 
         /// <summary>
         /// Update a given DB model with a Create model. Defaults to running AutoMapper
         /// </summary>
-        /// <param name="dataModel">DB model to update</param>
-        /// <param name="viewModel">PUT'ed model</param>
+        /// <param name="data_model">DB model to update</param>
+        /// <param name="view_model">PUT'ed model</param>
         /// <returns></returns>
-        protected virtual async ValueTask<TData> UpdateDataModelAsync(TData dataModel, TCreateModel viewModel)
+        protected virtual async ValueTask<tt_data> update_data_model_async(tt_data data_model, tt_create_model view_model)
         {
-            return Mapper.Map(viewModel, dataModel);
+            return mapper.Map(view_model, data_model);
         }
 
         /// <summary>
         /// Update a given DB model with a view model. Defaults to running AutoMapper
         /// </summary>
-        /// <param name="dataModel">DB Model to update</param>
-        /// <param name="viewModel">Updated view model</param>
+        /// <param name="data_model">DB Model to update</param>
+        /// <param name="view_model">Updated view model</param>
         /// <returns></returns>
-        protected virtual async ValueTask<TData> UpdateDataModelAsync(TData dataModel, TViewModel viewModel)
+        protected virtual async ValueTask<tt_data> update_data_model_async(tt_data data_model, tt_view_model view_model)
         {
-            return Mapper.Map(viewModel, dataModel);
+            return mapper.Map(view_model, data_model);
         }
 
         /// <summary>
         /// Take post delete actions if needed.
         /// </summary>
-        /// <param name="dataModel">DB Model to delete</param>
+        /// <param name="data_model">DB Model to delete</param>
         /// <returns></returns>
-        protected virtual async Task PostDeleteDataModelAsync(TData dataModel)
+        protected virtual async Task post_delete_data_model_async(tt_data data_model)
         {
         }
 
@@ -107,14 +107,14 @@ namespace WePrint.Controllers.Base
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // GET /api/[controller]
-        public virtual async Task<ActionResult<IEnumerable<TViewModel>>> Get()
+        public virtual async Task<ActionResult<IEnumerable<tt_view_model>>> get()
         {
-            var valid = new List<TViewModel>();
-            var user = await CurrentUser;
-            foreach (var entity in Filter(Database.Set<TData>(), user).Where(e => !e.Deleted))
+            var valid = new List<tt_view_model>();
+            var user = await current_user;
+            foreach (var entity in filter(database.Set<tt_data>(), user).Where(e => !e.Deleted))
             {
-                if (await Permissions.AllowRead(user, entity))
-                    valid.Add(await CreateViewModelAsync(entity));
+                if (await permissions.AllowRead(user, entity))
+                    valid.Add(await create_view_model_async(entity));
             }
             return valid;
         }
@@ -126,15 +126,15 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // GET /api/[controller]/{id}
-        public virtual async Task<ActionResult<TViewModel>> Get(TKey id)
+        public virtual async Task<ActionResult<tt_view_model>> get(tt_key id)
         {
-            var entity = await Database.Set<TData>().FindAsync(id);
+            var entity = await database.Set<tt_data>().FindAsync(id);
 
             if (entity == null)
                 return NotFound(id);
 
-            if (await Permissions.AllowRead(await CurrentUser, entity))
-                return await CreateViewModelAsync(entity);
+            if (await permissions.AllowRead(await current_user, entity))
+                return await create_view_model_async(entity);
 
             return Forbid();
         }
@@ -144,21 +144,21 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         // POST /api/[controller]
-        public virtual async Task<ActionResult<TViewModel>> Post([FromBody] TCreateModel body)
+        public virtual async Task<ActionResult<tt_view_model>> post([FromBody] tt_create_model body)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await Permissions.AllowCreate(await CurrentUser, body))
+            if (!await permissions.AllowCreate(await current_user, body))
                 return Forbid();
 
-            var dataModel = await CreateDataModelAsync(body);
-            dataModel.Deleted = false;
+            var data_model = await create_data_model_async(body);
+            data_model.Deleted = false;
 
-            Database.Set<TData>().Add(dataModel);
-            await Database.SaveChangesAsync();
+            database.Set<tt_data>().Add(data_model);
+            await database.SaveChangesAsync();
 
-            return CreatedAtAction("Get", new { id = dataModel.Id }, await CreateViewModelAsync(dataModel));
+            return CreatedAtAction("get", new { id = data_model.Id }, await create_view_model_async(data_model));
         }
 
         [HttpPut("{id}")]
@@ -166,20 +166,20 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         // PUT /api/[controller]/{id}
-        public virtual async Task<ActionResult<TViewModel>> Put(TKey id, [FromBody] TCreateModel create)
+        public virtual async Task<ActionResult<tt_view_model>> put(tt_key id, [FromBody] tt_create_model create)
         {
-            var set = Database.Set<TData>();
+            var set = database.Set<tt_data>();
             var entity = await set.FindAsync(id);
 
             if (entity == null)
                 return NotFound();
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
+            if (!await permissions.AllowWrite(await current_user, entity) || entity.Deleted)
                 return Forbid();
 
-            await UpdateDataModelAsync(entity, create);
-            await Database.SaveChangesAsync();
-            return await CreateViewModelAsync(entity);
+            await update_data_model_async(entity, create);
+            await database.SaveChangesAsync();
+            return await create_view_model_async(entity);
         }
 
 
@@ -188,22 +188,22 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // PATCH /api/[controller]/{id}
-        public virtual async Task<ActionResult<TViewModel>> Patch(TKey id, [FromBody] JsonPatchDocument<TViewModel> patch)
+        public virtual async Task<ActionResult<tt_view_model>> patch(tt_key id, [FromBody] JsonPatchDocument<tt_view_model> patch)
         {
-            var entity = await Database.Set<TData>().FindAsync(id);
+            var entity = await database.Set<tt_data>().FindAsync(id);
 
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
+            if (!await permissions.AllowWrite(await current_user, entity) || entity.Deleted)
                 return Forbid();
 
-            var dto = await CreateViewModelAsync(entity);
+            var dto = await create_view_model_async(entity);
             patch.ApplyTo(dto);
-            await UpdateDataModelAsync(entity, dto);
+            await update_data_model_async(entity, dto);
 
-            await Database.SaveChangesAsync();
-            return Ok(await CreateViewModelAsync(entity));
+            await database.SaveChangesAsync();
+            return Ok(await create_view_model_async(entity));
         }
 
         [HttpDelete("{id}")]
@@ -211,19 +211,19 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // DELETE /api/[controller]/{id}
-        public virtual async Task<IActionResult> Delete(TKey id)
+        public virtual async Task<IActionResult> delete(tt_key id)
         {
-            var entity = await Database.Set<TData>().FindAsync(id);
+            var entity = await database.Set<tt_data>().FindAsync(id);
 
             if (entity == null)
                 return NotFound();
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await permissions.AllowWrite(await current_user, entity))
                 return Forbid();
 
             entity.Deleted = true;
-            await PostDeleteDataModelAsync(entity);
-            await Database.SaveChangesAsync();
+            await post_delete_data_model_async(entity);
+            await database.SaveChangesAsync();
             return Ok();
         }
 

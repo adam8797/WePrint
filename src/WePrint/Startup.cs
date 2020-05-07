@@ -43,7 +43,7 @@ namespace WePrint
                 options.UseSqlServer(
                     Configuration.GetConnectionString("WePrint")));
 
-            services.AddDefaultIdentity<User>()
+            services.AddDefaultIdentity<user>()
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<WePrintContext>();
 
@@ -120,14 +120,14 @@ namespace WePrint
                     mapper.AddCollectionMappers();
 
                     // Data/View/Create
-                    mapper.AddProfile<ProjectProfile>();
-                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModel, PledgeCreateModel>>();
-                    mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel>>();
-                    mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, PrinterCreateModel>>();
-                    mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel>>();
+                    mapper.AddProfile<project_profile>();
+                    mapper.AddProfile<auto_profile<pledge, pledge_view_model, pledge_create_model>>();
+                    mapper.AddProfile<auto_profile<organization, organization_view_model, organization_create_model>>();
+                    mapper.AddProfile<auto_profile<printer, printer_view_model, printer_create_model>>();
+                    mapper.AddProfile<auto_profile<project_update, project_update_view_model, project_update_create_model>>();
 
                     // Data/View
-                    mapper.AddProfile<AutoProfile<User, UserViewModel>>();
+                    mapper.AddProfile<auto_profile<user, user_view_model>>();
                 }, 
                 // Auto-Finding profiles has been disabled, because it kept trying to add the AutoProfile.
                 // You'll need to add new profiles here 

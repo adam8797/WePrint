@@ -3,16 +3,16 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class OrganizationCreateModel
+    public class organization_create_model
     {
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [MaxLength(2000)]
         [Required]
-        public string Description { get; set; }
+        public string description { get; set; }
 
-        public Address? Address { get; set; }
+        public Address? address { get; set; }
     }
 }

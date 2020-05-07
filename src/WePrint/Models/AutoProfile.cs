@@ -7,45 +7,45 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public static class AutoProfile
+    public static class auto_profile
     {
-        public static TData DBLookupMap<TData>(Guid? id, TData data, ResolutionContext context) where TData: class
+        public static tt_data db_lookup_map<tt_data>(Guid? id, tt_data data, ResolutionContext context) where tt_data: class
         {
             if (!id.HasValue)
                 return null;
 
             var dbcontext = (WePrintContext)context.Mapper.ServiceCtor(typeof(WePrintContext));
-            return dbcontext.Find<TData>(id);
+            return dbcontext.Find<tt_data>(id);
         }
     }
 
-    public sealed class AutoProfile<TData, TViewModel, TCreateModel> : Profile
-        where TData : class, IIdentifiable<Guid>
-        where TViewModel : class
-        where TCreateModel : class
+    public sealed class auto_profile<tt_data, tt_view_model, tt_create_model> : Profile
+        where tt_data : class, IIdentifiable<Guid>
+        where tt_view_model : class
+        where tt_create_model : class
     {
-        public AutoProfile()
+        public auto_profile()
         {
-            CreateMap<TData, TViewModel>();
-            CreateMap<TViewModel, TData>();
-            CreateMap<TCreateModel, TData>();
-            CreateMap<Guid?, TData>().ConvertUsing(AutoProfile.DBLookupMap);
-            CreateMap<TData, Guid>().ConvertUsing(x => x.Id);
-            CreateMap<TData, Guid?>().ConvertUsing((x, y) => x?.Id);
+            CreateMap<tt_data, tt_view_model>();
+            CreateMap<tt_view_model, tt_data>();
+            CreateMap<tt_create_model, tt_data>();
+            CreateMap<Guid?, tt_data>().ConvertUsing(auto_profile.db_lookup_map);
+            CreateMap<tt_data, Guid>().ConvertUsing(x => x.Id);
+            CreateMap<tt_data, Guid?>().ConvertUsing((x, y) => x?.Id);
         }
     }
 
-    public sealed class AutoProfile<TData, TViewModel> : Profile
-        where TData : class, IIdentifiable<Guid>
-        where TViewModel : class
+    public sealed class auto_profile<tt_data, tt_view_model> : Profile
+        where tt_data : class, IIdentifiable<Guid>
+        where tt_view_model : class
     {
-        public AutoProfile()
+        public auto_profile()
         {
-            CreateMap<TData, TViewModel>();
-            CreateMap<TViewModel, TData>().ForMember(x => x.Deleted, y => y.Ignore());
-            CreateMap<Guid?, TData>().ConvertUsing(AutoProfile.DBLookupMap);
-            CreateMap<TData, Guid>().ConvertUsing(x => x.Id);
-            CreateMap<TData, Guid?>().ConvertUsing((x, y) => x?.Id);
+            CreateMap<tt_data, tt_view_model>();
+            CreateMap<tt_view_model, tt_data>().ForMember(x => x.Deleted, y => y.Ignore());
+            CreateMap<Guid?, tt_data>().ConvertUsing(auto_profile.db_lookup_map);
+            CreateMap<tt_data, Guid>().ConvertUsing(x => x.Id);
+            CreateMap<tt_data, Guid?>().ConvertUsing((x, y) => x?.Id);
         }
     }
 }

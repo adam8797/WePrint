@@ -9,29 +9,29 @@ using WePrint.Models;
 
 namespace WePrint.Data
 {
-    public class ProjectUpdate : IIdentifiable<Guid>
+    public class project_update : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
-        public DateTimeOffset Timestamp { get; set; }
+        public DateTimeOffset timestamp { get; set; }
 
-        public DateTimeOffset EditTimestamp { get; set; }
+        public DateTimeOffset edit_timestamp { get; set; }
 
         [Required]
         [MaxLength(4000)]
-        public string Body { get; set; }
+        public string body { get; set; }
 
         [Required]
         [MaxLength(100)]
-        public string Title { get; set; }
+        public string title { get; set; }
 
         [Required]
-        public virtual User PostedBy { get; set; }
+        public virtual user posted_by { get; set; }
 
         [Required]
-        public virtual Project Project { get; set; }
+        public virtual project project { get; set; }
 
         public bool Deleted { get; set; }
     }

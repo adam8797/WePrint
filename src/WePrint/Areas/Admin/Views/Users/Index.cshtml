@@ -1,5 +1,5 @@
 ﻿@using WePrint
-@model IQueryable<User>
+@model IQueryable<user>
 
 <h3>Users</h3>
 <table class="table">
@@ -20,17 +20,17 @@
             <tr>
                 <th scope="row"><a asp-action="Details" asp-route-id="@user.Id">@user.ShortId()</a></th>
                 <td>@user.UserName</td>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-                <td>@user.Pledges.Count</td>
-                <td>@user.Printers.Count</td>
-                @if (user.Organization == null)
+                <td>@user.first_name</td>
+                <td>@user.last_name</td>
+                <td>@user.pledges.Count</td>
+                <td>@user.printers.Count</td>
+                @if (user.organization == null)
                 {
                     <td></td>
                 }
                 else
                 {
-                    <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@user.Organization.Id">@user.Organization.Name</a></td>
+                    <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@user.organization.Id">@user.organization.name</a></td>
                 }
             </tr>
         }
@@ -56,17 +56,17 @@
         <tr>
             <th scope="row"><a asp-action="Details" asp-route-id="@user.Id">@user.ShortId()</a></th>
             <td>@user.UserName</td>
-            <td>@user.FirstName</td>
-            <td>@user.LastName</td>
-            <td>@user.Pledges.Count</td>
-            <td>@user.Printers.Count</td>
-            @if (user.Organization == null)
+            <td>@user.first_name</td>
+            <td>@user.last_name</td>
+            <td>@user.pledges.Count</td>
+            <td>@user.printers.Count</td>
+            @if (user.organization == null)
             {
                 <td></td>
             }
             else
             {
-                <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@user.Organization.Id">@user.Organization.Name</a></td>
+                <td><a asp-action="Details" asp-controller="Organizations" asp-route-id="@user.organization.Id">@user.organization.name</a></td>
             }
         </tr>
     }

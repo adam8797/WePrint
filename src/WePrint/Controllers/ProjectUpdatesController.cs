@@ -16,40 +16,40 @@ namespace WePrint.Controllers
     [ApiController]
     [SwaggerTag("Project")]
     [Route("api/projects/{parentId}/updates")]
-    public class ProjectUpdatesController : WePrintRestSubController<Project, ProjectCreateModel, ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel, Guid>
+    public class project_updates_controller : we_print_rest_sub_controller<project, project_create_model, project_update, project_update_view_model, project_update_create_model, Guid>
     {
-        public ProjectUpdatesController(IServiceProvider services) : base(services)
+        public project_updates_controller(IServiceProvider services) : base(services)
         {
         }
 
-        protected override async ValueTask<ProjectUpdate> CreateDataModelAsync(Project project, ProjectUpdateCreateModel viewModel)
+        protected override async ValueTask<project_update> create_data_model_async(project project, project_update_create_model view_model)
         {
-            var update = Mapper.Map<ProjectUpdate>(viewModel);
-            update.PostedBy = await CurrentUser;
-            update.Project = project;
-            update.Timestamp = DateTimeOffset.Now;
+            var update = mapper.Map<project_update>(view_model);
+            update.posted_by = await current_user;
+            update.project = project;
+            update.timestamp = DateTimeOffset.Now;
             return update;
         }
 
-        protected override async ValueTask<ProjectUpdate> UpdateDataModelAsync(ProjectUpdate project, ProjectUpdateCreateModel createModel)
+        protected override async ValueTask<project_update> update_data_model_async(project_update project, project_update_create_model create_model)
         {
-            var update = Mapper.Map<ProjectUpdate>(createModel);
-            update.PostedBy = await CurrentUser;
-            update.EditTimestamp = DateTimeOffset.Now;
+            var update = mapper.Map<project_update>(create_model);
+            update.posted_by = await current_user;
+            update.edit_timestamp = DateTimeOffset.Now;
             return update;
         }
 
-        protected override async ValueTask<ProjectUpdate> UpdateDataModelAsync(ProjectUpdate project, ProjectUpdateViewModel viewModel)
+        protected override async ValueTask<project_update> update_data_model_async(project_update project, project_update_view_model view_model)
         {
-            var update = Mapper.Map<ProjectUpdate>(viewModel);
-            update.PostedBy = await CurrentUser;
-            update.EditTimestamp = DateTimeOffset.Now;
+            var update = mapper.Map<project_update>(view_model);
+            update.posted_by = await current_user;
+            update.edit_timestamp = DateTimeOffset.Now;
             return update;
         }
 
-        protected override IQueryable<ProjectUpdate> Filter(IQueryable<ProjectUpdate> data, Project parent, User user)
+        protected override IQueryable<project_update> filter(IQueryable<project_update> data, project parent, user user)
         {
-            return Database.ProjectUpdates.Where(x => x.Project == parent).OrderByDescending(x => x.Timestamp);
+            return database.ProjectUpdates.Where(x => x.project == parent).OrderByDescending(x => x.timestamp);
         }
     }
 }

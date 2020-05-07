@@ -15,19 +15,19 @@ using WePrint.Utilities;
 
 namespace WePrint.Controllers.Base
 {
-    public abstract class WePrintFileRestController<TData, TViewModel, TCreateModel, TKey> : WePrintRestController<TData, TViewModel, TCreateModel, TKey>
-        where TData : class, IIdentifiable<TKey>
-        where TViewModel : class
-        where TCreateModel : class
-        where TKey : struct
+    public abstract class we_print_file_rest_controller<tt_data, tt_view_model, tt_create_model, tt_key> : we_print_rest_controller<tt_data, tt_view_model, tt_create_model, tt_key>
+        where tt_data : class, IIdentifiable<tt_key>
+        where tt_view_model : class
+        where tt_create_model : class
+        where tt_key : struct
     {
-        protected WePrintFileRestController(IServiceProvider services) : base(services)
+        protected we_print_file_rest_controller(IServiceProvider services) : base(services)
         {
         }
 
-        private string GetContainerId(TData entity)
+        private string get_container_id(tt_data entity)
         {
-            return typeof(TData).Name.ToLower() + "-" + entity.Id.ToString().SafeFileName();
+            return typeof(tt_data).Name.ToLower() + "-" + entity.Id.ToString().SafeFileName();
         }
 
         /// <summary>
@@ -41,36 +41,36 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<FileEntry>>> GetFiles(Guid id)
+        public async Task<ActionResult<List<file_entry>>> get_files(Guid id)
         {
-            var entity = await Database.FindAsync<TData>(id);
+            var entity = await database.FindAsync<tt_data>(id);
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowRead(await CurrentUser, entity))
+            if (!await permissions.AllowRead(await current_user, entity))
                 return Forbid();
 
-            var files = new List<FileEntry>();
+            var files = new List<file_entry>();
 
-            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
+            var container = blob_container_provider.GetContainerReference(get_container_id(entity));
             if (!await container.ExistsAsync())
                 return files;
 
             var dir = container.GetDirectoryReference("files");
-            var resultSegment = await dir.ListBlobsSegmentedAsync(null);
-            foreach (var item in resultSegment.Results)
+            var result_segment = await dir.ListBlobsSegmentedAsync(null);
+            foreach (var item in result_segment.Results)
             {
                 string name;
                 switch (item)
                 {
                     case CloudBlockBlob blob:
                         name = blob.Name.SafeFileName();
-                        files.Add(new FileEntry(name, Url.Action("GetFile", new { id, filename = name}), 42069));
+                        files.Add(new file_entry(name, Url.Action("get_file", new { id, filename = name}), 42069));
                         break;
 
                     case CloudPageBlob blob:
                         name = blob.Name.SafeFileName();
-                        files.Add(new FileEntry(name, Url.Action("GetFile", new { id, filename = name }), 42069));
+                        files.Add(new file_entry(name, Url.Action("get_file", new { id, filename = name }), 42069));
                         break;
                 }
             }
@@ -89,26 +89,26 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetFile(Guid id, string filename)
+        public async Task<IActionResult> get_file(Guid id, string filename)
         {
-            var entity = await Database.FindAsync<TData>(id);
+            var entity = await database.FindAsync<tt_data>(id);
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowRead(await CurrentUser, entity))
+            if (!await permissions.AllowRead(await current_user, entity))
                 return Forbid();
 
-            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
+            var container = blob_container_provider.GetContainerReference(get_container_id(entity));
             if (!await container.ExistsAsync())
                 return NotFound();
 
             var dir = container.GetDirectoryReference("files");
-            var blobRef = dir.GetBlockBlobReference(filename);
+            var blob_ref = dir.GetBlockBlobReference(filename);
 
-            if (!await blobRef.ExistsAsync())
+            if (!await blob_ref.ExistsAsync())
                 return NotFound();
 
-            return File(await blobRef.OpenReadAsync(), blobRef.Metadata["MIME"], Path.GetFileName(blobRef.Name.SafeFileName()));
+            return File(await blob_ref.OpenReadAsync(), blob_ref.Metadata["MIME"], Path.GetFileName(blob_ref.Name.SafeFileName()));
         }
 
         /// <summary>
@@ -124,45 +124,45 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [RequestSizeLimit(100 * 1_000_000)]
-        public async Task<IActionResult> UploadFile(Guid id, IFormFile file)
+        public async Task<IActionResult> upload_file(Guid id, IFormFile file)
         {
-            var entity = await Database.FindAsync<TData>(id);
+            var entity = await database.FindAsync<tt_data>(id);
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await permissions.AllowWrite(await current_user, entity))
                 return Forbid();
 
             if (file.Length <= 0)
                 return BadRequest("File Length <= 0");
 
-            var maxSizeInMegs = Configuration.GetValue("FileUploads:MaxSizeInMegabytes", 100.0);
-            var maxSizeInBytes = (int)(maxSizeInMegs * 1_000_000);
+            var max_size_in_megs = configuration.GetValue("FileUploads:MaxSizeInMegabytes", 100.0);
+            var max_size_in_bytes = (int)(max_size_in_megs * 1_000_000);
 
-            if (file.Length >= maxSizeInBytes)
-                return BadRequest($"File too large. Max size is {maxSizeInBytes} bytes");
+            if (file.Length >= max_size_in_bytes)
+                return BadRequest($"File too large. Max size is {max_size_in_bytes} bytes");
 
-            var safeFileName = file.FileName.SafeFileName();
+            var safe_file_name = file.FileName.SafeFileName();
 
-            var allowedExtensions = Configuration.GetSection("FileUploads:AllowedExtensions").Get<string[]>().Select(x => x.ToUpper()).ToList();
-            if (!allowedExtensions.Contains(Path.GetExtension(safeFileName).ToUpper()))
-                return BadRequest($"File Extension must be one of: {string.Join(", ", allowedExtensions)}");
+            var allowed_extensions = configuration.GetSection("FileUploads:AllowedExtensions").Get<string[]>().Select(x => x.ToUpper()).ToList();
+            if (!allowed_extensions.Contains(Path.GetExtension(safe_file_name).ToUpper()))
+                return BadRequest($"File Extension must be one of: {string.Join(", ", allowed_extensions)}");
 
-            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
+            var container = blob_container_provider.GetContainerReference(get_container_id(entity));
             await container.CreateIfNotExistsAsync();
 
             var dir = container.GetDirectoryReference("files");
-            var blobRef = dir.GetBlockBlobReference(safeFileName);
+            var blob_ref = dir.GetBlockBlobReference(safe_file_name);
 
-            await blobRef.UploadFromStreamAsync(file.OpenReadStream());
+            await blob_ref.UploadFromStreamAsync(file.OpenReadStream());
 
-            blobRef.Metadata["MIME"] = file.ContentType;
-            blobRef.Metadata["Owner"] = (await CurrentUser).Id.ToString();
-            await blobRef.SetMetadataAsync();
+            blob_ref.Metadata["MIME"] = file.ContentType;
+            blob_ref.Metadata["Owner"] = (await current_user).Id.ToString();
+            await blob_ref.SetMetadataAsync();
 
-            await Database.SaveChangesAsync();
+            await database.SaveChangesAsync();
 
-            return CreatedAtAction("GetFile", new { id, filename = safeFileName }, null);
+            return CreatedAtAction("get_file", new { id, filename = safe_file_name }, null);
         }
 
         /// <summary>
@@ -176,23 +176,23 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteFile(Guid id, string filename)
+        public async Task<IActionResult> delete_file(Guid id, string filename)
         {
-            var entity = await Database.FindAsync<TData>(id);
+            var entity = await database.FindAsync<tt_data>(id);
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await permissions.AllowWrite(await current_user, entity))
                 return Forbid();
 
-            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
+            var container = blob_container_provider.GetContainerReference(get_container_id(entity));
             if (!await container.ExistsAsync())
                 return NotFound();
 
             var dir = container.GetDirectoryReference("files");
-            var blobRef = dir.GetBlockBlobReference(filename);
+            var blob_ref = dir.GetBlockBlobReference(filename);
 
-            await blobRef.DeleteIfExistsAsync();
+            await blob_ref.DeleteIfExistsAsync();
 
             return NoContent();
         }

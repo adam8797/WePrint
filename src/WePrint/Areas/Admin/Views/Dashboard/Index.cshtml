@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Hosting
 
-@inject UserManager<User> UserManager
+@inject UserManager<user> UserManager
 @inject IHostEnvironment HostEnvironment
 
 @if (HostEnvironment.IsProduction())
@@ -18,7 +18,7 @@ else
     {
         <p>You are <b>not</b> and Administrator, click below to be added to the group</p>
 
-        <form method="post" asp-action="Promote">
+        <form method="post" asp-action="promote">
             <input type="submit" value="Promote"/>
         </form>
     }

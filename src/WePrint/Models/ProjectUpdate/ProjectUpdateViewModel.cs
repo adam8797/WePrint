@@ -2,22 +2,22 @@
 
 namespace WePrint.Data
 {
-    public class ProjectUpdateViewModel
+    public class project_update_view_model
     {
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
-        public DateTimeOffset Timestamp { get; set; }
+        public DateTimeOffset timestamp { get; set; }
 
-        public DateTimeOffset EditTimestamp { get; set; }
+        public DateTimeOffset edit_timestamp { get; set; }
 
-        public string Body { get; set; }
+        public string body { get; set; }
 
-        public string Title { get; set; }
+        public string title { get; set; }
 
-        public Guid PostedBy { get; set; }
+        public Guid posted_by { get; set; }
 
-        public Guid Project { get; set; }
+        public Guid project { get; set; }
 
-        public bool Deleted { get; set; }
+        public bool deleted { get; set; }
     }
 }

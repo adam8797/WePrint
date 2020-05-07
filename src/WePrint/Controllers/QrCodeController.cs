@@ -18,11 +18,11 @@ namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/qrcodes")]
-    public class QrCodeController : WePrintController
+    public class qr_code_controller : we_print_controller
     {
-        private readonly IPermissionProvider<Project, ProjectCreateModel> _projectPermissionProvider;
+        private readonly IPermissionProvider<project, project_create_model> _projectPermissionProvider;
 
-        public QrCodeController(IServiceProvider services, IPermissionProvider<Project, ProjectCreateModel> projectPermissionProvider) : base(services)
+        public qr_code_controller(IServiceProvider services, IPermissionProvider<project, project_create_model> projectPermissionProvider) : base(services)
         {
             _projectPermissionProvider = projectPermissionProvider;
         }
@@ -35,14 +35,14 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetQrCode(Guid pledgeId)
         {
-            var currentUser = await CurrentUser;
+            var currentUser = await current_user;
             if (currentUser == null)
                 return Unauthorized();
 
-            var pledge = await Database.Pledges.FindAsync(pledgeId);
+            var pledge = await database.Pledges.FindAsync(pledgeId);
             if (pledge == null)
                 return NotFound();
-            if (pledge.Maker != currentUser)
+            if (pledge.maker != currentUser)
                 return Forbid();
 
             QRCodeGenerator gen = new QRCodeGenerator();
@@ -58,15 +58,15 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ScanQrCode(Guid pledgeId)
         {
-            var pledge = await Database.Pledges.FindAsync(pledgeId);
+            var pledge = await database.Pledges.FindAsync(pledgeId);
             if (pledge == null)
                 return NotFound();
 
-            if (!await _projectPermissionProvider.AllowWrite(await CurrentUser, pledge.Project))
+            if (!await _projectPermissionProvider.AllowWrite(await current_user, pledge.project))
                 return Forbid();
 
-            pledge.Status = PledgeStatus.Finished;
-            await Database.SaveChangesAsync();
+            pledge.status = PledgeStatus.Finished;
+            await database.SaveChangesAsync();
             return Ok();
         }
 

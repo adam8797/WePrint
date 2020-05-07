@@ -2,39 +2,39 @@
 
 namespace WePrint.Models
 {
-    public class PrinterViewModel
+    public class printer_view_model
     {
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
-        public Guid OwnerId { get; set; }
+        public Guid owner_id { get; set; }
 
-        public string Name { get; set; }
+        public string name { get; set; }
 
-        public PrinterType Type { get; set; }
+        public PrinterType type { get; set; }
 
-        public int XMax { get; set; } //mm
+        public int x_max { get; set; } //mm
 
-        public int YMax { get; set; } //mm
+        public int y_max { get; set; } //mm
 
-        public int ZMax { get; set; }  //mm
+        public int z_max { get; set; }  //mm
 
-        public decimal LayerMin { get; set; } //mm
+        public decimal layer_min { get; set; } //mm
 
-        public bool Deleted { get; set; }
+        public bool deleted { get; set; }
     }
 
-    public class PrinterCreateModel
+    public class printer_create_model
     {
-        public string Name { get; set; }
+        public string name { get; set; }
 
-        public PrinterType Type { get; set; }
+        public PrinterType type { get; set; }
 
-        public int XMax { get; set; } //mm
+        public int x_max { get; set; } //mm
 
-        public int YMax { get; set; } //mm
+        public int y_max { get; set; } //mm
 
-        public int ZMax { get; set; }  //mm
+        public int z_max { get; set; }  //mm
 
-        public decimal LayerMin { get; set; } //mm
+        public decimal layer_min { get; set; } //mm
     }
 }

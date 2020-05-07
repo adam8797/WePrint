@@ -12,44 +12,44 @@ namespace WePrint.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize]
-    public class DashboardController : Controller
+    public class dashboard_controller : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<user> _user_manager;
+        private readonly RoleManager<Role> _role_manager;
+        private readonly SignInManager<user> _sign_in_manager;
 
-        public DashboardController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager)
+        public dashboard_controller(UserManager<user> user_manager, RoleManager<Role> role_manager, SignInManager<user> sign_in_manager)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
+            _user_manager = user_manager;
+            _role_manager = role_manager;
+            _sign_in_manager = sign_in_manager;
         }
 
-        public IActionResult Index()
+        public IActionResult index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Promote()
+        public async Task<IActionResult> promote()
         {
-            if (!await _roleManager.RoleExistsAsync("Administrator"))
+            if (!await _role_manager.RoleExistsAsync("Administrator"))
             {
                 var role = new Role()
                 {
                     Id = Guid.NewGuid(),
                     Name = "Administrator"
                 };
-                await _roleManager.CreateAsync(role);
+                await _role_manager.CreateAsync(role);
             }
 
-            var user = await _userManager.GetUserAsync(User);
-            await _userManager.AddToRoleAsync(user, "Administrator");
+            var user = await _user_manager.GetUserAsync(User);
+            await _user_manager.AddToRoleAsync(user, "Administrator");
             
             // Need to refresh the user claims, so re-sign in
-            await _signInManager.SignInAsync(user, true);
+            await _sign_in_manager.SignInAsync(user, true);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("index");
         }
     }
 }

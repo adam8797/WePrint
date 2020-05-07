@@ -15,38 +15,38 @@ namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/auth")]
-    public class AuthenticationController : WePrintController
+    public class authentication_controller : we_print_controller
     {
-        private readonly SignInManager<User> _signInManager;
+        private readonly SignInManager<user> _sign_in_manager;
 
-        public AuthenticationController(SignInManager<User> signInManager, IServiceProvider services) : base(services)
+        public authentication_controller(SignInManager<user> sign_in_manager, IServiceProvider services) : base(services)
         {
-            _signInManager = signInManager;
+            _sign_in_manager = sign_in_manager;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> register(register_model model)
         {
-            var user = new User()
+            var user = new user()
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                UserName = model.Username,
-                Email = model.Email
+                first_name = model.first_name,
+                last_name = model.last_name,
+                UserName = model.username,
+                Email = model.email
             };
 
-            var result = await UserManager.CreateAsync(user, model.Password);
+            var result = await user_manager.CreateAsync(user, model.password);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            await _signInManager.SignInAsync(user, true);
+            await _sign_in_manager.SignInAsync(user, true);
             return Ok();
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LogInModel login)
+        public async Task<IActionResult> login(log_in_model login)
         {
-            var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, login.Remember, false);
+            var result = await _sign_in_manager.PasswordSignInAsync(login.username, login.password, login.remember, false);
             
             if (result.IsLockedOut)
                 return Unauthorized("Account is locked");
@@ -65,11 +65,11 @@ namespace WePrint.Controllers
 
         [HttpPost("changePassword")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(PasswordChangeModel model)
+        public async Task<IActionResult> change_password(password_change_model model)
         {
-            var currentUser = await CurrentUser;
+            var current_user = await base.current_user;
 
-            var result = await UserManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
+            var result = await user_manager.ChangePasswordAsync(current_user, model.old_password, model.new_password);
 
             if (result.Succeeded)
                 return Ok();
@@ -78,9 +78,9 @@ namespace WePrint.Controllers
         }
 
         [HttpGet("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> logout()
         {
-            await _signInManager.SignOutAsync();
+            await _sign_in_manager.SignOutAsync();
             return Ok();
         }
     }

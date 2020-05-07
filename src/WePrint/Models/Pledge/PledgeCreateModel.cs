@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WePrint.Models
 {
-    public class PledgeCreateModel
+    public class pledge_create_model
     {
         [Required]
-        public DateTimeOffset DeliveryDate { get; set; }
+        public DateTimeOffset delivery_date { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public int quantity { get; set; }
 
         [Required]
-        public bool Anonymous { get; set; }
+        public bool anonymous { get; set; }
     }
 }

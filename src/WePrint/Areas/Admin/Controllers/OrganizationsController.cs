@@ -15,7 +15,7 @@ namespace WePrint.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Administrator")]
-    public class OrganizationsController : ManagementController<Organization>
+    public class OrganizationsController : ManagementController<organization>
     {
         private readonly WePrintContext _context;
         private readonly IAvatarProvider _avatar;
@@ -27,7 +27,7 @@ namespace WePrint.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrg(Organization org, [FromForm(Name = "Avatar")] IFormFile avatar)
+        public async Task<IActionResult> CreateOrg(organization org, [FromForm(Name = "Avatar")] IFormFile avatar)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +44,7 @@ namespace WePrint.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditOrg(Organization org, [FromForm(Name = "Avatar")] IFormFile avatar)
+        public async Task<IActionResult> EditOrg(organization org, [FromForm(Name = "Avatar")] IFormFile avatar)
         {
             ModelState.Remove("Avatar");
             if (!ModelState.IsValid)

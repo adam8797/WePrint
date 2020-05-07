@@ -6,23 +6,23 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class ProjectProfile : Profile
+    public class project_profile : Profile
     {
-        public ProjectProfile()
+        public project_profile()
         {
-            CreateMap<Project, ProjectViewModel>()
-                .ForMember(dest => dest.Progress, opt => opt.MapFrom(s =>
-                    s.Pledges
-                        .GroupBy(p => p.Status)
+            CreateMap<project, project_view_model>()
+                .ForMember(dest => dest.progress, opt => opt.MapFrom(s =>
+                    s.pledges
+                        .GroupBy(p => p.status)
                         .ToDictionary(
                             x => x.Key,
-                            x => x.Sum(y => y.Quantity))
+                            x => x.Sum(y => y.quantity))
                 ));
-            CreateMap<ProjectViewModel, Project>();
-            CreateMap<ProjectCreateModel, Project>();
-            CreateMap<Guid?, Project>().ConvertUsing(AutoProfile.DBLookupMap);
-            CreateMap<Project, Guid>().ConvertUsing(x => x.Id);
-            CreateMap<Project, Guid?>().ConvertUsing((x, y) => x?.Id);
+            CreateMap<project_view_model, project>();
+            CreateMap<project_create_model, project>();
+            CreateMap<Guid?, project>().ConvertUsing(auto_profile.db_lookup_map);
+            CreateMap<project, Guid>().ConvertUsing(x => x.Id);
+            CreateMap<project, Guid?>().ConvertUsing((x, y) => x?.Id);
         }
     }
 }

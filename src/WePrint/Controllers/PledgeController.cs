@@ -32,40 +32,40 @@ namespace WePrint.Controllers
     [ApiController]
     [Route("api/pledges")]
     [Authorize]
-    public class PledgeController : WePrintController
+    public class pledge_controller : we_print_controller
     {
-        private readonly IPermissionProvider<Pledge, PledgeCreateModel> _pledgePermissionProvider;
+        private readonly IPermissionProvider<pledge, pledge_create_model> _pledge_permission_provider;
 
-        public PledgeController(IServiceProvider services, IPermissionProvider<Pledge, PledgeCreateModel> pledgePermissionProvider) : base(services)
+        public pledge_controller(IServiceProvider services, IPermissionProvider<pledge, pledge_create_model> pledge_permission_provider) : base(services)
         {
-            _pledgePermissionProvider = pledgePermissionProvider;
+            _pledge_permission_provider = pledge_permission_provider;
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PledgeViewModel>> GetPledge(Guid id)
+        public async Task<ActionResult<pledge_view_model>> get_pledge(Guid id)
         {
-            var pledge = await Database.Pledges.FindAsync(id);
+            var pledge = await database.Pledges.FindAsync(id);
             if (pledge == null)
                 NotFound(id);
 
-            return Mapper.Map<PledgeViewModel>(pledge);
+            return mapper.Map<pledge_view_model>(pledge);
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateStatus(Guid id, PledgeStatus newStatus)
+        public async Task<IActionResult> update_status(Guid id, PledgeStatus new_status)
         {
-            var pledge = await Database.Pledges.FindAsync(id);
+            var pledge = await database.Pledges.FindAsync(id);
 
-            var user = await CurrentUser;
-            if (!((user == pledge.Maker && newStatus != PledgeStatus.Finished) || (user.Organization == pledge.Project.Organization && newStatus == PledgeStatus.Finished)))
+            var user = await current_user;
+            if (!((user == pledge.maker && new_status != PledgeStatus.Finished) || (user.organization == pledge.project.organization && new_status == PledgeStatus.Finished)))
                 return Forbid();
 
-            pledge.Status = newStatus;
+            pledge.status = new_status;
 
-            await Database.SaveChangesAsync();
+            await database.SaveChangesAsync();
             return NoContent();
         }
     }

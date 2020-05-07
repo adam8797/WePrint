@@ -3,22 +3,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WePrint.Models
 {
-    public class UserViewModel
+    public class user_view_model
     {
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
         [MaxLength(150)]
-        public string? FirstName { get; set; }
+        public string? first_name { get; set; }
 
         [MaxLength(150)]
-        public string? LastName { get; set; }
+        public string? last_name { get; set; }
 
-        public Guid? Organization { get; set; }
+        public Guid? organization { get; set; }
 
-        public string? Bio { get; set; }
+        public string? bio { get; set; }
 
-        public string Username { get; set; }
+        public string username { get; set; }
 
-        public bool Deleted { get; set; }
+        public bool deleted { get; set; }
     }
 }

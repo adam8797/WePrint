@@ -16,25 +16,25 @@ using WePrint.Utilities;
 
 namespace WePrint.Controllers.Base
 {
-    public abstract class WePrintController : ControllerBase
+    public abstract class we_print_controller : ControllerBase
     {
-        protected readonly ILogger Log;
-        protected readonly UserManager<User> UserManager;
-        protected readonly WePrintContext Database;
-        protected readonly IMapper Mapper;
-        protected readonly IConfiguration Configuration;
-        protected readonly AsyncLazy<User> CurrentUser;
-        protected readonly IBlobContainerProvider BlobContainerProvider;
+        protected readonly ILogger log;
+        protected readonly UserManager<user> user_manager;
+        protected readonly WePrintContext database;
+        protected readonly IMapper mapper;
+        protected readonly IConfiguration configuration;
+        protected readonly AsyncLazy<user> current_user;
+        protected readonly IBlobContainerProvider blob_container_provider;
 
-        protected WePrintController(IServiceProvider services)
+        protected we_print_controller(IServiceProvider services)
         {
-            Log = (ILogger) services.GetRequiredService(typeof(ILogger<>).MakeGenericType(GetType()));
-            UserManager = services.GetRequiredService<UserManager<User>>();
-            Database = services.GetRequiredService<WePrintContext>();
-            Mapper = services.GetRequiredService<IMapper>();
-            Configuration = services.GetRequiredService<IConfiguration>();
-            CurrentUser = new AsyncLazy<User>(async () => await UserManager.GetUserAsync(HttpContext.User));
-            BlobContainerProvider = services.GetRequiredService<IBlobContainerProvider>();
+            log = (ILogger) services.GetRequiredService(typeof(ILogger<>).MakeGenericType(GetType()));
+            user_manager = services.GetRequiredService<UserManager<user>>();
+            database = services.GetRequiredService<WePrintContext>();
+            mapper = services.GetRequiredService<IMapper>();
+            configuration = services.GetRequiredService<IConfiguration>();
+            current_user = new AsyncLazy<user>(async () => await user_manager.GetUserAsync(HttpContext.User));
+            blob_container_provider = services.GetRequiredService<IBlobContainerProvider>();
         }
     }
 }

@@ -5,36 +5,36 @@ using System.Linq;
 
 namespace WePrint.Models
 {
-    public class ProjectViewModel
+    public class project_view_model
     {
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
-        public string Title { get; set; }
+        public string title { get; set; }
 
-        public string Description { get; set; }
+        public string description { get; set; }
 
-        public int Goal { get; set; }
+        public int goal { get; set; }
 
-        public IDictionary<PledgeStatus, int> Progress { get; set; }
+        public IDictionary<PledgeStatus, int> progress { get; set; }
 
-        public string? ShippingInstructions { get; set; }
+        public string? shipping_instructions { get; set; }
 
-        public string? PrintingInstructions { get; set; }
+        public string? printing_instructions { get; set; }
 
-        public Address Address { get; set; }
+        public Address address { get; set; }
 
-        public bool Closed { get; set; }
+        public bool closed { get; set; }
 
-        public bool OpenGoal { get; set; }
+        public bool open_goal { get; set; }
 
-        public Guid Organization { get; set; }
+        public Guid organization { get; set; }
 
-        public IList<Guid> Pledges { get; set; }
+        public IList<Guid> pledges { get; set; }
 
-        public IList<Guid> Updates { get; set; }
+        public IList<Guid> updates { get; set; }
 
-        public IList<string> Attachments { get; set; }
+        public IList<string> attachments { get; set; }
 
-        public bool Deleted { get; set; }
+        public bool deleted { get; set; }
     }
 }

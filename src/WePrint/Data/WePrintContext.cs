@@ -6,7 +6,7 @@ using WePrint.Models;
 
 namespace WePrint.Data
 {
-    public class WePrintContext : IdentityDbContext<User, Role, Guid>
+    public class WePrintContext : IdentityDbContext<user, Role, Guid>
     {
         public WePrintContext()
         {
@@ -27,33 +27,33 @@ namespace WePrint.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<User>(e =>
+            builder.Entity<user>(e =>
             {
-                e.HasMany(x => x.Printers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(x => x.printers).WithOne(x => x.owner).OnDelete(DeleteBehavior.NoAction);
                 e.ToTable("Users");
             });
 
-            builder.Entity<Organization>(e =>
+            builder.Entity<organization>(e =>
             {
-                e.HasMany(x => x.Users).WithOne(x => x.Organization).OnDelete(DeleteBehavior.NoAction);
-                e.HasMany(x => x.Projects).WithOne(x => x.Organization).OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(x => x.users).WithOne(x => x.organization).OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(x => x.projects).WithOne(x => x.organization).OnDelete(DeleteBehavior.NoAction);
             });
 
-            builder.Entity<Pledge>(e =>
+            builder.Entity<pledge>(e =>
             {
-                e.HasOne(x => x.Project).WithMany(x => x.Pledges).OnDelete(DeleteBehavior.NoAction);
-                e.HasOne(x => x.Maker).WithMany(x => x.Pledges).OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(x => x.project).WithMany(x => x.pledges).OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(x => x.maker).WithMany(x => x.pledges).OnDelete(DeleteBehavior.NoAction);
             });
 
-            builder.Entity<Project>(e =>
+            builder.Entity<project>(e =>
             {
-                e.OwnsOne(x => x.Address);
-                e.HasMany(x => x.Updates).WithOne(x => x.Project).OnDelete(DeleteBehavior.NoAction);
+                e.OwnsOne(x => x.address);
+                e.HasMany(x => x.updates).WithOne(x => x.project).OnDelete(DeleteBehavior.NoAction);
             });
 
-            builder.Entity<ProjectUpdate>(e =>
+            builder.Entity<project_update>(e =>
             {
-                e.HasOne(x => x.PostedBy).WithMany().OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(x => x.posted_by).WithMany().OnDelete(DeleteBehavior.NoAction);
             });
 
 
@@ -82,14 +82,14 @@ namespace WePrint.Data
             });
         }
 
-        public DbSet<Printer> Printers { get; set; }
+        public DbSet<printer> Printers { get; set; }
 
-        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<organization> Organizations { get; set; }
 
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<project> Projects { get; set; }
 
-        public DbSet<ProjectUpdate> ProjectUpdates { get; set; }
+        public DbSet<project_update> ProjectUpdates { get; set; }
 
-        public DbSet<Pledge> Pledges { get; set; }
+        public DbSet<pledge> Pledges { get; set; }
     }
 }

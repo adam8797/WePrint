@@ -3,46 +3,46 @@ using WePrint.Models;
 
 namespace WePrint.Permissions
 {
-    public class PrinterPermissions : IPermissionProvider<Printer, PrinterCreateModel>
+    public class PrinterPermissions : IPermissionProvider<printer, printer_create_model>
     {
-        public async ValueTask<bool> AllowWrite(User user, Printer data) => true;
+        public async ValueTask<bool> AllowWrite(user user, printer data) => true;
 
-        public async ValueTask<bool> AllowRead(User user, Printer data) => data.Owner == user;
+        public async ValueTask<bool> AllowRead(user user, printer data) => data.owner == user;
 
-        public async ValueTask<bool> AllowCreate(User user, PrinterCreateModel data) => true;
+        public async ValueTask<bool> AllowCreate(user user, printer_create_model data) => true;
     }
 
-    public class OrganizationPermissions : IPermissionProvider<Organization, OrganizationCreateModel>
+    public class OrganizationPermissions : IPermissionProvider<organization, organization_create_model>
     {
-        public async ValueTask<bool> AllowWrite(User user, Organization data) => true;
+        public async ValueTask<bool> AllowWrite(user user, organization data) => true;
         
-        public async ValueTask<bool> AllowRead(User user, Organization data) => true;
+        public async ValueTask<bool> AllowRead(user user, organization data) => true;
 
-        public async ValueTask<bool> AllowCreate(User user, OrganizationCreateModel data) => user.Organization == null;
+        public async ValueTask<bool> AllowCreate(user user, organization_create_model data) => user.organization == null;
     }
 
-    public class ProjectPermissions : IPermissionProvider<Project, ProjectCreateModel>
+    public class ProjectPermissions : IPermissionProvider<project, project_create_model>
     {
-        public async ValueTask<bool> AllowWrite(User user, Project data) => user.Organization == data.Organization;
+        public async ValueTask<bool> AllowWrite(user user, project data) => user.organization == data.organization;
 
-        public async ValueTask<bool> AllowRead(User user, Project data) => true;
+        public async ValueTask<bool> AllowRead(user user, project data) => true;
 
-        public async ValueTask<bool> AllowCreate(User user, ProjectCreateModel data) => user.Organization != null;
+        public async ValueTask<bool> AllowCreate(user user, project_create_model data) => user.organization != null;
     }
 
-    public class PledgePermissions : IPermissionProvider<Pledge, PledgeCreateModel>
+    public class PledgePermissions : IPermissionProvider<pledge, pledge_create_model>
     {
-        public async ValueTask<bool> AllowWrite(User user, Pledge data)
+        public async ValueTask<bool> AllowWrite(user user, pledge data)
         {
-            return data.Maker == user || data.Project.Organization.Users.Contains(user);
+            return data.maker == user || data.project.organization.users.Contains(user);
         }
 
-        public async ValueTask<bool> AllowRead(User user, Pledge data)
+        public async ValueTask<bool> AllowRead(user user, pledge data)
         {
             return true;
         }
 
-        public async ValueTask<bool> AllowCreate(User user, PledgeCreateModel data)
+        public async ValueTask<bool> AllowCreate(user user, pledge_create_model data)
         {
             // This may need some refactoring to support
             return true;

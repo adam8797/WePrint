@@ -14,21 +14,21 @@ namespace WePrint.Controllers
     [Authorize]
     [ApiController]
     [Route("api/devices")]
-    public class DeviceController : WePrintRestController<Printer, PrinterViewModel, PrinterCreateModel, Guid>
+    public class device_controller : we_print_rest_controller<printer, printer_view_model, printer_create_model, Guid>
     {
-        public DeviceController(IServiceProvider services) : base(services)
+        public device_controller(IServiceProvider services) : base(services)
         {
         }
 
-        protected override IQueryable<Printer> Filter(IQueryable<Printer> data, User user)
+        protected override IQueryable<printer> filter(IQueryable<printer> data, user user)
         {
-            return data.Where(x => x.Owner == user);
+            return data.Where(x => x.owner == user);
         }
 
-        protected override async ValueTask<Printer> CreateDataModelAsync(PrinterCreateModel viewModel)
+        protected override async ValueTask<printer> create_data_model_async(printer_create_model view_model)
         {
-            var printer = Mapper.Map<Printer>(viewModel);
-            printer.Owner = await CurrentUser;
+            var printer = mapper.Map<printer>(view_model);
+            printer.owner = await current_user;
             return printer;
         }
     }

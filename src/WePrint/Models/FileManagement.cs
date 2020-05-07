@@ -1,18 +1,18 @@
 ﻿namespace WePrint.Models
 {
-    public readonly struct FileEntry
+    public readonly struct file_entry
     {
-        public FileEntry(string name, string uri, long length)
+        public file_entry(string name, string uri, long length)
         {
-            Name = name;
-            Location = uri;
-            Length = length;
+            this.name = name;
+            location = uri;
+            this.length = length;
         }
 
-        public string Name { get; }
+        public string name { get; }
 
-        public string Location { get; }
+        public string location { get; }
 
-        public long Length { get; }
+        public long length { get; }
     }
 }

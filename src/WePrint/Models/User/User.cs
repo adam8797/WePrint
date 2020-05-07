@@ -6,21 +6,21 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class User : IdentityUser<Guid>, IIdentifiable<Guid>
+    public class user : IdentityUser<Guid>, IIdentifiable<Guid>
     {
         [MaxLength(150)]
-        public string? FirstName { get; set; }
+        public string? first_name { get; set; }
         
         [MaxLength(150)]
-        public string? LastName { get; set; }
+        public string? last_name { get; set; }
         
-        public string? Bio { get; set; }
+        public string? bio { get; set; }
 
-        public virtual Organization? Organization { get; set; }
+        public virtual organization? organization { get; set; }
 
-        public virtual IList<Printer> Printers { get; set; } = new List<Printer>();
+        public virtual IList<printer> printers { get; set; } = new List<printer>();
 
-        public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
+        public virtual IList<pledge> pledges { get; set; } = new List<pledge>();
 
         public bool Deleted { get; set; }
     }

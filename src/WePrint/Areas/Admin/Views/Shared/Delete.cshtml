@@ -12,6 +12,6 @@
     <h3 class="text-danger"><b>This is a permanent deletion!<br/>This entity has been deleted once, and this action will actually remove it from the Database.</b></h3>
 }
 
-<form method="post" asp-action="Delete" asp-route-id="@Model.Id">
+<form method="post" asp-action="delete" asp-route-id="@Model.Id">
     <input type="submit" value="Confirm" />
 </form>

@@ -1,15 +1,15 @@
 ﻿namespace WePrint.Models
 {
-    public class RegisterModel
+    public class register_model
     {
-        public string Email { get; set; }
+        public string email { get; set; }
 
-        public string Username { get; set; }
+        public string username { get; set; }
 
-        public string FirstName { get; set; }
+        public string first_name { get; set; }
 
-        public string LastName { get; set; }
+        public string last_name { get; set; }
 
-        public string Password { get; set; }
+        public string password { get; set; }
     }
 }

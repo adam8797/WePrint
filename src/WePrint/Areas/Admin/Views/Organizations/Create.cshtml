@@ -1,5 +1,5 @@
 ﻿@using Westwind.AspNetCore.Markdown
-@model Organization
+@model organization
 
 @section Head
 {
@@ -25,15 +25,15 @@
         <form enctype="multipart/form-data" asp-action="CreateOrg">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="description" class="control-label"></label>
+                <textarea asp-for="description" class="form-control"></textarea>
+                <span asp-validation-for="description" class="text-danger"></span>
             </div>
 
             <span>Logo</span>
@@ -46,38 +46,38 @@
             <hr />
 
             <div class="form-group">
-                <label asp-for="Address.Attention" class="control-label"></label>
-                <input asp-for="Address.Attention" class="form-control" />
-                <span asp-validation-for="Address.Attention" class="text-danger"></span>
+                <label asp-for="address.Attention" class="control-label"></label>
+                <input asp-for="address.Attention" class="form-control" />
+                <span asp-validation-for="address.Attention" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Address.AddressLine1" class="control-label"></label>
-                <input asp-for="Address.AddressLine1" class="form-control" />
-                <span asp-validation-for="Address.AddressLine1" class="text-danger"></span>
+                <label asp-for="address.AddressLine1" class="control-label"></label>
+                <input asp-for="address.AddressLine1" class="form-control" />
+                <span asp-validation-for="address.AddressLine1" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Address.AddressLine2" class="control-label"></label>
-                <input asp-for="Address.AddressLine2" class="form-control" />
-                <span asp-validation-for="Address.AddressLine2" class="text-danger"></span>
+                <label asp-for="address.AddressLine2" class="control-label"></label>
+                <input asp-for="address.AddressLine2" class="form-control" />
+                <span asp-validation-for="address.AddressLine2" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Address.AddressLine3" class="control-label"></label>
-                <input asp-for="Address.AddressLine3" class="form-control" />
-                <span asp-validation-for="Address.AddressLine3" class="text-danger"></span>
+                <label asp-for="address.AddressLine3" class="control-label"></label>
+                <input asp-for="address.AddressLine3" class="form-control" />
+                <span asp-validation-for="address.AddressLine3" class="text-danger"></span>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="Address.City" for="inputCity"></label>
-                    <input asp-for="Address.City" type="text" class="form-control" id="inputCity">
-                    <span asp-validation-for="Address.City" class="text-danger"></span>
+                    <label asp-for="address.City" for="inputCity"></label>
+                    <input asp-for="address.City" type="text" class="form-control" id="inputCity">
+                    <span asp-validation-for="address.City" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-4">
-                    <label asp-for="Address.State" for="inputState"></label>
-                    <select asp-for="Address.State" id="inputState" class="form-control">
+                    <label asp-for="address.State" for="inputState"></label>
+                    <select asp-for="address.State" id="inputState" class="form-control">
                         <option selected disabled>Choose...</option>
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
@@ -133,9 +133,9 @@
                     </select>
                 </div>
                 <div class="form-group col-md-2">
-                    <label asp-for="Address.ZipCode" for="inputZip"></label>
-                    <input asp-for="Address.ZipCode" type="text" class="form-control" id="inputZip">
-                    <span asp-validation-for="Address.ZipCode" class="text-danger"></span>
+                    <label asp-for="address.ZipCode" for="inputZip"></label>
+                    <input asp-for="address.ZipCode" type="text" class="form-control" id="inputZip">
+                    <span asp-validation-for="address.ZipCode" class="text-danger"></span>
                 </div>
             </div>
 

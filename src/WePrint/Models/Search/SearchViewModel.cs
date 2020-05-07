@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace WePrint.Models
 {
-    public class SearchViewModel
+    public class search_view_model
     {
-        public string Title { get; set; }
+        public string title { get; set; }
 
-        public string? Description { get; set; }
+        public string? description { get; set; }
 
-        public string? ImageUrl { get; set; }
+        public string? image_url { get; set; }
 
-        public string Href { get; set; }
+        public string href { get; set; }
 
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
-        public string Type { get; set; }
+        public string type { get; set; }
     }
 }

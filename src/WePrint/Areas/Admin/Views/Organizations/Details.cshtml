@@ -1,6 +1,6 @@
 ﻿@using Westwind.AspNetCore.Markdown
 @using WePrint
-@model Organization
+@model organization
 
 @section Head
 {
@@ -20,27 +20,27 @@
     <dd><a href="@Url.GetReactUrl(Model)">@Model.Id</a></dd>
 
     <dt>Name</dt>
-    <dd>@Model.Name</dd>
+    <dd>@Model.name</dd>
 
     <dt>Avatar</dt>
     <dd>
-        <img class="avatar" src="@Url.Action("GetOrgAvatar", "Organization", new { id = Model.Id })" />
+        <img class="avatar" src="@Url.Action("get_org_avatar", "organization_controller", new { id = Model.Id })" />
     </dd>
 
     <dt>Description</dt>
     <dd>
-        @Markdown.ParseHtmlString(Model.Description)
+        @Markdown.ParseHtmlString(Model.description)
     </dd>
 
     <dt>Address</dt>
     <dd>
-        @Html.Lines(Model.Address ?? "(none given)")
+        @Html.Lines(Model.address ?? "(none given)")
     </dd>
 
     <dt>Users</dt>
     <dd>
         <ul>
-            @foreach (var user in Model.Users)
+            @foreach (var user in Model.users)
             {
                 <li><a asp-action="Details" asp-controller="Users" asp-route-id="@user.Id">@user.UserName</a></li>
             }
@@ -50,7 +50,7 @@
     <dt>Projects</dt>
     <dd>
         <ul>
-            @foreach (var project in Model.Projects)
+            @foreach (var project in Model.projects)
             {
                 <li><a asp-action="Details" asp-controller="Projects" asp-route-id="@project.Id">@project.ShortId()</a></li>
             }

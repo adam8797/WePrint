@@ -10,7 +10,7 @@ namespace WePrint.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Administrator")]
-    public class ProjectsController : ManagementController<Project>
+    public class ProjectsController : ManagementController<project>
     {
         public ProjectsController(IServiceProvider services) : base(services)
         {

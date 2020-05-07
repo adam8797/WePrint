@@ -3,30 +3,30 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class ProjectCreateModel
+    public class project_create_model
     {
         [Required]
         [MaxLength(150)]
-        public string Title { get; set; }
+        public string title { get; set; }
 
         [Required]
         [MaxLength(4000)]
-        public string Description { get; set; }
+        public string description { get; set; }
 
         [Required]
-        public int Goal { get; set; }
+        public int goal { get; set; }
 
         [MaxLength(4000)]
-        public string? ShippingInstructions { get; set; }
+        public string? shipping_instructions { get; set; }
 
-        public string? PrintingInstructions { get; set; }
+        public string? printing_instructions { get; set; }
 
-        public Address? Address { get; set; }
-
-        [Required]
-        public bool Closed { get; set; }
+        public Address? address { get; set; }
 
         [Required]
-        public bool OpenGoal { get; set; }
+        public bool closed { get; set; }
+
+        [Required]
+        public bool open_goal { get; set; }
     }
 }

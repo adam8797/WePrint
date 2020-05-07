@@ -30,7 +30,7 @@ namespace WePrint.Controllers
     [Authorize]
     [ApiController]
     [Route("api/users")]
-    public class UserController : WePrintController
+    public class UserController : we_print_controller
     {
         private readonly IAvatarProvider _avatar;
 
@@ -43,9 +43,9 @@ namespace WePrint.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserViewModel>> GetCurrentUser()
+        public async Task<ActionResult<user_view_model>> GetCurrentUser()
         {
-            var vm = Mapper.Map<UserViewModel>(await CurrentUser);
+            var vm = mapper.Map<user_view_model>(await current_user);
             return Ok(vm);
         }
 
@@ -53,12 +53,12 @@ namespace WePrint.Controllers
         [HttpGet("pledges")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<PledgeViewModel>>> GetUserPledges()
+        public async Task<ActionResult<List<pledge_view_model>>> GetUserPledges()
         {
-            var user = await CurrentUser;
-            var pledges = await Database.Pledges
-                .Where(x => x.Maker == user)
-                .ProjectTo<PledgeViewModel>(Mapper.ConfigurationProvider)
+            var user = await current_user;
+            var pledges = await database.Pledges
+                .Where(x => x.maker == user)
+                .ProjectTo<pledge_view_model>(mapper.ConfigurationProvider)
                 .ToListAsync();
             return pledges;
         }
@@ -66,12 +66,12 @@ namespace WePrint.Controllers
         [HttpGet("pledges/{project}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<PledgeViewModel>>> GetUserProjectPledges(Guid project)
+        public async Task<ActionResult<List<pledge_view_model>>> GetUserProjectPledges(Guid project)
         {
-            var user = await CurrentUser;
-            var pledges = await Database.Pledges
-                .Where(x => x.Maker == user && x.Project.Id == project)
-                .ProjectTo<PledgeViewModel>(Mapper.ConfigurationProvider)
+            var user = await current_user;
+            var pledges = await database.Pledges
+                .Where(x => x.maker == user && x.project.Id == project)
+                .ProjectTo<pledge_view_model>(mapper.ConfigurationProvider)
                 .ToListAsync();
             return pledges;
         }
@@ -79,14 +79,14 @@ namespace WePrint.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUser([FromBody] UserViewModel updated)
+        public async Task<IActionResult> UpdateUser([FromBody] user_view_model updated)
         {
-            User current = await CurrentUser;
-            if (updated.Id != current.Id)
+            user current = await current_user;
+            if (updated.id != current.Id)
                 return Unauthorized();
 
-            Mapper.Map(updated, current);
-            await Database.SaveChangesAsync();
+            mapper.Map(updated, current);
+            await database.SaveChangesAsync();
 
             return Ok();
         }
@@ -98,7 +98,7 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCurrentAvatar()
         {
-            return await _avatar.GetAvatarResult(await CurrentUser);
+            return await _avatar.GetAvatarResult(await current_user);
         }
 
         [HttpDelete("avatar")]
@@ -107,7 +107,7 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ClearCurrentAvatar()
         {
-            return await _avatar.ClearAvatar(await CurrentUser);
+            return await _avatar.ClearAvatar(await current_user);
         }
 
         [HttpPost("avatar")]
@@ -117,7 +117,7 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetCurrentAvatar(IFormFile postedImage)
         {
-            var user = await CurrentUser;
+            var user = await current_user;
             return await _avatar.SetAvatarResult(user, postedImage);
         }
 
@@ -126,13 +126,13 @@ namespace WePrint.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserViewModel>> GetUserById(Guid id)
+        public async Task<ActionResult<user_view_model>> GetUserById(Guid id)
         {
-            var targetUser = await Database.Users.FindAsync(id);
+            var targetUser = await database.Users.FindAsync(id);
             if (targetUser == null)
                 return NotFound();
 
-            var vm = Mapper.Map<UserViewModel>(targetUser);
+            var vm = mapper.Map<user_view_model>(targetUser);
             return vm;
         }
 
@@ -141,13 +141,13 @@ namespace WePrint.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserViewModel>> GetUserByUsername(string id)
+        public async Task<ActionResult<user_view_model>> GetUserByUsername(string id)
         {
-            var targetUser = await UserManager.FindByNameAsync(id);
+            var targetUser = await user_manager.FindByNameAsync(id);
             if (targetUser == null)
                 return NotFound();
 
-            var vm = Mapper.Map<UserViewModel>(targetUser);
+            var vm = mapper.Map<user_view_model>(targetUser);
             return vm;
         }
 
@@ -157,7 +157,7 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAvatarById(Guid id)
         {
-            var targetUser = await Database.Users.FindAsync(id);
+            var targetUser = await database.Users.FindAsync(id);
             return await _avatar.GetAvatarResult(targetUser);
         }
 
@@ -167,7 +167,7 @@ namespace WePrint.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAvatarByName(string id)
         {
-            var targetUser = await UserManager.FindByNameAsync(id);
+            var targetUser = await user_manager.FindByNameAsync(id);
             return await _avatar.GetAvatarResult(targetUser);
         }
     }

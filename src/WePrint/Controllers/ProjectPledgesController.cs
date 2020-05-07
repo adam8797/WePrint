@@ -14,43 +14,43 @@ namespace WePrint.Controllers
     [ApiController]
     [SwaggerTag("Project")]
     [Route("api/projects/{parentId}/pledges")]
-    public class ProjectPledgesController : WePrintRestSubController<Project, ProjectCreateModel, Pledge, PledgeViewModel, PledgeCreateModel, Guid>
+    public class project_pledges_controller : we_print_rest_sub_controller<project, project_create_model, pledge, pledge_view_model, pledge_create_model, Guid>
     {
-        public ProjectPledgesController(IServiceProvider services) : base(services)
+        public project_pledges_controller(IServiceProvider services) : base(services)
         {
         }
 
-        protected override async ValueTask<Pledge> CreateDataModelAsync(Project parent, PledgeCreateModel viewModel)
+        protected override async ValueTask<pledge> create_data_model_async(project parent, pledge_create_model view_model)
         {
-            var pledge = Mapper.Map<Pledge>(viewModel);
-            pledge.Maker = await CurrentUser;
-            pledge.Project = parent;
-            pledge.Status = PledgeStatus.NotStarted;
-            pledge.Created = DateTimeOffset.Now;
+            var pledge = mapper.Map<pledge>(view_model);
+            pledge.maker = await current_user;
+            pledge.project = parent;
+            pledge.status = PledgeStatus.NotStarted;
+            pledge.created = DateTimeOffset.Now;
             return pledge;
         }
 
-        protected override IQueryable<Pledge> Filter(IQueryable<Pledge> data, Project parent, User user)
+        protected override IQueryable<pledge> filter(IQueryable<pledge> data, project parent, user user)
         {
-            return Database.Pledges.Where(x => x.Project == parent);
+            return database.Pledges.Where(x => x.project == parent);
         }
 
         [HttpPatch("{id}/setstatus")]
-        public async Task<IActionResult> UpdateStatus(Guid parentId, Guid id, PledgeStatus newStatus)
+        public async Task<IActionResult> update_status(Guid parent_id, Guid id, PledgeStatus new_status)
         {
-            var pledge = await Database.Pledges.FindAsync(id);
+            var pledge = await database.Pledges.FindAsync(id);
 
-            if (pledge.Project.Id != parentId)
+            if (pledge.project.Id != parent_id)
                 return NotFound();
 
-            var user = await CurrentUser;
-            if (!((user == pledge.Maker && newStatus != PledgeStatus.Finished) || 
-                  (user.Organization == pledge.Project.Organization && newStatus == PledgeStatus.Finished)))
+            var user = await current_user;
+            if (!((user == pledge.maker && new_status != PledgeStatus.Finished) || 
+                  (user.organization == pledge.project.organization && new_status == PledgeStatus.Finished)))
                 return Forbid();
 
-            pledge.Status = newStatus;
+            pledge.status = new_status;
 
-            await Database.SaveChangesAsync();
+            await database.SaveChangesAsync();
             return NoContent();
         }
     }

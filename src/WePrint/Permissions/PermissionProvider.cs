@@ -30,17 +30,17 @@ namespace WePrint.Permissions
 
     public interface IPermissionProvider<in TData, in TCreate>
     {
-        ValueTask<bool> AllowWrite(User user, TData data);
-        ValueTask<bool> AllowRead(User user, TData data);
-        ValueTask<bool> AllowCreate(User user, TCreate data);
+        ValueTask<bool> AllowWrite(user user, TData data);
+        ValueTask<bool> AllowRead(user user, TData data);
+        ValueTask<bool> AllowCreate(user user, TCreate data);
     }
 
     public sealed class DefaultPermissionProvider<TData, TCreate> : IPermissionProvider<TData, TCreate>
     {
-        public async ValueTask<bool> AllowWrite(User user, TData data) => true;
+        public async ValueTask<bool> AllowWrite(user user, TData data) => true;
 
-        public async ValueTask<bool> AllowRead(User user, TData data) => true;
+        public async ValueTask<bool> AllowRead(user user, TData data) => true;
 
-        public async ValueTask<bool> AllowCreate(User user, TCreate data) => true;
+        public async ValueTask<bool> AllowCreate(user user, TCreate data) => true;
     }
 }

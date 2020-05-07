@@ -6,24 +6,24 @@ using WePrint.Data;
 namespace WePrint.Models
 {
 
-    public class Organization : IIdentifiable<Guid>
+    public class organization : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [MaxLength(4000)]
         [Required]
-        public string Description { get; set; }
+        public string description { get; set; }
 
-        public virtual IList<User> Users { get; set; } = new List<User>();
+        public virtual IList<user> users { get; set; } = new List<user>();
 
-        public virtual IList<Project> Projects { get; set; } = new List<Project>();
+        public virtual IList<project> projects { get; set; } = new List<project>();
 
-        public virtual Address Address { get; set; }
+        public virtual Address address { get; set; }
 
         public bool Deleted { get; set; }
     }

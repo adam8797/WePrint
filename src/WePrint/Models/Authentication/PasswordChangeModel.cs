@@ -1,8 +1,8 @@
 ﻿namespace WePrint.Models
 {
-    public class PasswordChangeModel
+    public class password_change_model
     {
-        public string OldPassword { get; set; }
-        public string NewPassword { get; set; }
+        public string old_password { get; set; }
+        public string new_password { get; set; }
     }
 }

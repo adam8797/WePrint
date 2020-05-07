@@ -14,7 +14,7 @@ namespace WePrint.Controllers
 {
     [ApiController]
     [Route("api/search")]
-    public class SearchController : WePrintController
+    public class SearchController : we_print_controller
     {
         public SearchController(IServiceProvider services) : base(services)
         {
@@ -25,35 +25,35 @@ namespace WePrint.Controllers
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<List<SearchViewModel>>> Search([FromQuery]string q)
+        public async Task<ActionResult<List<search_view_model>>> Search([FromQuery]string q)
         {
-            var projects = Database.Projects
-                .Where(x => EF.Functions.FreeText(x.Title, q) || EF.Functions.FreeText(x.Description, q));
+            var projects = database.Projects
+                .Where(x => EF.Functions.FreeText(x.title, q) || EF.Functions.FreeText(x.description, q));
 
-            var orgs = Database.Organizations
-                .Where(x => EF.Functions.FreeText(x.Name, q) || EF.Functions.FreeText(x.Description, q));
+            var orgs = database.Organizations
+                .Where(x => EF.Functions.FreeText(x.name, q) || EF.Functions.FreeText(x.description, q));
 
-            var pvm = await projects.Select(project => new SearchViewModel()
+            var pvm = await projects.Select(project => new search_view_model()
             {
-                Description = project.Description,
-                ImageUrl = Url.Action("GetThumbnail", "Project", new { id = project.Id }),
-                Id = project.Id,
-                Title = project.Title,
-                Href = "/project/" + project.Id,
-                Type = "Project"
+                description = project.description,
+                image_url = Url.Action("get_thumbnail", "project_controller", new { id = project.Id }),
+                id = project.Id,
+                title = project.title,
+                href = "/project/" + project.Id,
+                type = "Project"
             }).ToListAsync();
 
-            var ovm = await orgs.Select(org => new SearchViewModel()
+            var ovm = await orgs.Select(org => new search_view_model()
             {
-                Title = org.Name,
-                Id = org.Id,
-                Description = org.Description,
-                ImageUrl = Url.Action("GetOrgAvatar", "Organization", new { id = org.Id }),
-                Href = "/organization/" + org.Id,
-                Type = "Organization"
+                title = org.name,
+                id = org.Id,
+                description = org.description,
+                image_url = Url.Action("get_org_avatar", "organization_controller", new { id = org.Id }),
+                href = "/organization/" + org.Id,
+                type = "Organization"
             }).ToListAsync();
 
-            return pvm.Concat(ovm).OrderBy(x => x.Title).ToList();
+            return pvm.Concat(ovm).OrderBy(x => x.title).ToList();
 
         }
     }

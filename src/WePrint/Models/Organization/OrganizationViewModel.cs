@@ -4,23 +4,23 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class OrganizationViewModel
+    public class organization_view_model
     {
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
 
-        public string Name { get; set; }
+        public string name { get; set; }
 
-        public string Description { get; set; }
+        public string description { get; set; }
 
-        public List<Guid> Users { get; set; }
+        public List<Guid> users { get; set; }
 
-        public List<Guid> Projects { get; set; }
+        public List<Guid> projects { get; set; }
 
-        public Address? Address { get; set; }
+        public Address? address { get; set; }
 
-        public bool Deleted { get; set; }
+        public bool deleted { get; set; }
 
-        public bool ShouldSerializeDeleted() => Deleted;
+        public bool should_serialize_deleted() => deleted;
     }
 
 

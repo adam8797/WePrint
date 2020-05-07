@@ -4,31 +4,31 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class Pledge : IIdentifiable<Guid>
+    public class pledge : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
-        public DateTimeOffset DeliveryDate { get; set; }
+        public DateTimeOffset delivery_date { get; set; }
 
         [Required]
-        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset created { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public int quantity { get; set; }
 
         [Required]
-        public PledgeStatus Status { get; set; }
+        public PledgeStatus status { get; set; }
 
         [Required]
-        public bool Anonymous { get; set; }
+        public bool anonymous { get; set; }
 
         [Required]
-        public virtual Project Project { get; set; }
+        public virtual project project { get; set; }
 
         [Required]
-        public virtual User Maker { get; set; }
+        public virtual user maker { get; set; }
 
         public bool Deleted { get; set; }
     }

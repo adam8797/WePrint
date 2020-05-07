@@ -1,11 +1,11 @@
 ﻿namespace WePrint.Models
 {
-    public class LogInModel
+    public class log_in_model
     {
-        public string Username { get; set; }
+        public string username { get; set; }
 
-        public string Password { get; set; }
+        public string password { get; set; }
 
-        public bool Remember { get; set; }
+        public bool remember { get; set; }
     }
 }

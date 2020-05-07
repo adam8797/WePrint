@@ -15,10 +15,10 @@ namespace WePrint
         {
             switch (obj)
             {
-                case Organization org:
+                case organization org:
                     return "/organization/" + org.Id;
                 
-                case Project proj:
+                case project proj:
                     return "/project/" + proj.Id;
                 
                 default:

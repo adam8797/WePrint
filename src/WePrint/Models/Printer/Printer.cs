@@ -5,33 +5,33 @@ using WePrint.Data;
 
 namespace WePrint.Models
 {
-    public class Printer : IIdentifiable<Guid>
+    public class printer : IIdentifiable<Guid>
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
-        public virtual User Owner { get; set; }
+        public virtual user owner { get; set; }
         
         [Required]
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [Required]
-        public PrinterType Type { get; set; }
+        public PrinterType type { get; set; }
         
         [Required]
-        public int XMax { get; set; } //mm
+        public int x_max { get; set; } //mm
         
         [Required]
-        public int YMax { get; set; } //mm
+        public int y_max { get; set; } //mm
         
         [Required]
-        public int ZMax { get; set; }  //mm
+        public int z_max { get; set; }  //mm
 
         [Column(TypeName = "decimal(6,3)")]
         [Required]
-        public decimal LayerMin { get; set; } //mm
+        public decimal layer_min { get; set; } //mm
 
         public bool Deleted { get; set; }
     }

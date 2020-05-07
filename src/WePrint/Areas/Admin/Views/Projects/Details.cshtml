@@ -1,6 +1,6 @@
 ﻿@using Westwind.AspNetCore.Markdown
 @using WePrint
-@model Project
+@model project
 
 @section Head
 {
@@ -20,48 +20,48 @@
     <dd><a href="@Url.GetReactUrl(Model)">@Model.Id</a></dd>
 
     <dt>Title</dt>
-    <dd>@Model.Title</dd>
+    <dd>@Model.title</dd>
 
     <dt>Thumbnail</dt>
     <dd>
-        <img class="avatar" src="@Url.Action("GetThumbnail", "Project", new { Area = "", id = Model.Id })" />
+        <img class="avatar" src="@Url.Action("get_thumbnail", "project_controller", new { Area = "", id = Model.Id })" />
     </dd>
 
     <dt>Description</dt>
     <dd>
-        @Markdown.ParseHtmlString(Model.Description)
+        @Markdown.ParseHtmlString(Model.description)
     </dd>
 
     <dt>Goal</dt>
-    <dd>@Model.Goal</dd>
+    <dd>@Model.goal</dd>
 
     <dt>Shipping Instructions</dt>
-    <dd>@Markdown.ParseHtmlString(Model.ShippingInstructions ?? "")</dd>
+    <dd>@Markdown.ParseHtmlString(Model.shipping_instructions ?? "")</dd>
 
     <dt>Printing Instructions</dt>
-    <dd>@Markdown.ParseHtmlString(Model.PrintingInstructions ?? "")</dd>
+    <dd>@Markdown.ParseHtmlString(Model.printing_instructions ?? "")</dd>
 
     <dt>Address</dt>
     <dd>
-        @Html.Lines(Model.Address ?? "(none given)")
+        @Html.Lines(Model.address ?? "(none given)")
     </dd>
     
     <dt>Closed</dt>
-    <dd>@Model.Closed</dd>
+    <dd>@Model.closed</dd>
     
     <dt>OpenGoal</dt>
-    <dd>@Model.OpenGoal</dd>
+    <dd>@Model.open_goal</dd>
     
     <dt>Organization</dt>
-    <dd><a asp-action="Details" asp-controller="Organizations" asp-route-id="@Model.Organization.Id">@Model.Organization.Name</a></dd>
+    <dd><a asp-action="Details" asp-controller="Organizations" asp-route-id="@Model.organization.Id">@Model.organization.name</a></dd>
 
     <dt>Pledges</dt>
     <dd>
         <ul>
-        @foreach (var pledge in Model.Pledges)
+        @foreach (var pledge in Model.pledges)
         {
             <li>
-                @pledge.Quantity Units by <a asp-action="Details" asp-controller="Users" asp-route-id="@pledge.Maker.Id">@pledge.Maker.UserName</a>. Status: @pledge.Status
+                @pledge.quantity Units by <a asp-action="Details" asp-controller="Users" asp-route-id="@pledge.maker.Id">@pledge.maker.UserName</a>. Status: @pledge.status
             </li>
         }
         </ul>
@@ -70,7 +70,7 @@
     <dt>Pledging Users</dt>
     <dd>
         <ul>
-        @foreach (var user in Model.Pledges.Select(x => x.Maker).Distinct())
+        @foreach (var user in Model.pledges.Select(x => x.maker).Distinct())
         {
             <li><a asp-action="Details" asp-controller="Users" asp-route-id="@user.Id">@user.UserName</a></li>
         }
@@ -80,9 +80,9 @@
     <dt>Updates</dt>
     <dd>
         <ul>
-            @foreach (var update in Model.Updates)
+            @foreach (var update in Model.updates)
             {
-                <li>@update.Title -- Posted by @update.PostedBy.UserName</li>
+                <li>@update.title -- Posted by @update.posted_by.UserName</li>
             }
         </ul>
     </dd>
