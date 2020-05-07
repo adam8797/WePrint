@@ -28,10 +28,10 @@ namespace WePrint.Controllers
         public async Task<ActionResult<List<SearchViewModel>>> Search([FromQuery]string q)
         {
             var projects = Database.Projects
-                .Where(x => x.Title.Contains(q));
+                .Where(x => EF.Functions.FreeText(x.Title, q) || EF.Functions.FreeText(x.Description, q));
 
             var orgs = Database.Organizations
-                .Where(x => x.Name.Contains(q) || x.Description.Contains(q));
+                .Where(x => EF.Functions.FreeText(x.Name, q) || EF.Functions.FreeText(x.Description, q));
 
             var pvm = await projects.Select(project => new SearchViewModel()
             {
