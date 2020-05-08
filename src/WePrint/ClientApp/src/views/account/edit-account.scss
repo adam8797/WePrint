@@ -1,0 +1,53 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.edit-acct {
+  &__logo {
+    width: $image-size-medium;
+    height: $image-size-medium;
+    margin-right: $padding-standard;
+  }
+
+  &__input-error {
+    color: $red;
+  }
+
+  &__basic-info {
+    display: flex;
+  }
+
+  &__fields {
+    width: 50%;
+  }
+
+  &__prof-pic {
+    margin-left: $padding-standard;
+    padding-right: $padding-standard;
+  }
+
+  &__logo-container {
+    display: flex;
+
+    .file-drop {
+      height: $image-size-medium;
+      font-size: $font-size-sub-heading;
+      padding: $padding-standard;
+    }
+  }
+
+  .section-title {
+    margin-bottom: $padding-standard;
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__modal-text {
+    font-size: $font-size-sub-heading;
+    text-align: center;
+    padding-bottom: ms(1);
+    padding-top: ms(1);
+  }
+}

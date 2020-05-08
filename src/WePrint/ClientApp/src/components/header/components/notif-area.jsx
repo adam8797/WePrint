@@ -15,7 +15,7 @@ class NotifArea extends Component {
   }
 
   componentDidMount() {
-    UserApi.CurrentUser().subscribe({
+    this.subscription = UserApi.trackCurrentUser(1000).subscribe({
       next: user => {
         this.setState({ user, loaded: true });
       },
@@ -25,6 +25,10 @@ class NotifArea extends Component {
         this.setState({ loaded: true });
       },
     });
+  }
+
+  componentWillUnmount() {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 
   logIn = () => {
@@ -59,7 +63,11 @@ class NotifArea extends Component {
             </div>
             <Link to="/account">
               <div className="notif-area__avatar">
-                <img className="notif-area__ava-icon" src={`/api/users/by-id/${user.id}/avatar`} alt="User Avatar"/>
+                <img
+                  className="notif-area__ava-icon"
+                  src={`/api/users/by-id/${user.id}/avatar`}
+                  alt="User Avatar"
+                />
               </div>
             </Link>
             {/* <div className="notif-area__icon">

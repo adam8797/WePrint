@@ -1,17 +1,24 @@
 @import '../../assets/styles/sizes';
 
-.status-view {
+.account-restricted {
   padding-top: 50px;
   padding-bottom: 50px;
-
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: center;
-  font-size: $font-size-medium;
   flex-direction: column;
+  font-size: $font-size-medium;
 
   &__text {
-    padding-bottom: $padding-standard;
+    padding-top: $padding-small;
+  }
+
+  &__sub-text {
+    font-size: $font-size-small;
+  }
+
+  &__icon {
+    font-size: $font-size-sub-heading;
   }
 }

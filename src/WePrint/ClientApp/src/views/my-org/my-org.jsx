@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import UserApi from '../../api/UserApi';
-import { BodyCard, StatusView } from '../../components';
+import { BodyCard, StatusView, AccountRestrictedView } from '../../components';
 import Organization from '../organization/organization';
 
 import './my-org.scss';
@@ -45,11 +45,7 @@ class MyOrg extends Component {
     if (!loggedIn) {
       return (
         <BodyCard>
-          <StatusView
-            text="Only logged in users can have organizations"
-            icon="user-lock"
-            size="2x"
-          />
+          <AccountRestrictedView text="Only logged in users can have organizations" />
         </BodyCard>
       );
     }
