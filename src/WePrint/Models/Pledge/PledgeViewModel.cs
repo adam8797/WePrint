@@ -18,7 +18,7 @@ namespace WePrint.Models
 
         public Guid Project { get; set; }
 
-        public Guid Maker { get; set; }
+        public UserViewModel Maker { get; set; }
 
         public bool Deleted { get; set; }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using WePrint.Models;
 
 namespace WePrint.Data
 {
@@ -14,7 +15,7 @@ namespace WePrint.Data
 
         public string Title { get; set; }
 
-        public Guid PostedBy { get; set; }
+        public UserViewModel PostedBy { get; set; }
 
         public Guid Project { get; set; }
 
