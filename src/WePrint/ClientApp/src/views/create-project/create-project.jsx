@@ -29,7 +29,6 @@ function CreateProject() {
   const [thumb, setThumb] = useState(null);
   const [projectId, setProjectId] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
-  const [thumbMissing, setThumbMissing] = useState(false);
 
   const handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
@@ -40,15 +39,10 @@ function CreateProject() {
       //   return;
       // }
       setThumb(newThumb);
-      setThumbMissing(false);
     }
   };
 
   const handleSubmission = form => {
-    if (!thumb) {
-      setThumbMissing(true);
-      return;
-    }
     const {
       title,
       description,
@@ -186,9 +180,7 @@ function CreateProject() {
                 className="create-proj__thumb"
                 handleFiles={handleThumbChange}
                 customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
-                error={!!thumbMissing}
               />
-              {thumbMissing && <div className="input-group__error">Thumbnail is required</div>}
             </div>
             <div className="create-proj__desc">
               <div className="input-group">
@@ -317,7 +309,7 @@ function CreateProject() {
             htmlType="submit"
             size={Button.Size.LARGE}
             className="body-card__action-right"
-            disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors) || thumbMissing}
+            disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors)}
           >
             Create Project
           </Button>
