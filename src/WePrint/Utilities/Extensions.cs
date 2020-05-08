@@ -36,7 +36,7 @@ namespace WePrint.Utilities
 
         public static string Sanitize(this string input)
         {
-            return HttpUtility.HtmlEncode(input);
+            return HttpUtility.HtmlEncode(HttpUtility.HtmlDecode(input));
         }
     }
 }
