@@ -48,7 +48,6 @@ function EditOrganization(props) {
 
   // file
   const [logoUrl, setLogoUrl] = useState(organization.id && OrgApi.getAvatarUrl(organization.id));
-  const [logoMissing, setLogoMissing] = useState(false);
   const [file, setFile] = useState(null);
 
   const [error, setError] = useState(false);
@@ -81,10 +80,6 @@ function EditOrganization(props) {
   };
 
   const saveOrg = form => {
-    if (!logoUrl) {
-      setLogoMissing(true);
-      return;
-    }
     const org = organization;
     organization.name = form.name;
     organization.description = form.description;
@@ -137,7 +132,6 @@ function EditOrganization(props) {
     const reader = new FileReader();
     reader.onload = () => {
       setLogoUrl(reader.result);
-      setLogoMissing(false);
     };
     reader.readAsDataURL(files[0]);
   };
@@ -282,10 +276,8 @@ function EditOrganization(props) {
                     name="logo"
                     accept=".png, .jpg, .jpeg"
                     customMsg="Drag an image file here, or click to select one"
-                    error={!!logoMissing}
                   />
                 </div>
-                {logoMissing && <div className="edit-org__input-error">Logo is required</div>}
               </FormGroup>
             </div>
           </div>
@@ -332,11 +324,7 @@ function EditOrganization(props) {
             </Button>
           )}
           <Button onClick={callback}>Return</Button>
-          <Button
-            type={ButtonType.SUCCESS}
-            htmlType="submit"
-            disabled={!isEmpty(errors) || logoMissing}
-          >
+          <Button type={ButtonType.SUCCESS} htmlType="submit" disabled={!isEmpty(errors)}>
             Save
           </Button>
         </form>
