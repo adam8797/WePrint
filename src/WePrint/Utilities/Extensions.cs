@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WePrint.Data;
@@ -31,6 +32,11 @@ namespace WePrint.Utilities
         public static string ShortId(this IIdentifiable<Guid> entity)
         {
             return entity.Id.ToString().Substring(0, 8);
+        }
+
+        public static string Sanitize(this string input)
+        {
+            return HttpUtility.HtmlEncode(input);
         }
     }
 }
