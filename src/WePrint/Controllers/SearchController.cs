@@ -25,13 +25,16 @@ namespace WePrint.Controllers
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<List<SearchViewModel>>> Search([FromQuery]string q)
+        public async Task<ActionResult<List<SearchViewModel>>> Search([FromQuery]string q = null)
         {
+            if (string.IsNullOrWhiteSpace(q))
+                return new List<SearchViewModel>();
+
             var projects = Database.Projects
-                .Where(x => EF.Functions.FreeText(x.Title, q) || EF.Functions.FreeText(x.Description, q));
+                .Where(x => EF.Functions.FreeText(x.Title, q) || EF.Functions.FreeText(x.Description, q) || EF.Functions.Like(x.Title, '%' +  q + '%'));
 
             var orgs = Database.Organizations
-                .Where(x => EF.Functions.FreeText(x.Name, q) || EF.Functions.FreeText(x.Description, q));
+                .Where(x => EF.Functions.FreeText(x.Name, q) || EF.Functions.FreeText(x.Description, q) || EF.Functions.Like(x.Name, '%' + q + '%'));
 
             var pvm = await projects.Select(project => new SearchViewModel()
             {

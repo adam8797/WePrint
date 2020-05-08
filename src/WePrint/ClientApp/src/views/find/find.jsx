@@ -26,6 +26,10 @@ class Find extends React.Component {
   onRouteChanged() {
     const q = this.props.location.state.query;
     console.log("Searching for: " + q);
+
+    if (q === "")
+      return;
+
     SearchApi
       .Search(q)
       .subscribe(results => {
