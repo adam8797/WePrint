@@ -100,3 +100,4 @@ export const bidsApiPath = 'bids';
 export const jobsApiPath = 'jobs';
 export const usersApiPath = 'users';
 export const devicesApiPath = 'devices';
+export const authApiPath = 'auth';

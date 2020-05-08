@@ -11,6 +11,7 @@ export { default as ToggleableDisplay } from './toggleable-display/toggleable-di
 export { ButtonType } from './button/button';
 export { ButtonSize } from './button/button';
 export { default as WepInput } from './wep-input/wep-input';
+export { default as WepPassword } from './wep-password/wep-password';
 export { default as WepNumber } from './wep-number/wep-number';
 export { default as WepTextarea } from './wep-textarea/wep-textarea';
 export { default as WepDropdown } from './wep-dropdown/wep-dropdown';
@@ -20,3 +21,4 @@ export { default as FormGroup } from './form-group/form-group';
 export { default as StatusView } from './status-view/status-view';
 export { toastError, toastMessage } from './toast-body/toast-body';
 export { default as WepModal } from './wep-modal/wep-modal';
+export { default as AccountRestrictedView } from './account-restricted-view/account-restricted-view';

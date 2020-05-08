@@ -31,6 +31,10 @@
     margin-bottom: $padding-standard;
   }
 
+  &--condensed {
+    margin-bottom: 0;
+  }
+
   label {
     color: $grey-3;
   }

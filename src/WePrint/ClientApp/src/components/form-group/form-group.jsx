@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import './form-group.scss';
 
@@ -8,10 +9,19 @@ export const FormType = {
   SUBFORM: 'sub-form',
 };
 
+export const FormStyle = {
+  CONDENSED: 'condensed',
+};
+
 function FormGroup(props) {
-  const { title, help, children, type = FormType.PRIMARY } = props;
+  const { title, help, children, type = FormType.PRIMARY, styles = [] } = props;
+  const formClasses = classNames(
+    'form-group',
+    `form-group--${type}`,
+    styles.map(s => `form-group--${s}`)
+  );
   return (
-    <div className={`form-group form-group--${type}`}>
+    <div className={formClasses}>
       <div className="form-group__header">
         <div className="form-group__title">{title}</div>
         <div className="form-group__help">{help}</div>
@@ -26,8 +36,10 @@ FormGroup.propTypes = {
   children: PropTypes.node.isRequired,
   help: PropTypes.string,
   type: PropTypes.string,
+  styles: PropTypes.arrayOf(PropTypes.string),
 };
 
 FormGroup.Type = FormType;
+FormGroup.Style = FormStyle;
 
 export default FormGroup;

@@ -1,4 +1,7 @@
 import axios from 'axios-observable';
+import { timer } from 'rxjs';
+import { exhaustMap, distinctUntilChanged } from 'rxjs/operators';
+
 import { BuildUrl, ErrorOnBadStatus, usersApiPath, CommonApi } from './CommonApi';
 import UserModel from '../models/UserModel';
 
@@ -9,6 +12,13 @@ class UserApi extends CommonApi {
 
   CurrentUser() {
     return axios.get(BuildUrl(usersApiPath)).pipe(ErrorOnBadStatus);
+  }
+
+  trackCurrentUser(pollInterval) {
+    return timer(0, pollInterval).pipe(
+      exhaustMap(() => this.CurrentUser()),
+      distinctUntilChanged(this.itemEqualityComparer)
+    );
   }
 
   UpdateUser(userModel) {
@@ -29,6 +39,10 @@ class UserApi extends CommonApi {
 
   getAvatarUrl(id) {
     return BuildUrl(this.apiPath, 'by-id', id, 'avatar');
+  }
+
+  postAvatar(file) {
+    return axios.post(BuildUrl(this.apiPath, 'avatar'), file).pipe(ErrorOnBadStatus);
   }
 
   getPledges(id) {

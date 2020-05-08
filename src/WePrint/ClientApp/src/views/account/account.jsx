@@ -2,7 +2,7 @@
 import { withRouter } from 'react-router-dom';
 
 import UserApi from '../../api/UserApi';
-import { BodyCard, StatusView } from '../../components';
+import { BodyCard, StatusView, AccountRestrictedView } from '../../components';
 import EditAccount from './edit-account';
 
 class Account extends Component {
@@ -11,18 +11,48 @@ class Account extends Component {
     this.state = {
       user: null,
       error: false,
+      loggedIn: true,
     };
-    UserApi.CurrentUser().subscribe(user => {
-      this.setState({ user });
-    });
+  }
+
+  componentDidMount() {
+    UserApi.CurrentUser().subscribe(
+      u => {
+        this.setState({ user: u });
+      },
+      err => {
+        if (err.response.status === 401) {
+          this.setState({ loggedIn: false });
+          return;
+        }
+        console.error(err);
+        this.setState({ error: true });
+      }
+    );
   }
 
   render() {
-    const { error, user } = this.state;
-    if (error || user == null) {
+    const { error, user, loggedIn } = this.state;
+    if (error) {
       return (
         <BodyCard>
           <StatusView text="Could not load your user information" icon={['far', 'frown']} />
+        </BodyCard>
+      );
+    }
+
+    if (!loggedIn) {
+      return (
+        <BodyCard>
+          <AccountRestrictedView />
+        </BodyCard>
+      );
+    }
+
+    if (user === null) {
+      return (
+        <BodyCard>
+          <StatusView text="Loading..." icon="sync" spin />
         </BodyCard>
       );
     }
