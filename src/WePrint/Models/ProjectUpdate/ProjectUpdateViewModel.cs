@@ -8,7 +8,7 @@ namespace WePrint.Data
 
         public DateTimeOffset Timestamp { get; set; }
 
-        public DateTimeOffset EditTimestamp { get; set; }
+        public DateTimeOffset? EditTimestamp { get; set; }
 
         public string Body { get; set; }
 

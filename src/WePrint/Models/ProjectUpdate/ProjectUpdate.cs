@@ -17,7 +17,7 @@ namespace WePrint.Data
         [Required]
         public DateTimeOffset Timestamp { get; set; }
 
-        public DateTimeOffset EditTimestamp { get; set; }
+        public DateTimeOffset? EditTimestamp { get; set; }
 
         [Required]
         [MaxLength(4000)]
