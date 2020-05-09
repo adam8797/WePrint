@@ -79,7 +79,7 @@ class Project extends Component {
   fetchUser() {
     UserApi.CurrentUser().subscribe(
       u => {
-        this.setState({ loggedIn: !!u });
+        this.setState({ loggedIn: !!u, user: u });
       },
       err => {
         if (err.response.status === 401) {
