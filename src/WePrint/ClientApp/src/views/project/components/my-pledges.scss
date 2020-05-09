@@ -34,4 +34,8 @@
     flex-basis: 2.5rem;
     text-align: right;
   }
+
+  &--restricted {
+    max-width: 100%;
+  }
 }

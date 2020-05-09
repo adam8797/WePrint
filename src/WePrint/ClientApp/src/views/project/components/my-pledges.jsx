@@ -2,11 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Button } from '../../../components';
+import { Button, AccountRestrictedView } from '../../../components';
 import PledgeModel from '../../../models/PledgeModel';
 import './my-pledges.scss';
 
-function MyPledges({ projId, pledges, openPledgeModal, canPledge }) {
+function MyPledges({ projId, pledges, openPledgeModal, canPledge, loggedIn }) {
+  if (!loggedIn) {
+    return (
+      <div className="my-pledges my-pledges--restricted">
+        <h3 className="my-pledges__title">Your Pledges</h3>
+        <div>
+          <AccountRestrictedView
+            text="You must be logged in to pledge to a project"
+            size={AccountRestrictedView.Size.SMALL}
+          />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="my-pledges">
       <h3 className="my-pledges__title">Your Pledges</h3>
@@ -40,6 +53,7 @@ MyPledges.propTypes = {
   pledges: PropTypes.arrayOf(PropTypes.shape(PledgeModel)),
   openPledgeModal: PropTypes.func.isRequired,
   canPledge: PropTypes.bool.isRequired,
+  loggedIn: PropTypes.bool,
 };
 
 export default MyPledges;

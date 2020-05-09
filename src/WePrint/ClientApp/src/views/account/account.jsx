@@ -11,7 +11,6 @@ class Account extends Component {
     this.state = {
       user: null,
       error: false,
-      loggedIn: true,
     };
   }
 
@@ -22,7 +21,7 @@ class Account extends Component {
       },
       err => {
         if (err.response.status === 401) {
-          this.setState({ loggedIn: false });
+          this.setState({ user: false });
           return;
         }
         console.error(err);
@@ -32,7 +31,7 @@ class Account extends Component {
   }
 
   render() {
-    const { error, user, loggedIn } = this.state;
+    const { error, user } = this.state;
     if (error) {
       return (
         <BodyCard>
@@ -40,15 +39,6 @@ class Account extends Component {
         </BodyCard>
       );
     }
-
-    if (!loggedIn) {
-      return (
-        <BodyCard>
-          <AccountRestrictedView />
-        </BodyCard>
-      );
-    }
-
     if (user === null) {
       return (
         <BodyCard>
@@ -56,6 +46,14 @@ class Account extends Component {
         </BodyCard>
       );
     }
+    if (!user) {
+      return (
+        <BodyCard>
+          <AccountRestrictedView />
+        </BodyCard>
+      );
+    }
+
     return <EditAccount currentUser={user} />;
   }
 }
