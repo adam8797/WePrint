@@ -12,13 +12,23 @@ function ManageProject() {
   const { projId } = useParams();
 
   const [project, setProject] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     ProjectApi.get(projId).subscribe(setProject, err => {
       console.error(err);
+      setError(true);
       toastError('There was an error loading the project, try again shortly');
     });
   }, [projId]);
+
+  if (error) {
+    return (
+      <BodyCard>
+        <StatusView text="Could not load project" icon={['far', 'frown']} />
+      </BodyCard>
+    );
+  }
 
   if (!project) {
     return (

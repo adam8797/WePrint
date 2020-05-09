@@ -1,3 +1,5 @@
+@import '../../../assets/styles/colors';
+
 .manage-updates {
   &__new-form {
     max-width: 700px;
@@ -5,5 +7,9 @@
     .button + .button {
       margin-left: 0.8rem;
     }
+  }
+
+  &__input-error {
+    color: $red;
   }
 }

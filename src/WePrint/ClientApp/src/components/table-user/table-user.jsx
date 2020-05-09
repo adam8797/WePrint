@@ -18,8 +18,8 @@ function TableUser({ userId }) {
       <img
         src={UserApi.getAvatarUrl(userId)}
         alt={user ? `Avatar for ${user.username}` : 'Pledger Avatar'}
-      />{' '}
-      <span>{user && user.username}</span>
+      />
+      <span> {user && user.username}</span>
     </div>
   );
 }

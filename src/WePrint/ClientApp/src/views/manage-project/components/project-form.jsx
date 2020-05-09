@@ -30,7 +30,6 @@ function ProjectForm() {
   const [project, setProject] = useState(null);
   const [thumb, setThumb] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
-  const [thumbMissing, setThumbMissing] = useState(false);
 
   useEffect(() => {
     const sub = ProjectApi.get(projId).subscribe(
@@ -55,16 +54,10 @@ function ProjectForm() {
       //   return;
       // }
       setThumb(newThumb);
-      setThumbMissing(false);
     }
   };
 
   const handleSubmission = form => {
-    // if (!thumb) {
-    //   setThumbMissing(true);
-    //   return;
-    // }
-    // debugger;
     const payload = {
       ...form,
       address: {
@@ -72,42 +65,8 @@ function ProjectForm() {
         state: form.address.state.toUpperCase(),
       },
     };
-    // }
-    // const {
-    //   title,
-    //   description,
-    //   goal,
-    //   shippingInstructions,
-    //   printingInstructions,
-    //   attention,
-    //   addr1,
-    //   addr2,
-    //   addr3,
-    //   addrCity,
-    //   addrState,
-    //   addrZip,
-    //   openGoal,
-    // } = form;
 
     setUploadStatus(CreationStatus.STARTED);
-
-    // const payload = {
-    //   title,
-    //   description,
-    //   goal,
-    //   shippingInstructions,
-    //   printingInstructions,
-    //   address: {
-    //     attention,
-    //     addressLine1: addr1,
-    //     addressLine2: addr2,
-    //     addressLine3: addr3,
-    //     city: addrCity,
-    //     state: addrState.toUpperCase(),
-    //     zipCode: addrZip,
-    //   },
-    //   openGoal,
-    // };
 
     ProjectApi.correct(projId, payload).subscribe(
       projectData => {
@@ -151,7 +110,6 @@ function ProjectForm() {
                 name="title"
                 register={register({ required: true })}
                 id="title"
-                value=""
                 placeholder="Project Name..."
                 error={!!errors.title}
               />
@@ -163,7 +121,6 @@ function ProjectForm() {
                 name="goal"
                 register={register({ required: true, min: 0 })}
                 id="goal"
-                value={0}
                 error={!!errors.goal}
               />
               {errors.goal && <div className="input-group__error">Goal is required</div>}
@@ -184,9 +141,7 @@ function ProjectForm() {
               className="create-proj__thumb"
               handleFiles={handleThumbChange}
               customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
-              error={!!thumbMissing}
             />
-            {thumbMissing && <div className="input-group__error">Thumbnail is required</div>}
           </div>
           <div className="create-proj__desc">
             <div className="input-group">
@@ -195,7 +150,6 @@ function ProjectForm() {
                 name="description"
                 id="description"
                 register={register({ required: true })}
-                value=""
                 error={!!errors.description}
               />
               {errors.description && (
@@ -213,7 +167,6 @@ function ProjectForm() {
             name="shippingInstructions"
             id="shippingInstructions"
             register={register({ required: true })}
-            value=""
             error={!!errors.shippingInstructions}
           />
           {errors.shippingInstructions && (
@@ -226,7 +179,6 @@ function ProjectForm() {
             name="address.attention"
             id="address.attention"
             register={register({ required: true })}
-            value=""
             error={!!errors.attention}
           />
           {errors.attention && <div className="input-group__error">&nbsp; Name is required</div>}
@@ -236,7 +188,6 @@ function ProjectForm() {
           <WepInput
             name="address.addressLine1"
             id="address.addressLine1"
-            value=""
             register={register({ required: true })}
             error={!!errors.addr1}
           />
@@ -244,28 +195,17 @@ function ProjectForm() {
         </div>
         <div className="input-group input-group--inline">
           <label htmlFor="address.addressLine2">Address 2</label>
-          <WepInput
-            name="address.addressLine2"
-            id="address.addressLine2"
-            value=""
-            register={register}
-          />
+          <WepInput name="address.addressLine2" id="address.addressLine2" register={register} />
         </div>
         <div className="input-group input-group--inline">
           <label htmlFor="address.addressLine3">Address 3</label>
-          <WepInput
-            name="address.addressLine3"
-            id="address.addressLine3"
-            value=""
-            register={register}
-          />
+          <WepInput name="address.addressLine3" id="address.addressLine3" register={register} />
         </div>
         <div className="input-group input-group--inline">
           <label htmlFor="address.city">City*</label>
           <WepInput
             name="address.city"
             id="address.city"
-            value=""
             register={register({ required: true })}
             error={!!errors.addrCity}
           />
@@ -276,7 +216,6 @@ function ProjectForm() {
           <WepInput
             name="address.state"
             id="address.state"
-            value=""
             register={register({
               required: true,
               validate: value => includes(USStates, value.toUpperCase()),
@@ -294,7 +233,6 @@ function ProjectForm() {
           <WepInput
             name="address.zipCode"
             id="address.zipCode"
-            value=""
             register={register({ required: true, minLength: 5, maxLength: 5, min: 0 })}
             error={!!errors.addrZip}
           />
@@ -310,7 +248,6 @@ function ProjectForm() {
           <WepTextarea
             name="printingInstructions"
             id="printingInstructions"
-            value=""
             register={register({ required: true })}
             error={!!errors.printingInstructions}
           />
@@ -325,7 +262,7 @@ function ProjectForm() {
           htmlType="submit"
           size={Button.Size.LARGE}
           className="body-card__action-right"
-          disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors) || thumbMissing}
+          disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors)}
         >
           Save Project
         </Button>

@@ -15,13 +15,15 @@ import { PledgeStatus } from '../../../models/Enums';
 function ManagePledges() {
   const { projId } = useParams();
 
-  const [pledges, setPledges] = useState();
+  const [pledges, setPledges] = useState(null);
+  const [error, setError] = useState();
 
   function loadPledges() {
     ProjectApi.pledgesFor(projId)
       .getAll()
       .subscribe(setPledges, err => {
         console.error(err);
+        setError(true);
         toastError('Error loading pledges');
       });
   }
@@ -45,6 +47,10 @@ function ManagePledges() {
         );
     }
   };
+
+  if (error) {
+    return <StatusView text="Could not load pledges" icon={['far', 'frown']} />;
+  }
 
   if (!pledges) {
     return <StatusView text="Loading Pledges" icon="sync" spin />;

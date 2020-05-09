@@ -23,6 +23,7 @@ function ManageUpdates() {
 
   const [updates, setUpdates] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
+  const [error, setError] = useState(null);
 
   // TODO: careful, this will create errors if the component is unloaded before this is complete
   // because there is no unsubscribe method. Need to fix this but also provide a way to trigger
@@ -32,6 +33,7 @@ function ManageUpdates() {
       .getAll()
       .subscribe(setUpdates, err => {
         console.error(err);
+        setError(true);
         toastError('Error loading updates');
       });
   }
@@ -122,6 +124,10 @@ function ManageUpdates() {
     },
   ];
 
+  if (error) {
+    return <StatusView text="Could not load updates" icon={['far', 'frown']} />;
+  }
+
   if (!updates) {
     return <StatusView text="Loading Updates" icon="sync" spin />;
   }
@@ -137,6 +143,7 @@ function ManageUpdates() {
             register={register({ required: true })}
             error={!!errors.title}
           />
+          {errors.title && <div className="manage-updates__input-error">The title is required</div>}
           <label htmlFor="body">Body*</label>
           <WepTextarea
             name="body"
@@ -144,6 +151,7 @@ function ManageUpdates() {
             register={register({ required: true })}
             error={!!errors.body}
           />
+          {errors.body && <div className="manage-updates__input-error">Body text is required</div>}
           {updatingId && (
             <Button type={Button.Type.DANGER} onClick={() => stopEditing()}>
               Cancel Editing
