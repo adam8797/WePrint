@@ -6,7 +6,7 @@ import ProjectApi from '../../api/ProjectApi';
 import './manage-project.scss';
 import ManageUpdates from './components/manage-updates';
 import ManagePledges from './components/manage-pledges';
-// import ProjectForm from './components/project-form';
+import ProjectForm from './components/project-form';
 
 function ManageProject() {
   const { projId } = useParams();
@@ -36,9 +36,9 @@ function ManageProject() {
       <hr />
       <Tabs>
         <TabList>
-          {/* <Tab>
+          <Tab>
             <span>Details</span>
-          </Tab> */}
+          </Tab>
           <Tab>
             <span>Updates</span>
           </Tab>
@@ -47,9 +47,9 @@ function ManageProject() {
           </Tab>
         </TabList>
 
-        {/* <TabPanel>
+        <TabPanel>
           <ProjectForm />
-        </TabPanel> */}
+        </TabPanel>
         <TabPanel>
           <ManageUpdates />
         </TabPanel>

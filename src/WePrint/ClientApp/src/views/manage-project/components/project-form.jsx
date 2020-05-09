@@ -321,7 +321,7 @@ function ProjectForm() {
       </div>
       <div className="body-card__actions">
         <Button
-          type={Button.Type.PRIMARY}
+          type={Button.Type.SUCCESS}
           htmlType="submit"
           size={Button.Size.LARGE}
           className="body-card__action-right"
