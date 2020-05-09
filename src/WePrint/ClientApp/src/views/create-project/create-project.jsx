@@ -36,9 +36,19 @@ function CreateProject() {
 
   const { register, handleSubmit, errors } = useForm();
 
-  UserApi.CurrentUser().subscribe(u => {
-    setUser(u);
-  }, console.error);
+  UserApi.CurrentUser().subscribe(
+    u => {
+      setUser(u);
+    },
+    err => {
+      console.log(err);
+      if (err.response.status === 401) {
+        setUser(false);
+        return;
+      }
+      console.error(err);
+    }
+  );
 
   if (user === null) {
     return (

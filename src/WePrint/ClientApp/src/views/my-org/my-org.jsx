@@ -21,6 +21,10 @@ class MyOrg extends Component {
         this.setState({ user: u });
       },
       err => {
+        if (err.response.status === 401) {
+          this.setState({ user: false });
+          return;
+        }
         console.error(err);
         this.setState({ error: true });
       }
