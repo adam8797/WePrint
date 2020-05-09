@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
@@ -29,6 +30,8 @@ namespace WePrint
 {
     public class Startup
     {
+        private static readonly Regex HtmlTagFilter = new Regex(@"</?\w+>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -162,6 +165,27 @@ namespace WePrint
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.Use(async (context, next) =>
+            {
+                // Copy the request into memory, as we need to analyze it
+                var ms = new MemoryStream();
+                await context.Request.Body.CopyToAsync(ms);
+                context.Request.Body = ms;
+                
+                // Create a reader, and copy it out to a string
+                using var reader = new StreamReader(context.Request.Body);
+                var body = await reader.ReadToEndAsync();
+
+                // Rewind the stream for the next reader
+                if (HtmlTagFilter.IsMatch(body))
+                    context.Response.StatusCode = 400;
+                else
+                {
+                    context.Request.Body.Position = 0;
+                    await next();
+                }
+            });
 
             app.GnuTerryPratchett();
 
