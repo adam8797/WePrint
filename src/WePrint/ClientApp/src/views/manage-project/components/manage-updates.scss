@@ -1,0 +1,9 @@
+.manage-updates {
+  &__new-form {
+    max-width: 700px;
+
+    .button + .button {
+      margin-left: 0.8rem;
+    }
+  }
+}

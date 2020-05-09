@@ -16,6 +16,7 @@ export { default as Account } from './account/account';
 export { default as EditOrganization } from './edit-organization/edit-organization';
 export { default as Project } from './project/project';
 export { default as CreateProject } from './create-project/create-project';
+export { default as ManageProject } from './manage-project/manage-project';
 export { default as Organizations } from './organizations/organizations';
 export { default as Projects } from './projects/projects';
 export { default as Recieved } from './recieved/recieved';
