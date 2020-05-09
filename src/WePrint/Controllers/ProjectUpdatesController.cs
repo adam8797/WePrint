@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Annotations;
@@ -45,6 +46,33 @@ namespace WePrint.Controllers
             update.PostedBy = await CurrentUser;
             update.EditTimestamp = DateTimeOffset.Now;
             return update;
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        // POST /api/[controller]
+        public override async Task<ActionResult<ProjectUpdateViewModel>> Post(Guid parentId, [FromBody] ProjectUpdateCreateModel body)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var parent = await Database.FindAsync<Project>(parentId);
+            if (parent == null)
+                return NotFound();
+
+            var user = await CurrentUser;
+            if (user.Organization != parent.Organization) 
+                return Forbid();
+
+            var dataModel = await CreateDataModelAsync(parent, body);
+            dataModel.Deleted = false;
+
+            Database.Set<ProjectUpdate>().Add(dataModel);
+            await Database.SaveChangesAsync();
+
+            return CreatedAtAction("Get", new { parentId, id = dataModel.Id }, await CreateViewModelAsync(dataModel));
         }
 
         protected override IQueryable<ProjectUpdate> Filter(IQueryable<ProjectUpdate> data, Project parent, User user)
