@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ToastContainer } from 'react-toastify';
 import { SideNav, Header } from '../../components';
 import './app-layout.scss';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 class AppLayout extends Component {
   constructor(props) {
@@ -43,6 +45,7 @@ class AppLayout extends Component {
             </main>
           </div>
         </div>
+        <ToastContainer position="bottom-right" autoClose={false} />
       </div>
     );
   }

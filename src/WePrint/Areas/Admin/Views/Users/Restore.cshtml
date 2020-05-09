@@ -1,0 +1,11 @@
+﻿@model Project
+
+@{
+    ViewBag.Title = "Restore Confirm";
+}
+
+<h2>Confirm Restore?</h2>
+
+<form method="post" asp-action="Restore" asp-route-id="@Model.Id">
+    <input type="submit" value="Confirm" />
+</form>

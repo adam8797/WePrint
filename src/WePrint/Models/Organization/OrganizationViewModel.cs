@@ -10,8 +10,6 @@ namespace WePrint.Models
 
         public string Name { get; set; }
 
-        public string? Logo { get; set; }
-
         public string Description { get; set; }
 
         public List<Guid> Users { get; set; }
@@ -19,5 +17,11 @@ namespace WePrint.Models
         public List<Guid> Projects { get; set; }
 
         public Address? Address { get; set; }
+
+        public bool Deleted { get; set; }
+
+        public bool ShouldSerializeDeleted() => Deleted;
     }
+
+
 }

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
-
-import Jdenticon from 'react-jdenticon';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 
 import UserApi from '../../../api/UserApi';
 import Button from '../../button/button';
@@ -18,7 +15,7 @@ class NotifArea extends Component {
   }
 
   componentDidMount() {
-    UserApi.CurrentUser().subscribe({
+    this.subscription = UserApi.trackCurrentUser(1000).subscribe({
       next: user => {
         this.setState({ user, loaded: true });
       },
@@ -28,6 +25,10 @@ class NotifArea extends Component {
         this.setState({ loaded: true });
       },
     });
+  }
+
+  componentWillUnmount() {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 
   logIn = () => {
@@ -58,15 +59,17 @@ class NotifArea extends Component {
             <div className="notif-area__name">
               {user.firstName || user.lastName
                 ? `${user.firstName} ${user.lastName}`
-                : user.userName}
+                : user.username}
             </div>
-            <div className="notif-area__avatar">
-              {user.avatar ? (
-                <img className="notif-area__ava-icon" src={user.avatar} alt="User Avatar" />
-              ) : (
-                <Jdenticon className="notif-area__ava-icon" value={`${user.id}`} />
-              )}
-            </div>
+            <Link to="/account">
+              <div className="notif-area__avatar">
+                <img
+                  className="notif-area__ava-icon"
+                  src={`/api/users/by-id/${user.id}/avatar`}
+                  alt="User Avatar"
+                />
+              </div>
+            </Link>
             {/* <div className="notif-area__icon">
               <FontAwesomeIcon icon="bars" />
             </div> */}

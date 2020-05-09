@@ -1,0 +1,102 @@
+﻿@using Westwind.AspNetCore.Markdown
+@using WePrint
+@model Project
+
+@section Head
+{
+    <style>
+        img.avatar {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+}
+
+<a href="#" onclick="window.history.back()">Go Back</a>
+<hr />
+
+<dl>
+    <dt>Id</dt>
+    <dd><a href="@Url.GetReactUrl(Model)">@Model.Id</a></dd>
+
+    <dt>Title</dt>
+    <dd>@Model.Title</dd>
+
+    <dt>Thumbnail</dt>
+    <dd>
+        <img class="avatar" src="@Url.Action("GetThumbnail", "Project", new { Area = "", id = Model.Id })" />
+    </dd>
+
+    <dt>Description</dt>
+    <dd>
+        @Markdown.ParseHtmlString(Model.Description)
+    </dd>
+
+    <dt>Goal</dt>
+    <dd>@Model.Goal</dd>
+
+    <dt>Shipping Instructions</dt>
+    <dd>@Markdown.ParseHtmlString(Model.ShippingInstructions ?? "")</dd>
+
+    <dt>Printing Instructions</dt>
+    <dd>@Markdown.ParseHtmlString(Model.PrintingInstructions ?? "")</dd>
+
+    <dt>Address</dt>
+    <dd>
+        @Html.Lines(Model.Address ?? "(none given)")
+    </dd>
+    
+    <dt>Closed</dt>
+    <dd>@Model.Closed</dd>
+    
+    <dt>OpenGoal</dt>
+    <dd>@Model.OpenGoal</dd>
+    
+    <dt>Organization</dt>
+    <dd><a asp-action="Details" asp-controller="Organizations" asp-route-id="@Model.Organization.Id">@Model.Organization.Name</a></dd>
+
+    <dt>Pledges</dt>
+    <dd>
+        <ul>
+        @foreach (var pledge in Model.Pledges)
+        {
+            <li>
+                @pledge.Quantity Units by <a asp-action="Details" asp-controller="Users" asp-route-id="@pledge.Maker.Id">@pledge.Maker.UserName</a>. Status: @pledge.Status
+            </li>
+        }
+        </ul>
+    </dd>
+    
+    <dt>Pledging Users</dt>
+    <dd>
+        <ul>
+        @foreach (var user in Model.Pledges.Select(x => x.Maker).Distinct())
+        {
+            <li><a asp-action="Details" asp-controller="Users" asp-route-id="@user.Id">@user.UserName</a></li>
+        }
+        </ul>
+    </dd>
+
+    <dt>Updates</dt>
+    <dd>
+        <ul>
+            @foreach (var update in Model.Updates)
+            {
+                <li>@update.Title -- Posted by @update.PostedBy.UserName</li>
+            }
+        </ul>
+    </dd>
+</dl>
+
+<h3>Actions</h3>
+<ul>
+    @if (Model.Deleted)
+    {
+        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete Permanently</a></li>
+        <li><a asp-action="Restore" asp-route-id="@Model.Id">Restore</a></li>
+    }
+    else
+    {
+        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete Project</a></li>
+    }
+</ul>

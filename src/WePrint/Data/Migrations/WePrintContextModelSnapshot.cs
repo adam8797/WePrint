@@ -127,6 +127,7 @@ namespace WePrint.Data.Migrations
             modelBuilder.Entity("WePrint.Data.ProjectUpdate", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Body")
@@ -134,10 +135,13 @@ namespace WePrint.Data.Migrations
                         .HasColumnType("nvarchar(4000)")
                         .HasMaxLength(4000);
 
-                    b.Property<DateTimeOffset>("EditTimestamp")
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("EditTimestamp")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("EditedById")
+                    b.Property<Guid>("PostedById")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProjectId")
@@ -153,9 +157,7 @@ namespace WePrint.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EditedById")
-                        .IsUnique()
-                        .HasFilter("[EditedById] IS NOT NULL");
+                    b.HasIndex("PostedById");
 
                     b.HasIndex("ProjectId");
 
@@ -196,14 +198,13 @@ namespace WePrint.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(4000)")
                         .HasMaxLength(4000);
-
-                    b.Property<string>("Logo")
-                        .HasColumnType("nvarchar(2000)")
-                        .HasMaxLength(2000);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -226,6 +227,9 @@ namespace WePrint.Data.Migrations
 
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset>("DeliveryDate")
                         .HasColumnType("datetimeoffset");
@@ -256,6 +260,9 @@ namespace WePrint.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("LayerMin")
                         .HasColumnType("decimal(6,3)");
@@ -296,6 +303,9 @@ namespace WePrint.Data.Migrations
                     b.Property<bool>("Closed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(4000)")
@@ -317,10 +327,6 @@ namespace WePrint.Data.Migrations
                     b.Property<string>("ShippingInstructions")
                         .HasColumnType("nvarchar(4000)")
                         .HasMaxLength(4000);
-
-                    b.Property<string>("Thumbnail")
-                        .HasColumnType("nvarchar(2000)")
-                        .HasMaxLength(2000);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -349,6 +355,9 @@ namespace WePrint.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
@@ -469,14 +478,9 @@ namespace WePrint.Data.Migrations
 
             modelBuilder.Entity("WePrint.Data.ProjectUpdate", b =>
                 {
-                    b.HasOne("WePrint.Models.User", "EditedBy")
-                        .WithOne()
-                        .HasForeignKey("WePrint.Data.ProjectUpdate", "EditedById")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("WePrint.Models.User", "PostedBy")
-                        .WithOne()
-                        .HasForeignKey("WePrint.Data.ProjectUpdate", "Id")
+                        .WithMany()
+                        .HasForeignKey("PostedById")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

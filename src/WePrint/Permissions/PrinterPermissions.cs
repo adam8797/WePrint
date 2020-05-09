@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using WePrint.Data;
 using WePrint.Models;
 
 namespace WePrint.Permissions
@@ -28,6 +29,15 @@ namespace WePrint.Permissions
         public async ValueTask<bool> AllowRead(User user, Project data) => true;
 
         public async ValueTask<bool> AllowCreate(User user, ProjectCreateModel data) => user.Organization != null;
+    }
+
+    public class UpdatePermissions : IPermissionProvider<ProjectUpdate, ProjectUpdateCreateModel>
+    {
+        public async ValueTask<bool> AllowCreate(User user, ProjectUpdateCreateModel data) => true;
+
+        public async ValueTask<bool> AllowRead(User user, ProjectUpdate data) => true;
+
+        public async ValueTask<bool> AllowWrite(User user, ProjectUpdate data) => user.Organization == data.Project.Organization;
     }
 
     public class PledgePermissions : IPermissionProvider<Pledge, PledgeCreateModel>

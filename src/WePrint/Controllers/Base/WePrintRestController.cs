@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Bson;
 using WePrint.Data;
 using WePrint.Models;
 using WePrint.Permissions;
@@ -87,18 +90,28 @@ namespace WePrint.Controllers.Base
             return Mapper.Map(viewModel, dataModel);
         }
 
+        /// <summary>
+        /// Take post delete actions if needed.
+        /// </summary>
+        /// <param name="dataModel">DB Model to delete</param>
+        /// <returns></returns>
+        protected virtual async Task PostDeleteDataModelAsync(TData dataModel)
+        {
+        }
+
         #endregion
 
         #region HTTP Verbs
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // GET /api/[controller]
         public virtual async Task<ActionResult<IEnumerable<TViewModel>>> Get()
         {
             var valid = new List<TViewModel>();
             var user = await CurrentUser;
-            foreach (var entity in Filter(Database.Set<TData>(), user))
+            foreach (var entity in Filter(Database.Set<TData>(), user).Where(e => !e.Deleted))
             {
                 if (await Permissions.AllowRead(user, entity))
                     valid.Add(await CreateViewModelAsync(entity));
@@ -108,6 +121,7 @@ namespace WePrint.Controllers.Base
 
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -139,6 +153,7 @@ namespace WePrint.Controllers.Base
                 return Forbid();
 
             var dataModel = await CreateDataModelAsync(body);
+            dataModel.Deleted = false;
 
             Database.Set<TData>().Add(dataModel);
             await Database.SaveChangesAsync();
@@ -159,9 +174,9 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound();
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
-            
+
             await UpdateDataModelAsync(entity, create);
             await Database.SaveChangesAsync();
             return await CreateViewModelAsync(entity);
@@ -180,7 +195,7 @@ namespace WePrint.Controllers.Base
             if (entity == null)
                 return NotFound(id);
 
-            if (!await Permissions.AllowWrite(await CurrentUser, entity))
+            if (!await Permissions.AllowWrite(await CurrentUser, entity) || entity.Deleted)
                 return Forbid();
 
             var dto = await CreateViewModelAsync(entity);
@@ -206,7 +221,8 @@ namespace WePrint.Controllers.Base
             if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            Database.Set<TData>().Remove(entity);
+            entity.Deleted = true;
+            await PostDeleteDataModelAsync(entity);
             await Database.SaveChangesAsync();
             return Ok();
         }

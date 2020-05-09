@@ -1,0 +1,58 @@
+@import '../../../assets/styles/effects';
+@import '../../../assets/styles/sizes';
+@import '../../../assets/styles/colors';
+
+.proj-card {
+  background: $blue-4;
+  box-shadow: $card-shadow;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: $padding-standard;
+  width: 350px;
+
+  &__title {
+    margin-left: $padding-standard;
+    font-size: $font-size-sub-heading;
+    font-weight: $font-weight-semi-bold;
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    padding-bottom: $padding-standard;
+  }
+
+  &__detail {
+    border-top: 1px solid $grey-3;
+    padding: 10px;
+    padding-top: 5px;
+  }
+
+  &__inline {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__thumbnail {
+    width: $image-size-standard;
+    min-width: $image-size-standard;
+    height: $image-size-standard;
+  }
+
+  &__status {
+    color: $green;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  &--closed {
+    background: $grey-7;
+
+    .proj-card__status {
+      color: $red;
+    }
+  }
+}

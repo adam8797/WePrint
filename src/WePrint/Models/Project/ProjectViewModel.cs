@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WePrint.Data;
+using System.Linq;
 
 namespace WePrint.Models
 {
@@ -14,11 +15,11 @@ namespace WePrint.Models
 
         public int Goal { get; set; }
 
+        public IDictionary<PledgeStatus, int> Progress { get; set; }
+
         public string? ShippingInstructions { get; set; }
 
         public string? PrintingInstructions { get; set; }
-
-        public string? Thumbnail { get; set; }
 
         public Address Address { get; set; }
 
@@ -33,5 +34,7 @@ namespace WePrint.Models
         public IList<Guid> Updates { get; set; }
 
         public IList<string> Attachments { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

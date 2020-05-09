@@ -1,0 +1,93 @@
+﻿@using Westwind.AspNetCore.Markdown
+@using Microsoft.AspNetCore.Identity
+@model User
+@inject UserManager<User> UserManager
+@section Head
+{
+    <style>
+        img.avatar {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+}
+
+<a href="#" onclick="window.history.back()">Go Back</a>
+<hr />
+
+<dl>
+    <dt>Id</dt>
+    <dd>@Model.Id</dd>
+
+    <dt>Username</dt>
+    <dd>@Model.UserName</dd>
+
+    <dt>Name</dt>
+    <dd>@Model.FirstName @Model.LastName</dd>
+
+    <dt>Avatar</dt>
+    <dd>
+        <img class="avatar" src="@Url.Action("GetAvatarById", "User", new { Area = "", id = Model.Id })" />
+    </dd>
+
+    <dt>Bio</dt>
+    <dd>
+        @Markdown.ParseHtmlString(Model.Bio)
+    </dd>
+
+    <dt>Organization</dt>
+    @if (Model.Organization == null)
+    {
+        <dd>No Organization</dd>
+    }
+    else
+    {
+        <dd><a asp-action="Details" asp-controller="Organizations" asp-route-id="@Model.Organization.Id">@Model.Organization.Name</a></dd>
+    }
+
+    <dt>Pledges</dt>
+    <dd>
+        <ul>
+            @foreach (var pledge in Model.Pledges)
+            {
+                <li>
+                    @pledge.Quantity Units to project <a asp-action="Details" asp-controller="Projects" asp-route-id="@pledge.Project.Id">@pledge.Project.Title</a>. Status: @pledge.Status
+                </li>
+            }
+        </ul>
+    </dd>
+
+    <dt>Devices</dt>
+    <dd>
+        <ul>
+            @foreach (var dev in Model.Printers)
+            {
+                <li>
+                    <a href="#">@dev.Id</a>
+                </li>
+            }
+        </ul>
+    </dd>
+</dl>
+
+<h3>Actions</h3>
+<ul>
+    @if (Model.Deleted)
+    {
+        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete Permanently</a></li>
+        <li><a asp-action="Restore" asp-route-id="@Model.Id">Restore</a></li>
+    }
+    else
+    {
+        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete User</a></li>
+        <li><a asp-action="Impersonate" asp-route-id="@Model.Id">Impersonate</a></li>
+        @if (await UserManager.IsInRoleAsync(Model, "Administrator"))
+        {
+            <li><a asp-action="Demote" asp-route-id="@Model.Id">Demote User</a></li>
+        }
+        else
+        {
+            <li><a asp-action="Promote" asp-route-id="@Model.Id">Promote User</a></li>
+        }
+    }
+</ul>

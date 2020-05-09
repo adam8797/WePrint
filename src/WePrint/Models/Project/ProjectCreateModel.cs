@@ -21,10 +21,6 @@ namespace WePrint.Models
 
         public string? PrintingInstructions { get; set; }
 
-        [MaxLength(2000)]
-        [DataType(DataType.Url)]
-        public string? Thumbnail { get; set; }
-
         public Address? Address { get; set; }
 
         [Required]

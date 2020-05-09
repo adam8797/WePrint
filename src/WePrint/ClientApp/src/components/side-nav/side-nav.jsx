@@ -11,7 +11,7 @@ const SideNav = () => {
     <nav className="side-nav">
       {/* <NavItem to="/" active={match.path === '/'} icon="tachometer-alt">
         Dashboard
-      </NavItem> */}
+      </NavItem>
       <NavItem to="/devices" active={match.path.startsWith('/devices')} icon="microchip">
         Devices
       </NavItem>
@@ -23,6 +23,22 @@ const SideNav = () => {
       </NavItem>
       <NavItem to="/finished" active={match.path.startsWith('/finished')} icon="receipt">
         Finished Jobs
+      </NavItem>
+      */}
+      <NavItem to="/" active={match.path === '/'} icon="home">
+        Home
+      </NavItem>
+      <NavItem to="/projects" active={match.path.startsWith('/projects')} icon="hands-helping">
+        Projects
+      </NavItem>
+      <NavItem to="/create-project" active={match.path.startsWith('/create-project')} icon="plus">
+        New Project
+      </NavItem>
+      <NavItem to="/my-org" active={match.path.startsWith('/my-org')} icon="id-badge">
+        My Organization
+      </NavItem>
+      <NavItem to="/organizations" active={match.path.startsWith('/organizations')} icon="building">
+        Organizations
       </NavItem>
       <NavItem to="/help" active={match.path.startsWith('/help')} icon="question-circle">
         Help

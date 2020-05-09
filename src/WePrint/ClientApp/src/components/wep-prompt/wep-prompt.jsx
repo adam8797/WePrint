@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Prompt } from 'react-router-dom';
 import Modal from 'react-modal';
 import Button from '../button/button';
+import WepModal from '../wep-modal/wep-modal';
 import './wep-prompt.scss';
 
 Modal.setAppElement('#root');
@@ -66,12 +67,10 @@ export class WepPrompt extends React.Component {
     return (
       <>
         <Prompt when={when} message={this.handleBlockedNavigation} />
-        <Modal
+        <WepModal
           isOpen={modalOpen}
           onRequestClose={() => this.closeModal()}
           contentLabel="Confirm Navigation"
-          className="wep-prompt"
-          overlayClassName="wep-prompt__overlay"
         >
           <h3>Are you sure?</h3>
           <div className="wep-prompt__message-container">
@@ -79,7 +78,7 @@ export class WepPrompt extends React.Component {
               <div key={i}>{message}</div>
             ))}
           </div>
-          <div className="wep-prompt__button-container">
+          <WepModal.ButtonContainer>
             <Button
               onClick={() => this.closeModal()}
               type={Button.Type.DANGER}
@@ -94,8 +93,8 @@ export class WepPrompt extends React.Component {
             >
               Confirm
             </Button>
-          </div>
-        </Modal>
+          </WepModal.ButtonContainer>
+        </WepModal>
       </>
     );
   }

@@ -7,13 +7,24 @@ import {
   About,
   EditDevice,
   Devices,
-  FindJob,
+  Find,
   Help,
   Home,
   PageNotFound,
   PostJob,
   JobDetail,
   FinishedJobs,
+  Organization,
+  Account,
+  EditOrganization,
+  Project,
+  CreateProject,
+  Organizations,
+  Projects,
+  Recieved,
+  MyOrg,
+  PledgePage,
+  ManageProject,
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -52,7 +63,7 @@ export default function AppRouter({ basename }) {
             <Devices />
           </Route>
           <Route path="/find">
-            <FindJob />
+            <Find />
           </Route>
           <Route path="/post">
             <PostJob />
@@ -60,11 +71,44 @@ export default function AppRouter({ basename }) {
           <Route path="/finished">
             <FinishedJobs />
           </Route>
-          <Route exact path="/">
-            <Home />
-          </Route>
           <Route path="/job/:jobId">
             <JobDetail />
+          </Route>
+          <Route path="/organization/:orgId">
+            <Organization />
+          </Route>
+          <Route path="/new-organization">
+            <EditOrganization />
+          </Route>
+          <Route path="/my-org">
+            <MyOrg />
+          </Route>
+          <Route path="/organizations">
+            <Organizations />
+          </Route>
+          <Route path="/project/:projId/pledge/:pledgeId">
+            <PledgePage />
+          </Route>
+          <Route path="/project/:projId">
+            <Project />
+          </Route>
+          <Route path="/projects">
+            <Projects />
+          </Route>
+          <Route path="/account">
+            <Account />
+          </Route>
+          <Route path="/create-project">
+            <CreateProject />
+          </Route>
+          <Route path="/manage-project/:projId">
+            <ManageProject />
+          </Route>
+          <Route path="/recieved/:projId/:pledgeId">
+            <Recieved />
+          </Route>
+          <Route exact path="/">
+            <Home />
           </Route>
           <Route path="*">
             <PageNotFound />

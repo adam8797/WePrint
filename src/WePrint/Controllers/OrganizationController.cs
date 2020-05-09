@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WePrint.Controllers.Base;
 using WePrint.Data;
 using WePrint.Models;
+using WePrint.Utilities;
 
 namespace WePrint.Controllers
 {
@@ -21,8 +22,11 @@ namespace WePrint.Controllers
     [ProducesResponseType(typeof(object), StatusCodes.Status403Forbidden)]
     public class OrganizationController : WePrintRestController<Organization, OrganizationViewModel, OrganizationCreateModel, Guid>
     {
-        public OrganizationController(IServiceProvider services) : base(services)
+        private readonly IAvatarProvider _avatar;
+
+        public OrganizationController(IServiceProvider services, IAvatarProvider avatar) : base(services)
         {
+            _avatar = avatar;
         }
 
         #region REST implementation
@@ -34,19 +38,77 @@ namespace WePrint.Controllers
             return org;
         }
 
+        protected override async Task PostDeleteDataModelAsync(Organization dataModel)
+        {
+            dataModel.Users.Clear();
+        }
+
+        #endregion
+
+        #region Avatars
+
+        [AllowAnonymous]
+        [HttpGet("{id}/avatar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetOrgAvatar(Guid id)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+            if (org == null)
+                return NotFound();
+
+            return await _avatar.GetAvatarResult(org);
+        }
+
+        [HttpPost("{id}/avatar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetOrgAvatar(Guid id, IFormFile upload)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+            if (org == null)
+                return NotFound();
+
+            if (!await Permissions.AllowWrite(await CurrentUser, org))
+                return Forbid();
+
+            return await _avatar.SetAvatarResult(org, upload);
+        }
+
+        [HttpDelete("{id}/avatar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ClearOrgAvatar(Guid id)
+        {
+            var org = await Database.Organizations.FindAsync(id);
+            if (org == null)
+                return NotFound();
+
+            if (!await Permissions.AllowWrite(await CurrentUser, org))
+                return Forbid();
+
+            return await _avatar.ClearAvatar(org);
+        }
+
+
         #endregion
 
         #region Get Full Lists
 
         [HttpGet("{id}/users")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserViewModel>>> GetUsers(Guid id)
         {
-            var users = await Database.Users
+            var users = Mapper.Map<List<UserViewModel>>(
+                await Database.Users
                 .Where(x => x.Organization.Id == id)
-                .ProjectTo<UserViewModel>(Mapper.ConfigurationProvider)
-                .ToListAsync();
+                .ToListAsync());
             return users;
         }
 
@@ -101,17 +163,18 @@ namespace WePrint.Controllers
         }
 
         [HttpGet("{id}/projects")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ProjectViewModel>>> GetProjects(Guid id)
         {
+            // This is ugly, but for some reason this needs to be evaluated client side.
             var projects = await Database.Projects
-                .AsNoTracking()
                 .Where(x => x.Organization.Id == id)
-                .ProjectTo<ProjectViewModel>(Mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return projects;
+            var viewModels = Mapper.Map<List<ProjectViewModel>>(projects);
+            return viewModels;
         }
 
         #endregion

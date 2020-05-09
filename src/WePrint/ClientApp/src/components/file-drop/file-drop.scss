@@ -10,6 +10,7 @@
   font-size: ms(2);
   outline: none;
   cursor: pointer;
+  padding: 2em 1em;
 
   &:focus,
   &:hover {
@@ -41,5 +42,9 @@
       background: $grey-5;
       box-shadow: none;
     }
+  }
+
+  &--error {
+    border-color: $red;
   }
 }

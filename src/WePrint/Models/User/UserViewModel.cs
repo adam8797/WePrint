@@ -13,8 +13,12 @@ namespace WePrint.Models
         [MaxLength(150)]
         public string? LastName { get; set; }
 
+        public Guid? Organization { get; set; }
+
         public string? Bio { get; set; }
 
         public string Username { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

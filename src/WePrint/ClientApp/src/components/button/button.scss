@@ -13,6 +13,7 @@
   &__inner-container {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   // this solution feels a little hacky, maybe find something better
   &__icon:not(:only-child) {
@@ -21,21 +22,32 @@
 
   &:hover,
   &:focus {
+    color: var(--btn-color-focus);
     background: var(--btn-bg-focus);
   }
 
   &--primary {
     --btn-color: #{$white};
+    --btn-color-focus: #{$white};
     --btn-bg: #{$blue-1};
     --btn-bg-focus: #{$blue-2};
+    &--outline {
+      --btn-color: #{$blue-1};
+      --btn-color-focus: #{$white};
+      --btn-bg: #{$white};
+      --btn-bg-focus: #{$blue-1};
+      border: 1px solid var(--btn-color);
+    }
   }
   &--success {
     --btn-color: #{$white};
+    --btn-color-focus: #{$white};
     --btn-bg: #{$green};
     --btn-bg-focus: #{lighten($green, 10)};
   }
   &--danger {
     --btn-color: #{$white};
+    --btn-color-focus: #{$white};
     --btn-bg: #{$red};
     --btn-bg-focus: #{lighten($red, 10)};
   }
@@ -43,6 +55,7 @@
   &:disabled {
     cursor: not-allowed;
     --btn-color: #{$white};
+    --btn-color-focus: #{$white};
     --btn-bg: #{$grey-4};
     --btn-bg-focus: #{$grey-4};
   }

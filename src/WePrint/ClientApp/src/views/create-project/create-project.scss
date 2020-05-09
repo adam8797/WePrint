@@ -1,0 +1,43 @@
+@import '../../assets/styles/colors';
+
+.create-proj {
+  &__section {
+    margin-top: 0.5rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    &--inline {
+      flex-direction: row;
+      & label {
+        min-width: 100px;
+      }
+      & .wep-input {
+        flex-grow: 1;
+        margin-left: 1rem;
+      }
+    }
+    &__error {
+      color: $red;
+    }
+  }
+
+  &__basic-info {
+    display: grid;
+    grid-template-areas: 'key-info thumb' 'desc desc';
+    grid-template-columns: auto minmax(200px, 50%);
+    grid-gap: 1rem;
+    margin-top: 1rem;
+  }
+  &__key-info {
+    grid-area: key-info;
+  }
+  &__thumb {
+    grid-area: thumb;
+  }
+  &__desc {
+    grid-area: desc;
+  }
+}

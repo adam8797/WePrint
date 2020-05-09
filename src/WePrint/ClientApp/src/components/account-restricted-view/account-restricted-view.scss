@@ -1,0 +1,43 @@
+@import '../../assets/styles/sizes';
+
+.account-restricted {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  &__text {
+    padding-top: $padding-small;
+  }
+
+  &--standard {
+    font-size: $font-size-medium;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    .account-restricted {
+      &__sub-text {
+        font-size: $font-size-small;
+      }
+
+      &__icon {
+        font-size: $font-size-sub-heading;
+      }
+    }
+  }
+
+  &--small {
+    font-size: $font-size-sub-heading;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    .account-restricted {
+      &__sub-text {
+        font-size: $font-size-small;
+      }
+
+      &__icon {
+        font-size: $font-size-standard;
+      }
+    }
+  }
+}

@@ -3,20 +3,33 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './wep-input.scss';
 
-const noop = () => {};
-
 function WepInput(props) {
-  const { name, id, value, placeholder = '', handleChange = noop, error } = props;
+  const { register, name, id, value, placeholder = '', handleChange, error } = props;
   const className = classNames('wep-input', { 'wep-input--error': error });
+  // if handleChange is provided, that means the parent handles onChange manually
+  if (handleChange) {
+    return (
+      <input
+        className={className}
+        type="text"
+        name={name}
+        id={id}
+        value={value}
+        placeholder={placeholder}
+        onChange={handleChange}
+      />
+    );
+  }
+  // otherwise we register it and let the form handle it
   return (
     <input
+      ref={register}
       className={className}
       type="text"
       name={name}
       id={id}
-      value={value}
+      defaultValue={value}
       placeholder={placeholder}
-      onChange={handleChange}
     />
   );
 }
@@ -28,6 +41,7 @@ WepInput.propTypes = {
   placeholder: PropTypes.string,
   handleChange: PropTypes.func,
   error: PropTypes.bool,
+  register: PropTypes.func,
 };
 
 export default WepInput;

@@ -27,10 +27,6 @@ namespace WePrint.Models
         [MaxLength(4000)]
         public string? PrintingInstructions { get; set; }
 
-        [MaxLength(2000)]
-        [DataType(DataType.Url)]
-        public string? Thumbnail { get; set; }
-
         [Required]
         public virtual Address Address { get; set; }
 
@@ -46,5 +42,7 @@ namespace WePrint.Models
         public virtual IList<Pledge> Pledges { get; set; } = new List<Pledge>();
 
         public virtual IList<ProjectUpdate> Updates { get; set; } = new List<ProjectUpdate>();
+
+        public bool Deleted { get; set; }
     }
 }

@@ -51,6 +51,29 @@ jobs:
       custom: 'ef'
       arguments: 'migrations script --project src/WePrint/WePrint.csproj --output $(Build.ArtifactStagingDirectory)\SQL\migration.sql --context WePrintContext --idempotent'
 
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      workingDirectory: '$(Build.ArtifactStagingDirectory)\SQL\'
+      script: |
+        <#
+        
+        Replace all 
+        CREATE UNIQUE INDEX [...]
+        with 
+        EXEC('CREATE UNIQUE INDEX [...]')
+        in migration.sql
+        
+        #>
+        $regexA = '\s*(CREATE UNIQUE INDEX.+)'
+        $encoding = New-Object System.Text.UTF8Encoding
+        $invocation = (Get-Variable MyInvocation).Value
+        Get-ChildItem  "migration.sql" | % {
+          $c = (Get-Content $_.FullName) -replace $regexA,'EXEC(''$0'')' -join "`r`n"
+          [IO.File]::WriteAllText("$((Get-Item -Path ".\").FullName)\\migration.sql", $c, $encoding)
+        }
+        Write-Host ("migration.sql has been fixed")
+
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifacts"
     inputs:

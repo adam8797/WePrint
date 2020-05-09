@@ -1,0 +1,41 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/sizes';
+
+.form-group {
+  padding-right: ms(-1);
+
+  &--sub-form {
+    font-size: $font-size-small;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: $padding-standard;
+  }
+
+  &__title {
+    font-weight: $font-weight-semi-bold;
+    padding-right: $padding-standard;
+  }
+
+  &__help {
+    color: $grey-4;
+    font-size: $font-size-small;
+  }
+
+  .wep-input,
+  .wep-textarea__wrapper {
+    width: 100%;
+    margin-bottom: $padding-standard;
+  }
+
+  &--condensed {
+    margin-bottom: 0;
+  }
+
+  label {
+    color: $grey-3;
+  }
+}

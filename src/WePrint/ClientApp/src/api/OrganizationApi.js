@@ -1,19 +1,40 @@
-import { CommonApi } from "./CommonApi";
-import OrganizationModel from "../models/OrganizationModel"
-import UserModel from "../models/UserModel"
-import NestedApi from "./NestedApi";
-import ProjectModel from "../models/ProjectModel";
+import axios from 'axios-observable';
+import { CommonApi, BuildUrl, ErrorOnBadStatus } from './CommonApi';
+import OrganizationModel from '../models/OrganizationModel';
+import UserModel from '../models/UserModel';
+import NestedApi from './NestedApi';
+import ProjectModel from '../models/ProjectModel';
 
 class OrgApi extends CommonApi {
-    constructor() {
-        super("organizations", OrganizationModel.AllPropsEqual);
+  constructor() {
+    super('organizations', OrganizationModel.AllPropsEqual);
+  }
 
-        // Used to get/add/remove users to an organization
-        this.users = new NestedApi("organizations", "users", "users", UserModel.AllPropsEqual);
-        // Used to get/add/remove projects to an organization
-        this.projects = new NestedApi("organizations", "projects", "projects", ProjectModel.AllPropsEqual);
-    }
+  usersFor(orgId) {
+    return new NestedApi('organizations', orgId, 'users', 'users', UserModel.AllPropsEqual);
+  }
+
+  projectsFor(orgId) {
+    return new NestedApi(
+      'organizations',
+      orgId,
+      'projects',
+      'projects',
+      ProjectModel.AllPropsEqual
+    );
+  }
+
+  getAvatar(id) {
+    return super.wrapErrors(axios.get(this.getThumbnailUrl(id)));
+  }
+
+  getAvatarUrl(id) {
+    return BuildUrl(this.apiPath, id, 'avatar');
+  }
+
+  postAvatar(id, file) {
+    return axios.post(BuildUrl(this.apiPath, id, 'avatar'), file).pipe(ErrorOnBadStatus);
+  }
 }
 
-const orgApi = new OrgApi();
-export default orgApi;
+export default new OrgApi();

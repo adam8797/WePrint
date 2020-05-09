@@ -27,6 +27,12 @@ class SearchBar extends Component {
     });
   };
 
+  keyUp = e => {
+      if (e.keyCode === 13) {
+          this.submit(e);
+      }
+  }
+
   render() {
     const { query, isButtonDisabled } = this.state;
     return (
@@ -37,7 +43,8 @@ class SearchBar extends Component {
           value={query}
           id="search"
           className="search-bar__input"
-          placeholder="Search for makers or jobs"
+          placeholder="Search for projects and organizations"
+          onKeyUp={this.keyUp}
           onChange={this.textChange}
         />
         <button

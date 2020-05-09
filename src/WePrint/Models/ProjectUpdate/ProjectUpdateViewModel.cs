@@ -1,4 +1,5 @@
 ﻿using System;
+using WePrint.Models;
 
 namespace WePrint.Data
 {
@@ -8,16 +9,16 @@ namespace WePrint.Data
 
         public DateTimeOffset Timestamp { get; set; }
 
-        public DateTimeOffset EditTimestamp { get; set; }
+        public DateTimeOffset? EditTimestamp { get; set; }
 
         public string Body { get; set; }
 
         public string Title { get; set; }
 
-        public Guid PostedBy { get; set; }
-
-        public Guid EditedBy { get; set; }
+        public UserViewModel PostedBy { get; set; }
 
         public Guid Project { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

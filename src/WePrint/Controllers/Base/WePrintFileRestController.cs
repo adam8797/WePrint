@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ namespace WePrint.Controllers.Base
         /// <param name="id">ID of the entity</param>
         /// <returns>List of file entries</returns>
         [HttpGet("{id}/files")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,7 +52,7 @@ namespace WePrint.Controllers.Base
 
             var files = new List<FileEntry>();
 
-            var container = GetBlobContainer(GetContainerId(entity));
+            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
             if (!await container.ExistsAsync())
                 return files;
 
@@ -82,6 +84,7 @@ namespace WePrint.Controllers.Base
         /// <param name="filename">Filename to fetch</param>
         /// <returns>Streaming file</returns>
         [HttpGet("{id}/files/{filename}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -95,7 +98,7 @@ namespace WePrint.Controllers.Base
             if (!await Permissions.AllowRead(await CurrentUser, entity))
                 return Forbid();
 
-            var container = GetBlobContainer(GetContainerId(entity));
+            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
             if (!await container.ExistsAsync())
                 return NotFound();
 
@@ -120,6 +123,7 @@ namespace WePrint.Controllers.Base
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [RequestSizeLimit(100 * 1_000_000)]
         public async Task<IActionResult> UploadFile(Guid id, IFormFile file)
         {
             var entity = await Database.FindAsync<TData>(id);
@@ -144,7 +148,7 @@ namespace WePrint.Controllers.Base
             if (!allowedExtensions.Contains(Path.GetExtension(safeFileName).ToUpper()))
                 return BadRequest($"File Extension must be one of: {string.Join(", ", allowedExtensions)}");
 
-            var container = GetBlobContainer(GetContainerId(entity));
+            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
             await container.CreateIfNotExistsAsync();
 
             var dir = container.GetDirectoryReference("files");
@@ -181,7 +185,7 @@ namespace WePrint.Controllers.Base
             if (!await Permissions.AllowWrite(await CurrentUser, entity))
                 return Forbid();
 
-            var container = GetBlobContainer(GetContainerId(entity));
+            var container = BlobContainerProvider.GetContainerReference(GetContainerId(entity));
             if (!await container.ExistsAsync())
                 return NotFound();
 

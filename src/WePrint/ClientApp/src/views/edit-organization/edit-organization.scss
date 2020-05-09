@@ -1,0 +1,66 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.edit-org {
+  &__header {
+    font-size: $font-size-medium;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  &__split-inline {
+    display: flex;
+    flex-direction: row;
+
+    &--equal > div {
+      width: 50%;
+    }
+  }
+
+  &__logo {
+    width: $image-size-standard;
+    height: $image-size-standard;
+    margin-right: $padding-standard;
+    border-radius: 100%;
+    border: 1px solid $grey-5;
+
+    &--blank {
+      background-color: $grey-8;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      padding: $padding-standard;
+    }
+  }
+
+  &__user {
+    width: 100%;
+    background-color: $grey-7;
+    border-radius: $border-radius-standard;
+    margin-bottom: $padding-standard;
+    padding: $padding-standard;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    font-size: $font-size-sub-heading;
+  }
+
+  &__remove-icon {
+    color: $red;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: $padding-standard;
+  }
+
+  &__input-error {
+    color: $red;
+  }
+
+  .file-drop {
+    font-size: $font-size-sub-heading;
+    padding: $padding-standard;
+  }
+
+  .button {
+    margin-right: $padding-standard;
+  }
+}
