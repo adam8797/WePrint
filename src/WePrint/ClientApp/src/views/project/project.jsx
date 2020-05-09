@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import moment from 'moment';
 import { Progress } from 'reactstrap';
@@ -8,7 +8,7 @@ import { Progress } from 'reactstrap';
 import OrganizationApi from '../../api/OrganizationApi';
 import ProjectApi from '../../api/ProjectApi';
 import UserApi from '../../api/UserApi';
-import { BodyCard, Button, Table, StatusView, toastError } from '../../components';
+import { BodyCard, Button, Table, StatusView, toastError, TableUser } from '../../components';
 import UpdatesPanel from './components/updates-panel';
 import CreatePledge from './components/create-pledge';
 import MyPledges from './components/my-pledges';
@@ -181,7 +181,7 @@ class Project extends Component {
         accessor: 'maker',
         Cell: ({ cell }) => {
           const { anonymous } = cell.row.original;
-          return anonymous ? 'Anonymous' : cell.value;
+          return anonymous ? 'Anonymous' : <TableUser userId={cell.value} />;
         },
       },
       {
@@ -211,6 +211,7 @@ class Project extends Component {
         <div className="project">
           <div className="project__header">
             <h1>{title}</h1>
+            <Link to={`/manage-project/${projId}`}>Manage Project</Link>
           </div>
           <div className="project__overview">
             <div className="project__thumb">
@@ -218,7 +219,7 @@ class Project extends Component {
             </div>
             <div className="project__details">
               <div className="project__progress">
-                <p>
+                <div>
                   <Progress multi>
                     <Progress bar color="success" value={progFinished}>
                       {progress.Finished}
@@ -228,7 +229,7 @@ class Project extends Component {
                     </Progress>
                   </Progress>
                   {openGoal && '(open goal)'}
-                </p>
+                </div>
               </div>
               <div className="project__overview-buttons">
                 <Button

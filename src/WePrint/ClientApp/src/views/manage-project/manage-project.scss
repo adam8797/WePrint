@@ -1,0 +1,71 @@
+@import '../../assets/styles/colors';
+
+.manage-proj {
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    &--inline {
+      flex-direction: row;
+      & label {
+        min-width: 100px;
+      }
+      & .wep-input {
+        flex-grow: 1;
+        margin-left: 1rem;
+      }
+    }
+    &__error {
+      color: $red;
+    }
+  }
+
+  .react-tabs__tab-list {
+    // list reset:
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+    list-style-type: none;
+    // custom styles:
+    display: flex;
+    margin: 1rem 0;
+  }
+
+  .react-tabs__tab {
+    position: relative;
+    flex-grow: 1;
+    text-align: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    outline: none;
+    cursor: pointer;
+    user-select: none;
+    &:first-child {
+      border-left: none;
+    }
+    span {
+      position: relative;
+
+      &:after {
+        content: attr(data-count);
+        position: absolute;
+        top: -0.4em;
+        right: -0.8em;
+        font-size: 0.8em;
+        color: $blue-1;
+      }
+    }
+    &--selected {
+      span:before {
+        content: '';
+        position: absolute;
+        bottom: -0.3em;
+        left: -10%;
+        width: 120%;
+        height: 2px;
+        background: $blue-1;
+      }
+    }
+  }
+}
