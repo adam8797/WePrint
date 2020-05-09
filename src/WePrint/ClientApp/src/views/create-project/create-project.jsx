@@ -12,11 +12,14 @@ import {
   Button,
   FileDrop,
   toastError,
+  StatusView,
+  AccountRestrictedView,
 } from '../../components';
 import { USStates } from '../../models/Enums';
 import ProjectApi from '../../api/ProjectApi';
 
 import './create-project.scss';
+import UserApi from '../../api/UserApi';
 
 const CreationStatus = {
   NOT_STARTED: 'NOT_STARTED',
@@ -29,6 +32,29 @@ function CreateProject() {
   const [thumb, setThumb] = useState(null);
   const [projectId, setProjectId] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
+  const [user, setUser] = useState(null);
+
+  const { register, handleSubmit, errors } = useForm();
+
+  UserApi.CurrentUser().subscribe(u => {
+    setUser(u);
+  }, console.error);
+
+  if (user === null) {
+    return (
+      <BodyCard>
+        <StatusView text="Loading..." icon="sync" spin />
+      </BodyCard>
+    );
+  }
+
+  if (!user) {
+    return (
+      <BodyCard>
+        <AccountRestrictedView />
+      </BodyCard>
+    );
+  }
 
   const handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
@@ -131,8 +157,6 @@ function CreateProject() {
       );
     }
   };
-
-  const { register, handleSubmit, errors } = useForm();
 
   if (uploadStatus === CreationStatus.DONE) {
     return <Redirect to={`/project/${projectId}`} push />;

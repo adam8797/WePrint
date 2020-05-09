@@ -12,7 +12,6 @@ class MyOrg extends Component {
     this.state = {
       error: false,
       user: null,
-      loggedIn: true,
     };
   }
 
@@ -22,10 +21,6 @@ class MyOrg extends Component {
         this.setState({ user: u });
       },
       err => {
-        if (err.response.status === 401) {
-          this.setState({ loggedIn: false });
-          return;
-        }
         console.error(err);
         this.setState({ error: true });
       }
@@ -33,7 +28,7 @@ class MyOrg extends Component {
   }
 
   render() {
-    const { error, user, loggedIn } = this.state;
+    const { error, user } = this.state;
     if (error) {
       return (
         <BodyCard>
@@ -42,18 +37,18 @@ class MyOrg extends Component {
       );
     }
 
-    if (!loggedIn) {
-      return (
-        <BodyCard>
-          <AccountRestrictedView text="Only logged in users can have organizations" />
-        </BodyCard>
-      );
-    }
-
     if (user === null) {
       return (
         <BodyCard>
           <StatusView text="Loading..." icon="sync" spin />
+        </BodyCard>
+      );
+    }
+
+    if (!user) {
+      return (
+        <BodyCard>
+          <AccountRestrictedView text="Only logged in users can have organizations" />
         </BodyCard>
       );
     }

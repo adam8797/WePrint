@@ -28,11 +28,13 @@ class Project extends Component {
       myPledges: null,
       canPledge: false,
       pledgeModalOpen: false,
+      user: true,
     };
   }
 
   componentDidMount() {
     this.fetchProject();
+    this.fetchUser();
   }
 
   openModal = () => {
@@ -72,6 +74,12 @@ class Project extends Component {
         this.setState({ error: true });
       }
     );
+  }
+
+  fetchUser() {
+    UserApi.CurrentUser().subscribe(u => {
+      this.setState({ user: !!u });
+    }, console.error);
   }
 
   fetchPledges() {
@@ -137,6 +145,7 @@ class Project extends Component {
       myPledges,
       canPledge,
       pledgeModalOpen,
+      user,
     } = this.state;
     const { match } = this.props;
     const { projId } = match.params;
@@ -304,6 +313,7 @@ class Project extends Component {
               pledges={myPledges}
               openPledgeModal={this.openModal}
               canPledge={canPledge}
+              loggedIn={user}
             />
           </div>
         </div>
