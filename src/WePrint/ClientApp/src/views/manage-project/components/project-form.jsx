@@ -12,6 +12,7 @@ import {
   FileDrop,
   toastError,
   StatusView,
+  toastMessage,
 } from '../../../components';
 import { USStates } from '../../../models/Enums';
 import ProjectApi from '../../../api/ProjectApi';
@@ -84,6 +85,9 @@ function ProjectForm() {
               setUploadStatus(CreationStatus.ERROR);
             }
           );
+        } else {
+          setUploadStatus(CreationStatus.DONE);
+          toastMessage('Project was updated successfully');
         }
       },
       err => {
