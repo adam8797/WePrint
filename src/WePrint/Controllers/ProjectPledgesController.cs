@@ -48,6 +48,9 @@ namespace WePrint.Controllers
                   (user.Organization == pledge.Project.Organization && newStatus == PledgeStatus.Finished)))
                 return Forbid();
 
+            if (newStatus < pledge.Status)
+                return BadRequest("Cannot move the status backward");
+
             pledge.Status = newStatus;
 
             await Database.SaveChangesAsync();
