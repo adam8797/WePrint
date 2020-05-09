@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using WePrint.Data;
 using WePrint.Utilities;
 
@@ -15,6 +16,12 @@ namespace WePrint.Models
             if (!id.HasValue)
                 return null;
 
+            var dbcontext = (WePrintContext)context.Mapper.ServiceCtor(typeof(WePrintContext));
+            return dbcontext.Find<TData>(id);
+        }
+
+        public static TData DBLookupMap<TData>(Guid id, TData data, ResolutionContext context) where TData : class
+        {
             var dbcontext = (WePrintContext)context.Mapper.ServiceCtor(typeof(WePrintContext));
             return dbcontext.Find<TData>(id);
         }

@@ -24,6 +24,7 @@ namespace WePrint.Models
             CreateMap<Guid?, Project>().ConvertUsing(AutoProfile.DBLookupMap);
             CreateMap<Project, Guid>().ConvertUsing(x => x.Id);
             CreateMap<Project, Guid?>().ConvertUsing((x, y) => x?.Id);
+            CreateMap<Guid, Organization>().ConvertUsing(AutoProfile.DBLookupMap);
         }
     }
 }
