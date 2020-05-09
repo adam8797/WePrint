@@ -29,7 +29,7 @@ function ManageProject() {
       setUser(u);
     });
     return () => sub.unsubscribe();
-  });
+  }, []);
 
   if (error) {
     return (
