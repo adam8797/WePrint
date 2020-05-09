@@ -33,7 +33,6 @@ namespace WePrint.Models
             CreateMap<Guid?, TData>().ConvertUsing(AutoProfile.DBLookupMap);
             CreateMap<TData, Guid>().ConvertUsing(x => x.Id);
             CreateMap<TData, Guid?>().ConvertUsing((x, y) => x?.Id);
-            CreateMap<string, string>().ConvertUsing(x => x.Sanitize());
         }
     }
 
