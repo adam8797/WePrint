@@ -2,25 +2,18 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import ProjectApi from '../../../api/ProjectApi';
-import UserApi from '../../../api/UserApi';
 import UpdateModel from '../../../models/ProjectUpdateModel';
 import './updates-panel.scss';
 
 function Update({ update }) {
   const { title, body, timestamp, postedBy } = update;
 
-  const [poster, setPoster] = useState('');
-
-  useEffect(() => {
-    UserApi.GetUser(postedBy).subscribe(user => setPoster(user), console.error);
-  }, [postedBy]);
-
   let name = 'unknown';
-  if (poster) {
-    if (!poster.firstName || !poster.lastName) {
-      name = poster.firstName + poster.lastName;
+  if (postedBy) {
+    if (!postedBy.firstName || !postedBy.lastName) {
+      name = postedBy.firstName + postedBy.lastName;
     }
-    name = poster.username;
+    name = postedBy.username;
   }
 
   return (

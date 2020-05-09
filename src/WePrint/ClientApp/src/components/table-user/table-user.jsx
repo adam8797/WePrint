@@ -1,31 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import UserApi from '../../api/UserApi';
 import './table-user.scss';
+import UserModel from '../../models/UserModel';
 
-function TableUser({ userId }) {
-  const [user, setUser] = useState(null);
+function TableUser({ user }) {
+  if (!user) {
+    return (
+      <div className="table-user">
+        <span>Unknown User</span>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    const sub = UserApi.GetUser(userId).subscribe(setUser, err => {
-      console.error('Error loading table user', userId, err);
-    });
-    return () => sub.unsubscribe();
-  }, [userId]);
+  let name = user.username;
+  if (user.firstName) {
+    name = user.firstName;
+    if (user.lastName) {
+      name += ` ${user.lastName}`;
+    }
+  }
 
   return (
     <div className="table-user">
       <img
-        src={UserApi.getAvatarUrl(userId)}
-        alt={user ? `Avatar for ${user.username}` : 'Pledger Avatar'}
+        src={UserApi.getAvatarUrl(user.id)}
+        alt={user ? `Avatar for ${name}` : 'Pledger Avatar'}
       />
-      <span> {user && user.username}</span>
+      <span> {name}</span>
     </div>
   );
 }
 
 TableUser.propTypes = {
-  userId: PropTypes.string.isRequired,
+  user: PropTypes.shape(UserModel),
 };
 
 export default TableUser;

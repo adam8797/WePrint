@@ -96,7 +96,7 @@ function ManageUpdates() {
     {
       Header: 'Poster',
       accessor: 'postedBy',
-      Cell: data => <TableUser userId={data.cell.value} />,
+      Cell: data => <TableUser user={data.cell.value} />,
     },
     {
       Header: 'Posted On',

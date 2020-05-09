@@ -7,10 +7,12 @@ import './manage-project.scss';
 import ManageUpdates from './components/manage-updates';
 import ManagePledges from './components/manage-pledges';
 import ProjectForm from './components/project-form';
+import UserApi from '../../api/UserApi';
 
 function ManageProject() {
   const { projId } = useParams();
 
+  const [user, setUser] = useState(null);
   const [project, setProject] = useState(null);
   const [error, setError] = useState(null);
 
@@ -22,6 +24,13 @@ function ManageProject() {
     });
   }, [projId]);
 
+  useEffect(() => {
+    const sub = UserApi.CurrentUser().subscribe(u => {
+      setUser(u);
+    });
+    return () => sub.unsubscribe();
+  });
+
   if (error) {
     return (
       <BodyCard>
@@ -30,10 +39,20 @@ function ManageProject() {
     );
   }
 
-  if (!project) {
+  if (!project || !user) {
     return (
       <BodyCard>
         <StatusView text="Project Loading..." icon="sync" spin />
+      </BodyCard>
+    );
+  }
+
+  // can't manage this project
+  if (user.organization !== project.organization) {
+    // say "could not load" to help prevent searching for valid project hashes
+    return (
+      <BodyCard>
+        <StatusView text="Could not load project" icon={['far', 'frown']} />
       </BodyCard>
     );
   }

@@ -64,7 +64,9 @@ class Organization extends Component {
   render() {
     const { error, organization, user, users, projects, edit } = this.state;
     const { match } = this.props;
-    const { orgId } = match.params;
+    let { orgId } = this.props;
+    if (!orgId) orgId = match.params.orgId;
+
     if (error) {
       return (
         <BodyCard>

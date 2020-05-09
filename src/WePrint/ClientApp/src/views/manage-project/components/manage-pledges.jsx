@@ -67,7 +67,7 @@ function ManagePledges() {
       accessor: 'maker',
       Cell: data => {
         const { anonymous } = data.cell.row.original;
-        return anonymous ? 'Anonymous' : <TableUser userId={data.cell.value} />;
+        return anonymous ? 'Anonymous' : <TableUser user={data.cell.value} />;
       },
     },
     {
