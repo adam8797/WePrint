@@ -125,6 +125,7 @@ namespace WePrint
                     mapper.AddProfile<AutoProfile<Organization, OrganizationViewModel, OrganizationCreateModel>>();
                     mapper.AddProfile<AutoProfile<Printer, PrinterViewModel, PrinterCreateModel>>();
                     mapper.AddProfile<AutoProfile<ProjectUpdate, ProjectUpdateViewModel, ProjectUpdateCreateModel>>();
+                    mapper.AddProfile<AutoProfile<Pledge, PledgeViewModelNoUser>>();
 
                     // Data/View
                     mapper.AddProfile<AutoProfile<User, UserViewModel>>();

@@ -53,12 +53,12 @@ namespace WePrint.Controllers
         [HttpGet("pledges")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<PledgeViewModel>>> GetUserPledges()
+        public async Task<ActionResult<List<PledgeViewModelNoUser>>> GetUserPledges()
         {
             var user = await CurrentUser;
             var pledges = await Database.Pledges
                 .Where(x => x.Maker == user)
-                .ProjectTo<PledgeViewModel>(Mapper.ConfigurationProvider)
+                .ProjectTo<PledgeViewModelNoUser>(Mapper.ConfigurationProvider)
                 .ToListAsync();
             return pledges;
         }
@@ -66,12 +66,12 @@ namespace WePrint.Controllers
         [HttpGet("pledges/{project}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<PledgeViewModel>>> GetUserProjectPledges(Guid project)
+        public async Task<ActionResult<List<PledgeViewModelNoUser>>> GetUserProjectPledges(Guid project)
         {
             var user = await CurrentUser;
             var pledges = await Database.Pledges
                 .Where(x => x.Maker == user && x.Project.Id == project)
-                .ProjectTo<PledgeViewModel>(Mapper.ConfigurationProvider)
+                .ProjectTo<PledgeViewModelNoUser>(Mapper.ConfigurationProvider)
                 .ToListAsync();
             return pledges;
         }
