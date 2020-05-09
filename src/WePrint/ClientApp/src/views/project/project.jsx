@@ -79,7 +79,7 @@ class Project extends Component {
   fetchUser() {
     UserApi.CurrentUser().subscribe(
       u => {
-        this.setState({ loggedIn: !!u });
+        this.setState({ loggedIn: !!u, user: u });
       },
       err => {
         if (err.response.status === 401) {
@@ -146,6 +146,7 @@ class Project extends Component {
 
   render() {
     const {
+      user,
       error,
       project,
       organization,
@@ -199,7 +200,7 @@ class Project extends Component {
         accessor: 'maker',
         Cell: ({ cell }) => {
           const { anonymous } = cell.row.original;
-          return anonymous ? 'Anonymous' : <TableUser userId={cell.value} />;
+          return anonymous ? 'Anonymous' : <TableUser user={cell.value} />;
         },
       },
       {
@@ -224,12 +225,14 @@ class Project extends Component {
         : 0) * 100
     );
 
+    const canManage = user.organization === project.organization;
+
     return (
       <BodyCard centered>
         <div className="project">
           <div className="project__header">
             <h1>{title}</h1>
-            <Link to={`/manage-project/${projId}`}>Manage Project</Link>
+            {canManage && <Link to={`/manage-project/${projId}`}>Manage Project</Link>}
           </div>
           <div className="project__overview">
             <div className="project__thumb">
@@ -237,7 +240,8 @@ class Project extends Component {
             </div>
             <div className="project__details">
               <div className="project__progress">
-                <div>
+                <div className="project__progress-bar">
+                  <span>0</span>
                   <Progress multi>
                     <Progress bar color="success" value={progFinished}>
                       {progress.Finished}
@@ -246,8 +250,9 @@ class Project extends Component {
                       {(progress.InProgress || 0) + (progress.Shipped || 0)}
                     </Progress>
                   </Progress>
-                  {openGoal && '(open goal)'}
+                  <span>{project.goal}</span>
                 </div>
+                {openGoal && ' (open goal)'}
               </div>
               <div className="project__overview-buttons">
                 <Button
