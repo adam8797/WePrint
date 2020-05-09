@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
@@ -25,6 +26,8 @@ namespace WePrint.Models
             CreateMap<Project, Guid>().ConvertUsing(x => x.Id);
             CreateMap<Project, Guid?>().ConvertUsing((x, y) => x?.Id);
             CreateMap<Guid, Organization>().ConvertUsing(AutoProfile.DBLookupMap);
+            CreateMap<Guid, Pledge>().ConvertUsing(AutoProfile.DBLookupMap);
+            CreateMap<Guid, ProjectUpdate>().ConvertUsing(AutoProfile.DBLookupMap);
         }
     }
 }
