@@ -30,6 +30,7 @@ const CreationStatus = {
 
 function CreateProject() {
   const [thumb, setThumb] = useState(null);
+  const [thumbUrl, setThumbUrl] = useState(null);
   const [projectId, setProjectId] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
   const [user, setUser] = useState(null);
@@ -69,11 +70,11 @@ function CreateProject() {
   const handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
       const [newThumb] = newFiles;
-      // if (newThumb.name === thumb.name) {
-      //   // Duplicate prevention
-      //   // TODO: add alert to let user's know if a file was already added
-      //   return;
-      // }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setThumbUrl(reader.result);
+      };
+      reader.readAsDataURL(newThumb);
       setThumb(newThumb);
     }
   };
@@ -209,11 +210,17 @@ function CreateProject() {
                 <label htmlFor="open">Open Goal?</label>
               </div>
             </div>
-            <div>
+            <div className="create-proj__thumb">
+              {(thumbUrl && (
+                <img className="create-proj__image" src={thumbUrl} alt="Project Thumb" />
+              )) || (
+                <div className="create-proj__image create-proj__image--blank">
+                  No Image Uploaded
+                </div>
+              )}
               <FileDrop
-                className="create-proj__thumb"
                 handleFiles={handleThumbChange}
-                customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
+                customMsg="Click or drag to upload project image"
               />
             </div>
             <div className="create-proj__desc">
