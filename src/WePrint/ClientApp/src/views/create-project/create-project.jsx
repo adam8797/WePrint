@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { isEmpty, includes } from 'lodash';
@@ -37,18 +37,21 @@ function CreateProject() {
 
   const { register, handleSubmit, errors } = useForm();
 
-  UserApi.CurrentUser().subscribe(
-    u => {
-      setUser(u);
-    },
-    err => {
-      if (err.response.status === 401) {
-        setUser(false);
-        return;
+  useEffect(() => {
+    const sub = UserApi.CurrentUser().subscribe(
+      u => {
+        setUser(u);
+      },
+      err => {
+        if (err.response.status === 401) {
+          setUser(false);
+          return;
+        }
+        console.error(err);
       }
-      console.error(err);
-    }
-  );
+    );
+    return () => sub.unsubscribe();
+  }, []);
 
   if (user === null) {
     return (
