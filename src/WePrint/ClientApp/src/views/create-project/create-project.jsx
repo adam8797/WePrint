@@ -123,17 +123,28 @@ function CreateProject() {
         project => {
           console.log('success,', project);
 
-          const data = new FormData();
-          data.append('postedImage', thumb);
+          if (thumb) {
+            const data = new FormData();
+            data.append('postedImage', thumb);
 
-          ProjectApi.setThumbnail(projectId, data).subscribe(
-            () => setUploadStatus(CreationStatus.DONE),
-            err => {
-              console.error(err);
-              toastError('There was an error setting the project thumbnail during update');
-              setUploadStatus(CreationStatus.ERROR);
-            }
-          );
+            ProjectApi.setThumbnail(projectId, data).subscribe(
+              () => {
+                setUploadStatus(CreationStatus.DONE);
+                let loc = window.location.origin;
+                loc += `/project/${projectId}`;
+                window.location.href = loc;
+              },
+              err => {
+                console.error(err);
+                toastError('There was an error setting the project thumbnail during update');
+                setUploadStatus(CreationStatus.ERROR);
+              }
+            );
+          } else {
+            let loc = window.location.origin;
+            loc += `/project/${projectId}`;
+            window.location.href = loc;
+          }
         },
         err => {
           console.error(err);
@@ -148,17 +159,28 @@ function CreateProject() {
           const { id } = project;
           setProjectId(id);
 
-          const data = new FormData();
-          data.append('postedImage', thumb);
+          if (thumb) {
+            const data = new FormData();
+            data.append('postedImage', thumb);
 
-          ProjectApi.setThumbnail(id, data).subscribe(
-            () => setUploadStatus(CreationStatus.DONE),
-            err => {
-              console.error(err);
-              toastError('There was an error setting the project thumbnail during creation');
-              setUploadStatus(CreationStatus.ERROR);
-            }
-          );
+            ProjectApi.setThumbnail(id, data).subscribe(
+              () => {
+                setUploadStatus(CreationStatus.DONE);
+                let loc = window.location.origin;
+                loc += `/project/${id}`;
+                window.location.href = loc;
+              },
+              err => {
+                console.error(err);
+                toastError('There was an error setting the project thumbnail during creation');
+                setUploadStatus(CreationStatus.ERROR);
+              }
+            );
+          } else {
+            let loc = window.location.origin;
+            loc += `/project/${id}`;
+            window.location.href = loc;
+          }
         },
         err => {
           console.error(err);

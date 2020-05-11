@@ -30,6 +30,7 @@ function ProjectForm() {
 
   const [project, setProject] = useState(null);
   const [thumb, setThumb] = useState(null);
+  const [thumbUrl, setThumbUrl] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
 
   useEffect(() => {
@@ -49,11 +50,11 @@ function ProjectForm() {
   const handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
       const [newThumb] = newFiles;
-      // if (newThumb.name === thumb.name) {
-      //   // Duplicate prevention
-      //   // TODO: add alert to let user's know if a file was already added
-      //   return;
-      // }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setThumbUrl(reader.result);
+      };
+      reader.readAsDataURL(newThumb);
       setThumb(newThumb);
     }
   };
@@ -78,7 +79,12 @@ function ProjectForm() {
           data.append('postedImage', thumb);
 
           ProjectApi.setThumbnail(projId, data).subscribe(
-            () => setUploadStatus(CreationStatus.DONE),
+            () => {
+              setUploadStatus(CreationStatus.DONE);
+              let loc = window.location.origin;
+              loc += `/project/${projId}`;
+              window.location.href = loc;
+            },
             err => {
               console.error(err);
               toastError('There was an error setting the project thumbnail during update');
@@ -88,6 +94,9 @@ function ProjectForm() {
         } else {
           setUploadStatus(CreationStatus.DONE);
           toastMessage('Project was updated successfully');
+          let loc = window.location.origin;
+          loc += `/project/${projId}`;
+          window.location.href = loc;
         }
       },
       err => {
@@ -140,12 +149,22 @@ function ProjectForm() {
               <label htmlFor="openGoal">Open Goal?</label>
             </div>
           </div>
-          <div>
-            <FileDrop
-              className="create-proj__thumb"
-              handleFiles={handleThumbChange}
-              customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
-            />
+          <div className="create-proj__thumb">
+            <label htmlFor="thumb">Project Image</label>
+            <div className="create-proj__image-container">
+              {(thumbUrl && (
+                <img className="create-proj__image" src={thumbUrl} alt="Project Thumb" />
+              )) || (
+                <div className="create-proj__image create-proj__image--blank">
+                  No Image Uploaded
+                </div>
+              )}
+              <FileDrop
+                name="thumb"
+                handleFiles={handleThumbChange}
+                customMsg="Click or drag to upload project image"
+              />
+            </div>
           </div>
           <div className="create-proj__desc">
             <div className="input-group">
