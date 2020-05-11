@@ -40,6 +40,12 @@
   }
   &__thumb {
     grid-area: thumb;
+  }
+  &__desc {
+    grid-area: desc;
+  }
+
+  &__image-container {
     display: flex;
 
     .file-drop {
@@ -49,10 +55,6 @@
       height: $image-size-standard;
     }
   }
-  &__desc {
-    grid-area: desc;
-  }
-
   &__image {
     width: $image-size-standard;
     height: $image-size-standard;

@@ -217,21 +217,25 @@ function CreateProject() {
               </div>
               <div className="create-proj__open">
                 <input type="checkbox" name="open" id="open" defaultValue={false} ref={register} />
-                <label htmlFor="open">Open Goal?</label>
+                <label htmlFor="open">&nbsp;Open Goal?</label>
               </div>
             </div>
             <div className="create-proj__thumb">
-              {(thumbUrl && (
-                <img className="create-proj__image" src={thumbUrl} alt="Project Thumb" />
-              )) || (
-                <div className="create-proj__image create-proj__image--blank">
-                  No Image Uploaded
-                </div>
-              )}
-              <FileDrop
-                handleFiles={handleThumbChange}
-                customMsg="Click or drag to upload project image"
-              />
+              <label htmlFor="thumb">Project Image</label>
+              <div className="create-proj__image-container">
+                {(thumbUrl && (
+                  <img className="create-proj__image" src={thumbUrl} alt="Project Thumb" />
+                )) || (
+                  <div className="create-proj__image create-proj__image--blank">
+                    No Image Uploaded
+                  </div>
+                )}
+                <FileDrop
+                  name="thumb"
+                  handleFiles={handleThumbChange}
+                  customMsg="Click or drag to upload project image"
+                />
+              </div>
             </div>
             <div className="create-proj__desc">
               <div className="input-group">
