@@ -41,7 +41,6 @@ function CreateProject() {
       setUser(u);
     },
     err => {
-      console.log(err);
       if (err.response.status === 401) {
         setUser(false);
         return;
@@ -62,6 +61,17 @@ function CreateProject() {
     return (
       <BodyCard>
         <AccountRestrictedView />
+      </BodyCard>
+    );
+  }
+
+  if (!user.organization) {
+    return (
+      <BodyCard>
+        <StatusView
+          text="You must be part of an organization to create a project"
+          icon="building"
+        />
       </BodyCard>
     );
   }
