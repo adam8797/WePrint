@@ -225,7 +225,7 @@ class Project extends Component {
         : 0) * 100
     );
 
-    const canManage = user.organization === project.organization;
+    const canManage = user && project && user.organization === project.organization;
 
     return (
       <BodyCard centered>
