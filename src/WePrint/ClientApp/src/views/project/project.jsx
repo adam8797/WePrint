@@ -168,7 +168,7 @@ class Project extends Component {
       );
     }
     // TODO: better if empty check
-    if (!project) {
+    if (!project || (loggedIn && !user)) {
       return (
         <BodyCard>
           <StatusView text="Project Loading..." icon="sync" spin />
@@ -225,7 +225,7 @@ class Project extends Component {
         : 0) * 100
     );
 
-    const canManage = user.organization === project.organization;
+    const canManage = loggedIn && user.organization === project.organization;
 
     return (
       <BodyCard centered>
