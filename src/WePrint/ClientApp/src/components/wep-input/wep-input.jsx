@@ -4,14 +4,14 @@ import classNames from 'classnames';
 import './wep-input.scss';
 
 function WepInput(props) {
-  const { register, name, id, value, placeholder = '', handleChange, error } = props;
+  const { register, name, id, value, placeholder = '', handleChange, error, isPassword } = props;
   const className = classNames('wep-input', { 'wep-input--error': error });
   // if handleChange is provided, that means the parent handles onChange manually
   if (handleChange) {
     return (
       <input
         className={className}
-        type="text"
+        type={isPassword ? "password" : "text"}
         name={name}
         id={id}
         value={value}
@@ -25,7 +25,7 @@ function WepInput(props) {
     <input
       ref={register}
       className={className}
-      type="text"
+      type={isPassword ? "password" : "text"}
       name={name}
       id={id}
       defaultValue={value}
@@ -42,6 +42,7 @@ WepInput.propTypes = {
   handleChange: PropTypes.func,
   error: PropTypes.bool,
   register: PropTypes.func,
+  isPassword: PropTypes.bool
 };
 
 export default WepInput;

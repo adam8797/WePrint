@@ -10,7 +10,7 @@ export function BuildUrl(...components) {
 }
 
 export const ErrorOnBadStatus = switchMap(res =>
-  res.status >= 200 && res.status < 300 ? of(res.data) : throwError(res.status)
+  res.status >= 200 && res.status < 300 ? of(res.data) : throwError(res)
 );
 
 export function ObjectToPatch(obj) {

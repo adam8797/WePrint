@@ -20,3 +20,4 @@ export { default as FormGroup } from './form-group/form-group';
 export { default as StatusView } from './status-view/status-view';
 export { toastError, toastMessage } from './toast-body/toast-body';
 export { default as WepModal } from './wep-modal/wep-modal';
+export { default as WepValidationLabel } from './wep-validation-label/wep-validation-label';

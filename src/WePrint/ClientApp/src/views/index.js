@@ -21,3 +21,5 @@ export { default as Projects } from './projects/projects';
 export { default as Recieved } from './recieved/recieved';
 export { default as MyOrg } from './my-org/my-org';
 export { default as PledgePage } from './pledge-page/pledge-page';
+export { default as LoginPage } from './login/login';
+export { default as RegisterPage } from './register/register';

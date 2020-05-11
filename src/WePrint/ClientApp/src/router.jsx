@@ -24,6 +24,8 @@ import {
   Recieved,
   MyOrg,
   PledgePage,
+  LoginPage,
+  RegisterPage
 } from './views';
 
 export default function AppRouter({ basename }) {
@@ -31,13 +33,12 @@ export default function AppRouter({ basename }) {
     <BrowserRouter basename={basename}>
       <AppLayout>
         <Switch>
-          <Route
-            path="/login"
-            component={() => {
-              window.location.href = `${window.location.origin}/Identity/Account/Login`;
-              return null;
-            }}
-          />
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/register">
+            <RegisterPage />
+          </Route>
           <Route
             path="/logout"
             component={() => {

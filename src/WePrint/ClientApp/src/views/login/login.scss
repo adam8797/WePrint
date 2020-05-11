@@ -1,0 +1,26 @@
+@import '../../assets/styles/sizes';
+@import '../../assets/styles/colors';
+
+.login-body {
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    &--inline {
+      flex-direction: row;
+      & label {
+        min-width: 100px;
+      }
+      & .wep-input {
+        flex-grow: 1;
+        margin-left: 1rem;
+      }
+    }
+    &__error {
+      color: $red;
+    }
+  }
+  .hide {
+    display: none;
+  }
+}
