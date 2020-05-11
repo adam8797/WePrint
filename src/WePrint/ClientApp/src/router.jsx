@@ -25,6 +25,8 @@ import {
   MyOrg,
   PledgePage,
   ManageProject,
+  LoginPage,
+  RegisterPage
 } from './views';
 import { ErrorBoundary } from './components';
 
@@ -34,13 +36,12 @@ export default function AppRouter({ basename }) {
       <AppLayout>
         <ErrorBoundary>
           <Switch>
-            <Route
-              path="/login"
-              component={() => {
-                window.location.href = `${window.location.origin}/Identity/Account/Login`;
-                return null;
-              }}
-            />
+            <Route path="/login">
+              <LoginPage />
+            </Route>
+            <Route path="/register">
+              <RegisterPage />
+            </Route>
             <Route
               path="/logout"
               component={() => {

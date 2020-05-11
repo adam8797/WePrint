@@ -24,3 +24,4 @@ export { toastError, toastMessage } from './toast-body/toast-body';
 export { default as WepModal } from './wep-modal/wep-modal';
 export { default as AccountRestrictedView } from './account-restricted-view/account-restricted-view';
 export { default as ErrorBoundary } from './error-boundary/error-boundary';
+export { default as WepValidationLabel } from './wep-validation-label/wep-validation-label';
