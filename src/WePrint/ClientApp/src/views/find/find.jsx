@@ -10,6 +10,9 @@ class Find extends Component {
   constructor(props) {
     super(props);
     this.state = { results: null, error: false };
+  }
+
+  componentDidMount() {
     this.onRouteChanged();
   }
 
