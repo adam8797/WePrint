@@ -157,7 +157,13 @@ function ManageUpdates() {
               Cancel Editing
             </Button>
           )}
-          <Button type={Button.Type.SUCCESS} htmlType="submit" disabled={!isEmpty(errors)}>
+          <Button
+            type={Button.Type.SUCCESS}
+            htmlType="submit"
+            disabled={!isEmpty(errors)}
+            tooltip={!isEmpty(errors) && 'There are errors in your form'}
+            tooltipType="error"
+          >
             {updatingId ? 'Save' : 'Post Update'}
           </Button>
         </FormGroup>

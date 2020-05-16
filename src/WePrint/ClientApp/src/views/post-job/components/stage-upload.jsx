@@ -55,7 +55,15 @@ function StageUpload({
     progress,
   }));
 
-  const advanceValid = files.length && uploadComplete;
+  let advanceValid = true;
+  let tooltip;
+  if (!files.length) {
+    advanceValid = false;
+    tooltip = 'Please upload at least one file';
+  } else if (uploadComplete) {
+    advanceValid = false;
+    tooltip = 'Upload currently in progress';
+  }
 
   return (
     <BodyCard centered className="post-job-page">
@@ -85,6 +93,7 @@ function StageUpload({
           className="body-card__action-right"
           onClick={advanceAction}
           disabled={!advanceValid}
+          tooltip={tooltip}
         >
           Next
         </Button>

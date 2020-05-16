@@ -208,6 +208,19 @@ function CreateProject() {
     return <Redirect to={`/project/${projectId}`} push />;
   }
 
+  let submitEnabled = true;
+  let tooltip;
+  let tooltipType;
+
+  if (uploadStatus === CreationStatus.STARTED) {
+    tooltip = 'Please wait for the project to finish uploading';
+    submitEnabled = false;
+  } else if (!isEmpty(errors)) {
+    tooltip = 'There are errors in your form';
+    tooltipType = 'error';
+    submitEnabled = false;
+  }
+
   return (
     <BodyCard className="create-proj" centered>
       <h1>Create Project</h1>
@@ -389,7 +402,9 @@ function CreateProject() {
             htmlType="submit"
             size={Button.Size.LARGE}
             className="body-card__action-right"
-            disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors)}
+            disabled={!submitEnabled}
+            tooltip={tooltip}
+            tooltipType={tooltipType}
           >
             Create Project
           </Button>

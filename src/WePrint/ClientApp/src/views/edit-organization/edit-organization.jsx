@@ -324,7 +324,13 @@ function EditOrganization(props) {
             </Button>
           )}
           <Button onClick={callback}>Return</Button>
-          <Button type={ButtonType.SUCCESS} htmlType="submit" disabled={!isEmpty(errors)}>
+          <Button
+            type={ButtonType.SUCCESS}
+            htmlType="submit"
+            disabled={!isEmpty(errors)}
+            tooltip={!isEmpty(errors) && 'There are errors in your form'}
+            tooltipType="error"
+          >
             Save
           </Button>
         </form>

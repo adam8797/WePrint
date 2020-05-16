@@ -111,6 +111,19 @@ function ProjectForm() {
     return <StatusView text="Loading Details" icon="sync" spin />;
   }
 
+  let submitEnabled = true;
+  let tooltip;
+  let tooltipType;
+
+  if (uploadStatus === CreationStatus.STARTED) {
+    tooltip = 'Please wait for the project to finish uploading';
+    submitEnabled = false;
+  } else if (!isEmpty(errors)) {
+    tooltip = 'There are errors in your form';
+    tooltipType = 'error';
+    submitEnabled = false;
+  }
+
   return (
     <form onSubmit={handleSubmit(handleSubmission)}>
       <SectionTitle title="Basic Information" />
@@ -285,7 +298,9 @@ function ProjectForm() {
           htmlType="submit"
           size={Button.Size.LARGE}
           className="body-card__action-right"
-          disabled={uploadStatus === CreationStatus.STARTED || !isEmpty(errors)}
+          disabled={!submitEnabled}
+          tooltip={tooltip}
+          tooltipType={tooltipType}
         >
           Save Project
         </Button>

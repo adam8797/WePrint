@@ -82,7 +82,13 @@ function CreatePledge({ projId, modalOpen, closeModal }) {
               <Button type={Button.Type.DANGER} onClick={closeModal}>
                 Cancel
               </Button>
-              <Button type={Button.Type.SUCCESS} htmlType="submit" disabled={!isEmpty(errors)}>
+              <Button
+                type={Button.Type.SUCCESS}
+                htmlType="submit"
+                disabled={!isEmpty(errors)}
+                tooltip={!isEmpty(errors) && 'There are errors in your form'}
+                tooltipType="error"
+              >
                 Make Pledge
               </Button>
             </WepModal.ButtonContainer>

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ReactTooltip from 'react-tooltip';
+
 import './button.scss';
 
 export const ButtonType = {
@@ -17,7 +19,19 @@ export const ButtonSize = {
 };
 
 function Button(props) {
-  const { children, className, type, htmlType, size, icon, selected, outline, ...rest } = props;
+  const {
+    children,
+    className,
+    type,
+    htmlType,
+    size,
+    icon,
+    selected,
+    outline,
+    tooltip,
+    tooltipType,
+    ...rest
+  } = props;
 
   const buttonClass = classNames(
     'button',
@@ -30,10 +44,15 @@ function Button(props) {
   return (
     // eslint-disable-next-line react/button-has-type
     <button {...rest} className={buttonClass} type={htmlType}>
-      <div className="button__inner-container">
+      <div
+        className="button__inner-container"
+        data-tip={tooltip || ''}
+        data-type={tooltipType || 'dark'}
+      >
         {icon && <FontAwesomeIcon icon={icon} className="button__icon" />}
         {children && <div className="button__title">{children}</div>}
       </div>
+      <ReactTooltip />
     </button>
   );
 }
@@ -47,6 +66,8 @@ Button.propTypes = {
   icon: PropTypes.string,
   selected: PropTypes.bool,
   outline: PropTypes.bool,
+  tooltip: PropTypes.string,
+  tooltipType: PropTypes.string,
 };
 
 Button.defaultProps = {
@@ -57,6 +78,8 @@ Button.defaultProps = {
   htmlType: 'button',
   icon: '',
   selected: true,
+  tooltip: null,
+  tooltipType: 'dark',
 };
 
 Button.Type = ButtonType;

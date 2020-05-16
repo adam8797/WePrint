@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { Button } from '../..';
 
 import './search-bar.scss';
 
@@ -28,10 +29,10 @@ class SearchBar extends Component {
   };
 
   keyUp = e => {
-      if (e.keyCode === 13) {
-          this.submit(e);
-      }
-  }
+    if (e.keyCode === 13) {
+      this.submit(e);
+    }
+  };
 
   render() {
     const { query, isButtonDisabled } = this.state;
@@ -47,14 +48,15 @@ class SearchBar extends Component {
           onKeyUp={this.keyUp}
           onChange={this.textChange}
         />
-        <button
+        <Button
           className="search-bar__submit"
           onClick={this.submit}
           disabled={isButtonDisabled}
-          type="submit"
+          htmlType="submit"
+          tooltip={isButtonDisabled && 'Please enter a search keyword'}
         >
           GO
-        </button>
+        </Button>
       </div>
     );
   }

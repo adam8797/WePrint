@@ -201,6 +201,8 @@ function EditDevice() {
           className="body-card__action-right"
           onClick={handleSubmit}
           disabled={!formValid}
+          tooltip={!formValid && 'There are errors in your form'}
+          tooltipType="error"
         >
           Save
         </Button>

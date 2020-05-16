@@ -278,6 +278,8 @@ class BidPost extends Component {
             onClick={this.postBid}
             type={Button.Type.SUCCESS}
             disabled={!formValid}
+            tooltip={!formValid && 'There are errors in your form'}
+            tooltipType="error"
           >
             Submit
           </Button>

@@ -93,6 +93,7 @@ function ManagePledges() {
             icon="trash"
             onClick={() => rejectPledge(pledge.id)}
             disabled={pledge.status === PledgeStatus.Canceled}
+            tooltip={pledge.status === PledgeStatus.Canceled && 'The pledge is already canceled'}
           />
         );
       },

@@ -106,6 +106,15 @@ class PledgePage extends Component {
       );
     }
 
+    let canCancel = true;
+    let tooltip;
+    if (pledge.status === PledgeStatus.Canceled) {
+      tooltip = 'This pledge has already been canceled';
+    } else if ([PledgeStatus.Shipped, PledgeStatus.Finished].includes(pledge.status)) {
+      canCancel = false;
+      tooltip = 'Pledges cannot be canceled after shipping';
+    }
+
     return (
       <BodyCard className="pledge-page">
         <div className="pledge-page__header">
@@ -117,11 +126,8 @@ class PledgePage extends Component {
             type={Button.Type.DANGER}
             size={Button.Size.SMALL}
             onClick={() => this.setStatus(PledgeStatus.Canceled)}
-            disabled={
-              pledge.status === PledgeStatus.Canceled ||
-              pledge.status === PledgeStatus.Shipped ||
-              pledge.status === PledgeStatus.Finished
-            }
+            disabled={!canCancel}
+            tooltip={tooltip}
           >
             Cancel Pledge
           </Button>
@@ -142,6 +148,10 @@ class PledgePage extends Component {
               type={Button.Type.PRIMARY}
               onClick={() => this.setStatus(PledgeStatus.InProgress)}
               disabled={pledge.status !== PledgeStatus.NotStarted}
+              tooltip={
+                pledge.status !== PledgeStatus.NotStarted &&
+                'Pledge must be not started to be marked as started'
+              }
             >
               Started
             </Button>
@@ -149,6 +159,10 @@ class PledgePage extends Component {
               type={Button.Type.PRIMARY}
               onClick={() => this.setStatus(PledgeStatus.Shipped)}
               disabled={pledge.status !== PledgeStatus.InProgress}
+              tooltip={
+                pledge.status !== PledgeStatus.InProgress &&
+                'Pledge must be in progress to be marked as shipped'
+              }
             >
               Shipped
             </Button>
@@ -156,6 +170,10 @@ class PledgePage extends Component {
               type={Button.Type.SUCCESS}
               onClick={() => this.setStatus(PledgeStatus.Finished)}
               disabled={pledge.status !== PledgeStatus.Shipped}
+              tooltip={
+                pledge.status !== PledgeStatus.Shipped &&
+                'Pledge must be shipped to be marked as done'
+              }
             >
               Done
             </Button>

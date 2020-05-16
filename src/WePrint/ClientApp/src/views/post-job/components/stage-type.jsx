@@ -36,6 +36,8 @@ function StageType({ printerType, setPrinterType, advanceAction }) {
           className="body-card__action-right"
           onClick={advanceAction}
           disabled={!printerType}
+          tooltip={!printerType && 'There are errors in your form'}
+          tooltipType="error"
         >
           Next
         </Button>

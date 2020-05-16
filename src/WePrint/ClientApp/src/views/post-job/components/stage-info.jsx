@@ -103,6 +103,8 @@ function StageInfo({
           className="body-card__action-right"
           onClick={advanceAction}
           disabled={!jobFormValid}
+          tooltip={!jobFormValid && 'There are errors in your form'}
+          tooltipType="error"
         >
           Next
         </Button>

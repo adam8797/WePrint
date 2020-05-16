@@ -227,6 +227,10 @@ class Project extends Component {
 
     const canManage = user && project && user.organization === project.organization;
 
+    let tooltip;
+    if (!loggedIn) tooltip = 'You must be logged in to pledge';
+    else if (user && !canPledge) tooltip = 'You already have an in-progress pledge';
+
     return (
       <BodyCard centered>
         <div className="project">
@@ -261,6 +265,7 @@ class Project extends Component {
                   className="project__overview-buttons__pledge"
                   onClick={this.openModal}
                   disabled={!canPledge}
+                  tooltip={tooltip}
                 >
                   Pledge Now!
                 </Button>

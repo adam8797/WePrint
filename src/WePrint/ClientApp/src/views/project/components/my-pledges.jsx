@@ -20,6 +20,9 @@ function MyPledges({ projId, pledges, openPledgeModal, canPledge, loggedIn }) {
       </div>
     );
   }
+  let tooltip;
+  if (!canPledge) tooltip = 'You already have an in-progress pledge';
+
   return (
     <div className="my-pledges">
       <h3 className="my-pledges__title">Your Pledges</h3>
@@ -40,7 +43,12 @@ function MyPledges({ projId, pledges, openPledgeModal, canPledge, loggedIn }) {
           : "You haven't pledged yet."}
       </div>
       <div className="my-pledges__button">
-        <Button type={Button.Type.PRIMARY} onClick={openPledgeModal} disabled={!canPledge}>
+        <Button
+          type={Button.Type.PRIMARY}
+          onClick={openPledgeModal}
+          disabled={!canPledge}
+          tooltip={tooltip}
+        >
           {pledges && pledges.length ? 'Pledge More' : 'Pledge Now!'}
         </Button>
       </div>
