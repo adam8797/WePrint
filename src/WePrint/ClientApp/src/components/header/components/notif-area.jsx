@@ -15,7 +15,7 @@ class NotifArea extends Component {
   }
 
   componentDidMount() {
-    this.subscription = UserApi.trackCurrentUser(1000).subscribe({
+    this.subscription = UserApi.trackCurrentUser(20000).subscribe({
       next: user => {
         this.setState({ user, loaded: true });
       },

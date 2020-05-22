@@ -12,6 +12,7 @@
   flex-direction: column;
 
   &__text {
+    max-width: 80%;
     padding-bottom: $padding-standard;
   }
 }

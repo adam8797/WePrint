@@ -36,7 +36,7 @@ namespace WePrint.Utilities
         public AvatarProvider(IConfiguration configuration, IBlobContainerProvider blobContainerProvider, IHostEnvironment hostEnvironment)
         {
             _configuration = configuration;
-            _blobContainerProvider = blobContainerProvider;
+            _blobContainerProvider = blobContainerProvider; 
             _hostEnvironment = hostEnvironment;
         }
 
@@ -121,7 +121,11 @@ namespace WePrint.Utilities
             }
             else
             {
-                return new NotFoundResult();
+                using Image image = Image.Load("projectdefault.png");
+                imageStream = new MemoryStream();
+                image.SaveAsPng(imageStream);
+                imageStream.Position = 0;
+
             }
 
             return new FileStreamResult(imageStream, "image/png")

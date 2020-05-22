@@ -106,7 +106,7 @@ function EditAccount(props) {
           <div className="edit-acct__fields">
             <FormGroup title="Name">
               <FormGroup
-                title="First Name"
+                title="First Name*"
                 type={FormGroup.Type.SUBFORM}
                 styles={[FormGroup.Style.CONDENSED]}
               >
@@ -123,7 +123,7 @@ function EditAccount(props) {
                   <div className="edit-acct__input-error">First name is required</div>
                 )}
               </FormGroup>
-              <FormGroup title="Last Name" type={FormGroup.Type.SUBFORM}>
+              <FormGroup title="Last Name*" type={FormGroup.Type.SUBFORM}>
                 <WepInput
                   name="lastName"
                   register={userRegister({ required: true })}
@@ -138,7 +138,7 @@ function EditAccount(props) {
                 )}
               </FormGroup>
             </FormGroup>
-            <FormGroup title="Username" help="This is what you will use to log in">
+            <FormGroup title="Username*" help="This is what you will use to log in">
               <WepInput
                 name="username"
                 register={userRegister({ required: true })}

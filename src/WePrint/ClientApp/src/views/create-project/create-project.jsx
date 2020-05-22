@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { isEmpty, includes } from 'lodash';
@@ -30,25 +30,28 @@ const CreationStatus = {
 
 function CreateProject() {
   const [thumb, setThumb] = useState(null);
+  const [thumbUrl, setThumbUrl] = useState(null);
   const [projectId, setProjectId] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(CreationStatus.NOT_STARTED);
   const [user, setUser] = useState(null);
 
   const { register, handleSubmit, errors } = useForm();
 
-  UserApi.CurrentUser().subscribe(
-    u => {
-      setUser(u);
-    },
-    err => {
-      console.log(err);
-      if (err.response.status === 401) {
-        setUser(false);
-        return;
+  useEffect(() => {
+    const sub = UserApi.CurrentUser().subscribe(
+      u => {
+        setUser(u);
+      },
+      err => {
+        if (err.response.status === 401) {
+          setUser(false);
+          return;
+        }
+        console.error(err);
       }
-      console.error(err);
-    }
-  );
+    );
+    return () => sub.unsubscribe();
+  }, []);
 
   if (user === null) {
     return (
@@ -66,14 +69,25 @@ function CreateProject() {
     );
   }
 
+  if (!user.organization) {
+    return (
+      <BodyCard>
+        <StatusView
+          text="You must be part of an organization to create a project"
+          icon="building"
+        />
+      </BodyCard>
+    );
+  }
+
   const handleThumbChange = newFiles => {
     if (newFiles && newFiles.length) {
       const [newThumb] = newFiles;
-      // if (newThumb.name === thumb.name) {
-      //   // Duplicate prevention
-      //   // TODO: add alert to let user's know if a file was already added
-      //   return;
-      // }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setThumbUrl(reader.result);
+      };
+      reader.readAsDataURL(newThumb);
       setThumb(newThumb);
     }
   };
@@ -122,17 +136,28 @@ function CreateProject() {
         project => {
           console.log('success,', project);
 
-          const data = new FormData();
-          data.append('postedImage', thumb);
+          if (thumb) {
+            const data = new FormData();
+            data.append('postedImage', thumb);
 
-          ProjectApi.setThumbnail(projectId, data).subscribe(
-            () => setUploadStatus(CreationStatus.DONE),
-            err => {
-              console.error(err);
-              toastError('There was an error setting the project thumbnail during update');
-              setUploadStatus(CreationStatus.ERROR);
-            }
-          );
+            ProjectApi.setThumbnail(projectId, data).subscribe(
+              () => {
+                setUploadStatus(CreationStatus.DONE);
+                let loc = window.location.origin;
+                loc += `/project/${projectId}`;
+                window.location.href = loc;
+              },
+              err => {
+                console.error(err);
+                toastError('There was an error setting the project thumbnail during update');
+                setUploadStatus(CreationStatus.ERROR);
+              }
+            );
+          } else {
+            let loc = window.location.origin;
+            loc += `/project/${projectId}`;
+            window.location.href = loc;
+          }
         },
         err => {
           console.error(err);
@@ -147,17 +172,28 @@ function CreateProject() {
           const { id } = project;
           setProjectId(id);
 
-          const data = new FormData();
-          data.append('postedImage', thumb);
+          if (thumb) {
+            const data = new FormData();
+            data.append('postedImage', thumb);
 
-          ProjectApi.setThumbnail(id, data).subscribe(
-            () => setUploadStatus(CreationStatus.DONE),
-            err => {
-              console.error(err);
-              toastError('There was an error setting the project thumbnail during creation');
-              setUploadStatus(CreationStatus.ERROR);
-            }
-          );
+            ProjectApi.setThumbnail(id, data).subscribe(
+              () => {
+                setUploadStatus(CreationStatus.DONE);
+                let loc = window.location.origin;
+                loc += `/project/${id}`;
+                window.location.href = loc;
+              },
+              err => {
+                console.error(err);
+                toastError('There was an error setting the project thumbnail during creation');
+                setUploadStatus(CreationStatus.ERROR);
+              }
+            );
+          } else {
+            let loc = window.location.origin;
+            loc += `/project/${id}`;
+            window.location.href = loc;
+          }
         },
         err => {
           console.error(err);
@@ -206,15 +242,25 @@ function CreateProject() {
               </div>
               <div className="create-proj__open">
                 <input type="checkbox" name="open" id="open" defaultValue={false} ref={register} />
-                <label htmlFor="open">Open Goal?</label>
+                <label htmlFor="open">&nbsp;Open Goal?</label>
               </div>
             </div>
-            <div>
-              <FileDrop
-                className="create-proj__thumb"
-                handleFiles={handleThumbChange}
-                customMsg={thumb ? thumb.name : 'Click or drag to upload project image'}
-              />
+            <div className="create-proj__thumb">
+              <label htmlFor="thumb">Project Image</label>
+              <div className="create-proj__image-container">
+                {(thumbUrl && (
+                  <img className="create-proj__image" src={thumbUrl} alt="Project Thumb" />
+                )) || (
+                  <div className="create-proj__image create-proj__image--blank">
+                    No Image Uploaded
+                  </div>
+                )}
+                <FileDrop
+                  name="thumb"
+                  handleFiles={handleThumbChange}
+                  customMsg="Click or drag to upload project image"
+                />
+              </div>
             </div>
             <div className="create-proj__desc">
               <div className="input-group">

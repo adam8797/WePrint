@@ -175,7 +175,7 @@ function EditOrganization(props) {
         <form onSubmit={handleSubmit(saveOrg)}>
           <div className="edit-org__split-inline edit-org__split-inline--equal">
             <div>
-              <FormGroup title="Organization Name" help="What is the organization called?">
+              <FormGroup title="Organization Name*" help="What is the organization called?">
                 <WepInput
                   name="name"
                   register={register({ required: true })}
@@ -187,7 +187,7 @@ function EditOrganization(props) {
                 {errors.name && <div className="edit-org__input-error">Name is required</div>}
               </FormGroup>
               <FormGroup title="Location" help="Where is the organization located?">
-                <label htmlFor="attention">Attention</label>
+                <label htmlFor="attention">Attention*</label>
                 <WepInput
                   name="attention"
                   register={register({ required: true })}
@@ -198,7 +198,7 @@ function EditOrganization(props) {
                 {errors.attention && (
                   <div className="edit-org__input-error">Attention is required</div>
                 )}
-                <label htmlFor="addressLine1">Address</label>
+                <label htmlFor="addressLine1">Address*</label>
                 <WepInput
                   name="addressLine1"
                   register={register({ required: true })}
@@ -221,7 +221,7 @@ function EditOrganization(props) {
                   id="addressLine3"
                   value={organization.address.addressLine3}
                 />
-                <label htmlFor="city">City</label>
+                <label htmlFor="city">City*</label>
                 <WepInput
                   name="city"
                   register={register({ required: true })}
@@ -230,7 +230,7 @@ function EditOrganization(props) {
                   error={!!errors.city}
                 />
                 {errors.city && <div className="edit-org__input-error">City is required</div>}
-                <label htmlFor="state">State</label>
+                <label htmlFor="state">State*</label>
                 <WepInput
                   name="state"
                   register={register({
@@ -246,7 +246,7 @@ function EditOrganization(props) {
                     Please enter a valid two-character state key
                   </div>
                 )}
-                <label htmlFor="zipCode">Zip</label>
+                <label htmlFor="zipCode">Zip*</label>
                 <WepInput
                   name="zipCode"
                   register={register({ required: true, minLength: 5, maxLength: 5, min: 0 })}
@@ -281,7 +281,7 @@ function EditOrganization(props) {
               </FormGroup>
             </div>
           </div>
-          <FormGroup title="Organization Bio" help="A description of the organization">
+          <FormGroup title="Organization Bio*" help="A description of the organization">
             <WepTextarea
               name="description"
               register={register({ required: true })}
